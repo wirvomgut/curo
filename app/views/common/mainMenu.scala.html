@@ -1,0 +1,15 @@
+@(user: Option[models.User] = None)(implicit messages: Messages)
+
+<div class="ui attached stackable menu">
+    <div class="ui container">
+        <a class="item"><i class="home icon"></i>@Messages("menu.home")</a>
+
+        <div class="right menu">
+
+            @user.map { u =>
+                <a class="item" href="@routes.ApplicationController.index"><i class="user icon"></i>@u.fullName</a>
+                <a class="item" href="@routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
+            }
+        </div>
+    </div>
+</div>

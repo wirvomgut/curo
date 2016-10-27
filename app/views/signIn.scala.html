@@ -1,0 +1,63 @@
+@import common._
+
+@(signInForm: Form[forms.SignInForm.Data], socialProviders: com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry)(implicit request: RequestHeader, messages: Messages)
+
+@import com.mohiva.play.silhouette.impl.providers.oauth2.ClefProvider
+
+@mainLayout(title = Messages("sign.in.title")) {
+<div class="ui middle aligned center aligned grid">
+    <div class="column login-column">
+        <h2 class="ui center aligned header">
+            <img src='@routes.Assets.at("images/wvg_logo_quad.png")' class="ui tiny image">
+            <div class="content">
+                @Messages("sign.in.credentials")
+            </div>
+        </h2>
+        @helper.form(action = routes.CredentialsAuthController.authenticate(), 'class -> "ui large form" ) {
+        @helper.CSRF.formField
+        <div class="ui segment">
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="user icon"></i>
+                    <input type="text" name="email" placeholder="E-Mail">
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="lock icon"></i>
+                    <input type="password" name="password" placeholder="Passwort">
+                </div>
+            </div>
+            <button id="submit" type="submit" value="submit" class="ui fluid large green submit button">@Messages("sign.in")</button>
+        </div>
+        @if(socialProviders.providers.nonEmpty) {
+        <div class="social-providers">
+            <p>@Messages("or.use.social")</p>
+            <div>
+                @for(p <- socialProviders.providers if p.id != "clef") {
+                <a href="@routes.SocialAuthController.authenticate(p.id)" class="ui button provider @p.id" title="@Messages(p.id)"><img src='@routes.Assets.at(s"images/providers/${p.id}.png")' width="64px" height="64px" alt="@Messages(p.id)"></a>
+                }
+            </div>
+            @defining(socialProviders.get[ClefProvider]) { clef =>
+            @if(clef.isDefined) {
+            <script type="text/javascript" src="https://clef.io/v3/clef.js" class="clef-button" data-app-id="@clef.get.settings.clientID" data-color="blue" data-style="flat" data-redirect-url="@clef.get.settings.redirectURL" data-type="login"></script>
+            }
+            }
+        </div>
+        }
+        }
+
+        @request.flash.get("error").map { msg =>
+        <div class="ui icon error message">
+            <i class="warning sign icon"></i>
+            <div class="content">
+                <div class="header">
+                    @Messages("error")
+                </div>
+                <p> @msg</p>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+}

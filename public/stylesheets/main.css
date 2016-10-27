@@ -1,0 +1,10 @@
+body > .grid {
+  height: 100%;
+}
+.login-column {
+  max-width: 450px;
+}
+
+#menu-spacer {
+  padding-top: 20px;
+}

@@ -1,0 +1,45 @@
+error.email = Valid email required
+error.required = This field is required
+invalid.credentials = Deine Zugansdaten sind leider nicht korrekt.
+access.denied = Access denied!
+user.exists = There already exists a user with this email!
+could.not.authenticate = Could not authenticate with social provider! Please try again!
+
+home.title = WIN - Startseite
+sign.up.title = WIN - Registrieren
+sign.in.title = WIN - Anmelden
+
+profile.title = Ihr Profil
+
+toggle.navigation = Toggle navigation
+welcome.signed.in = Welcome, you are now signed in!
+
+sign.up.account = Neuen Benutzer erstellen
+sign.in.credentials = Bitte melde Dich an
+
+menu.home = Startseite
+
+error = Fehler!
+home = Home
+first.name = Vorname
+last.name = Nachname
+full.name = Name
+email = E-Mail
+password = Passwort
+sign.up = Registrieren
+sign.in = Anmelden
+sign.out = Abmelden
+sign.in.now = Jetzt anmelden
+sign.up.now = Registrieren
+already.a.member = Bereits ein Mitglied?
+not.a.member = Noch kein Benutzerkonto?
+
+remember.me = Remember my login on this computer
+or.use.social = Or use your existing account on one of the following services to sign in:
+
+google = Google
+facebook = Facebook
+twitter = Twitter
+vk = VK
+xing = Xing
+yahoo = Yahoo
