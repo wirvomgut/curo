@@ -1,0 +1,14 @@
+@()(implicit request: RequestHeader, messages: Messages)
+
+@activeLink(currentPath:String) = @{
+    if(request.path.equals(currentPath)) "active"
+}
+
+<div class="ui secondary vertical menu">
+    <a class='@activeLink("/") item' href="/">
+        @Messages("profile.menu")
+    </a>
+    <a class='@activeLink("/password") item' href="/password">
+        @Messages("password.menu")
+    </a>
+</div>

@@ -9,7 +9,18 @@ home.title = WIN - Startseite
 sign.up.title = WIN - Registrieren
 sign.in.title = WIN - Anmelden
 
-profile.title = Ihr Profil
+profile.menu = Profil
+profile.title = Dein Profil
+
+password.menu = Passwort
+password.title = Dein Passwort
+password.old = Altes Passwort
+password.old.error = Dein altes Passwort stimmt nicht.
+password.new = Neues Passwort
+password.new.repeat = Neues Passwort bestätigen
+password.new.error = Passwörter stimmen nicht überein.
+password.save = Speichern
+password.save.success = Neues Passwort wurde gesetzt.
 
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!

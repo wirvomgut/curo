@@ -33,6 +33,15 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the password action.
+    *
+    * @return The result to display.
+    */
+  def password = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.password(request.identity, PasswordForm.form)))
+  }
+
+  /**
    * Handles the Sign In action.
    *
    * @return The result to display.

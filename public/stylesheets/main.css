@@ -8,3 +8,7 @@ body > .grid {
 #menu-spacer {
   padding-top: 20px;
 }
+
+#profile-table {
+  width: 100%;
+}

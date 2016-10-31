@@ -1,18 +1,18 @@
 package services
 
-import java.nio.charset.{Charset, StandardCharsets}
+import java.nio.charset.StandardCharsets
 import javax.inject._
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import models.User
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
-import org.apache.directory.api.ldap.model.entry.{DefaultEntry, DefaultModification, Modification, ModificationOperation}
+import org.apache.directory.api.ldap.model.entry.{DefaultEntry, DefaultModification, ModificationOperation}
 import org.apache.directory.api.ldap.model.message.SearchScope
 import org.apache.directory.ldap.client.api.LdapNetworkConnection
 import play.api.inject.ApplicationLifecycle
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
 /**

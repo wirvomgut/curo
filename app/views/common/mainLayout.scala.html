@@ -1,4 +1,4 @@
-@(title: String, head: Html = Html("<div></div>"))(body: Html)(implicit messages: Messages)
+@(title: String, head: Html = Html("<div></div>"))(body: Html)(implicit request: RequestHeader, messages: Messages)
 <html lang="de">
 <head>
     <title>@title</title>
