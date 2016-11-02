@@ -42,6 +42,33 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the email action.
+    *
+    * @return The result to display.
+    */
+  def email = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.email(request.identity, EmailForm.form)))
+  }
+
+  /**
+    * Handles the calendar action.
+    *
+    * @return The result to display.
+    */
+  def calendar = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wvg.io/login")))
+  }
+
+  /**
+    * Handles the chat action.
+    *
+    * @return The result to display.
+    */
+  def chat = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, "https://chat.wvg.io")))
+  }
+
+  /**
    * Handles the Sign In action.
    *
    * @return The result to display.

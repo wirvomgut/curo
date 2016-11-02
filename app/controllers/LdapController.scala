@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.Clock
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.{CredentialsProvider, SocialProviderRegistry}
-import forms.PasswordForm
+import forms.{EmailForm, PasswordForm}
 import models.User
 import models.services.UserService
 import play.api.Configuration
@@ -29,7 +29,7 @@ import scala.language.postfixOps
   * @param configuration The Play configuration.
   * @param clock The clock instance.
   */
-class PasswordController @Inject()(
+class LdapController @Inject()(
                                             val ldapClient: LdapClient,
                                             val messagesApi: MessagesApi,
                                             val env: Environment[User, CookieAuthenticator],
@@ -42,11 +42,11 @@ class PasswordController @Inject()(
   extends Silhouette[User, CookieAuthenticator] {
 
   /**
-    * Authenticates a user against the credentials provider.
+    * Changes the users password if form data is correct.
     *
     * @return The result to display.
     */
-  def change = SecuredAction.async { implicit request =>
+  def password = SecuredAction.async { implicit request =>
     PasswordForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.password(request.identity, form))),
       data => {
@@ -74,6 +74,24 @@ class PasswordController @Inject()(
             )
           }
         }
+      }
+    )
+  }
+
+  /**
+    * Changes the users email if form data is correct.
+    *
+    * @return The result to display.
+    */
+  def email = SecuredAction.async { implicit request =>
+    EmailForm.form.bindFromRequest.fold(
+      form => Future.successful(BadRequest(views.html.email(request.identity, form))),
+      data => {
+        ldapClient.modifyEmail(request.identity.loginInfo.providerKey, data.emailNew)
+
+        Future.successful(
+          Redirect(routes.ApplicationController.email()).flashing("success" -> Messages("email.save.success"))
+        )
       }
     )
   }

@@ -1,0 +1,9 @@
+@import common._
+
+@(user: models.User, url: String)(implicit request: RequestHeader, messages: Messages)
+
+@mainLayout(Messages("home.title")) {
+    @mainMenu(Option(user))
+
+    <iframe class="fullpage" id="iframe-chat" src="@url"></iframe>
+}

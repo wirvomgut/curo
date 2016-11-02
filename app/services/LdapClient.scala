@@ -103,6 +103,11 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
+  def modifyEmail(uid:String, newEmail:String): Unit = {
+    val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, "mail", newEmail)
+    connection.modify("uid=" + uid + "," + groupUsers, mod)
+  }
+
   def addMail(uid:String, mail:String): Unit ={
     addAttribute(uid, "mail", mail)
   }

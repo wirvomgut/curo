@@ -5,7 +5,11 @@
 # Home page
 GET         /                                controllers.ApplicationController.index
 GET         /password                        controllers.ApplicationController.password
-GET         /password/change                 controllers.PasswordController.change
+GET         /password/change                 controllers.LdapController.password
+GET         /email                           controllers.ApplicationController.email
+GET         /email/change                    controllers.LdapController.email
+GET         /calendar                        controllers.ApplicationController.calendar
+GET         /chat                            controllers.ApplicationController.chat
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signOut                         controllers.ApplicationController.signOut
 GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)

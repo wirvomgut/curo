@@ -22,6 +22,12 @@ password.new.error = Passwörter stimmen nicht überein.
 password.save = Speichern
 password.save.success = Neues Passwort wurde gesetzt.
 
+email.menu = E-Mail
+email.title = Deine E-Mail
+email.new = Neue E-Mail
+email.save = Speichern
+email.save.success = Neue E-Mail wurde gesetzt.
+
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
 
@@ -54,3 +60,6 @@ twitter = Twitter
 vk = VK
 xing = Xing
 yahoo = Yahoo
+
+apps.calendar = Kalender
+apps.chat = Chat

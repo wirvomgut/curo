@@ -1,6 +1,6 @@
 @import common._
 
-@(user: models.User, passwordForm: Form[forms.PasswordForm.Data])(implicit request: RequestHeader, messages: Messages)
+@(user: models.User, emailForm: Form[forms.EmailForm.Data])(implicit request: RequestHeader, messages: Messages)
 
 @mainLayout(Messages("home.title")) {
     @mainMenu(Option(user))
@@ -11,23 +11,15 @@
                 @sideMenu()
             </div>
             <div class="ten wide column">
-                <h2 class="ui header">@Messages("password.title")</h2>
-                @helper.form(action = routes.LdapController.password(), 'class -> "ui form" ) {
+                <h2 class="ui header">@Messages("email.title")</h2>
+                @helper.form(action = routes.LdapController.email(), 'class -> "ui form" ) {
                 @helper.CSRF.formField
                 <form class="ui form">
                     <div class="field">
-                        <label>@Messages("password.old")</label>
-                        <input type="password" name="password-old">
+                        <label>@Messages("email.new")</label>
+                        <input type="text" name="email-new">
                     </div>
-                    <div class="field">
-                        <label>@Messages("password.new")</label>
-                        <input type="password" name="password-new">
-                    </div>
-                    <div class="field">
-                        <label>@Messages("password.new.repeat")</label>
-                        <input type="password" name="password-confirm">
-                    </div>
-                    <button class="ui button" type="submit">@Messages("password.save")</button>
+                    <button class="ui button" type="submit">@Messages("email.save")</button>
                 </form>
                 }
                 @request.flash.get("error").map { msg =>
