@@ -17,10 +17,21 @@
                 <form class="ui form">
                     <div class="field">
                         <label>@Messages("email.new")</label>
-                        <input type="text" name="email-new">
+                        <input type="text" name="email-new" value='@emailForm.data.getOrElse("email-new", "")'>
                     </div>
                     <button class="ui button" type="submit">@Messages("email.save")</button>
                 </form>
+                }
+                @emailForm.errors.map { formError =>
+                <div class="ui icon error message">
+                    <i class="warning sign icon"></i>
+                    <div class="content">
+                        <div class="header">
+                            @Messages("error")
+                        </div>
+                        <p> @Messages(formError.message)</p>
+                    </div>
+                </div>
                 }
                 @request.flash.get("error").map { msg =>
                 <div class="ui icon error message">

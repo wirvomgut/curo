@@ -85,7 +85,9 @@ class LdapController @Inject()(
     */
   def email = SecuredAction.async { implicit request =>
     EmailForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.email(request.identity, form))),
+      form => Future.successful(
+        BadRequest(views.html.email(request.identity, form))
+      ),
       data => {
         ldapClient.modifyEmail(request.identity.loginInfo.providerKey, data.emailNew)
 

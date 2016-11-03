@@ -55,7 +55,7 @@ class CredentialsAuthController @Inject() (
     SignInForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.signIn(form, socialProviderRegistry))),
       data => {
-        val credentials = Credentials(data.email, data.password)
+        val credentials = Credentials(data.username, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
           val result = Redirect(routes.ApplicationController.index())
           userService.retrieve(loginInfo).flatMap {

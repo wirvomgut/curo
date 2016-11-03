@@ -5,9 +5,8 @@ access.denied = Access denied!
 user.exists = There already exists a user with this email!
 could.not.authenticate = Could not authenticate with social provider! Please try again!
 
-home.title = WIN - Startseite
-sign.up.title = WIN - Registrieren
-sign.in.title = WIN - Anmelden
+home.title = Curo - Startseite
+sign.in.title = Curo - Anmelden
 
 profile.menu = Profil
 profile.title = Dein Profil
@@ -27,6 +26,7 @@ email.title = Deine E-Mail
 email.new = Neue E-Mail
 email.save = Speichern
 email.save.success = Neue E-Mail wurde gesetzt.
+error.email = E-Mail ist nicht korrekt.
 
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
@@ -37,11 +37,13 @@ sign.in.credentials = Bitte melde Dich an
 menu.home = Startseite
 
 error = Fehler!
+
 home = Home
 first.name = Vorname
 last.name = Nachname
 full.name = Name
 email = E-Mail
+username = Benutzername
 password = Passwort
 sign.up = Registrieren
 sign.in = Anmelden
