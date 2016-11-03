@@ -6,9 +6,11 @@ import javax.inject._
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import models.User
+import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
 import org.apache.directory.api.ldap.model.entry.{DefaultEntry, DefaultModification, ModificationOperation}
 import org.apache.directory.api.ldap.model.message.SearchScope
+import org.apache.directory.api.ldap.model.password.PasswordUtil
 import org.apache.directory.ldap.client.api.LdapNetworkConnection
 import play.api.inject.ApplicationLifecycle
 
@@ -71,7 +73,6 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     )
   }
 
-  //TODO: implement other hashing types like sha256 and md5
   def authUser(uid:String, password:String):Boolean = {
     val cursor:EntryCursor = connection
       .search( "uid=" + uid + "," + groupUsers , "(objectclass=person)", SearchScope.OBJECT)
@@ -81,25 +82,16 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     }
 
     val contents = cursor.get()
-    val usernameOk = contents.get("uid").getString.equals(uid)
 
-    val fetchedPassword = new String(contents.get("userPassword").getBytes, StandardCharsets.UTF_8)
-
-
-    val split = fetchedPassword.split("\\}", 2)
-    val algo = split(0).replaceFirst("\\{", "")
-    val hash = split(1)
-
-    if(algo.equals("plain")){
-      usernameOk && password.equals(hash)
-    }else{
-      false
-    }
+    PasswordUtil.compareCredentials(password.getBytes(StandardCharsets.UTF_8), contents.get("userPassword").getBytes)
   }
 
-  //TODO: implement other hashing types like sha256 and md5
-  def modifyPassword(uid:String, newPassword:String): Unit = {
-    val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, "userpassword", "{plain}" + newPassword)
+  def modifyPassword(uid:String, pass:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_SHA256): Unit = {
+    val bytePassword = PasswordUtil.createStoragePassword(pass, hash)
+    val mod = new DefaultModification(
+      ModificationOperation.REPLACE_ATTRIBUTE,
+      "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
+    )
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
@@ -117,8 +109,9 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def addUser(givenName:String, lastname:String, password:String): Unit ={
+  def addUser(givenName:String, lastname:String, password:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_SHA256): Unit ={
     val uid = givenName.toLowerCase + lastname.toLowerCase
+    val bytePassword = PasswordUtil.createStoragePassword(password, hash)
 
     connection.add(
       new DefaultEntry(
@@ -131,7 +124,7 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
         "sn", lastname,
         "givenname", givenName,
         "uid", uid,
-        "userpassword", "{plain}" + password
+        "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
       ) )
   }
 
