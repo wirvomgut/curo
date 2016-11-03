@@ -18,7 +18,7 @@ import com.mohiva.play.silhouette.impl.providers.openid.services.PlayOpenIDServi
 import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
 import com.mohiva.play.silhouette.impl.services._
 import com.mohiva.play.silhouette.impl.util._
-import controllers.PasswordHasherLdap
+import controllers.{PasswordHasherMD5, PasswordHasherSHA256}
 import models.User
 import models.daos._
 import models.services.{UserService, UserServiceImpl}
@@ -47,7 +47,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[DelegableAuthInfoDAO[OpenIDInfo]].to[OpenIDInfoDAO]
     bind[CacheLayer].to[PlayCacheLayer]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
-    bind[PasswordHasher].toInstance(new PasswordHasherLdap)
+    bind[PasswordHasher].toInstance(new PasswordHasherSHA256)
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
@@ -204,7 +204,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     authInfoRepository: AuthInfoRepository,
     passwordHasher: PasswordHasher): CredentialsProvider = {
 
-    new CredentialsProvider(authInfoRepository, passwordHasher, Seq(passwordHasher))
+    new CredentialsProvider(authInfoRepository, passwordHasher, Seq(passwordHasher, new PasswordHasherMD5))
   }
 
   /**

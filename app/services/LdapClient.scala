@@ -58,17 +58,13 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
       return None
     }
 
-    val fetchedPassword = new String(cursor.get().get("userPassword").getBytes, StandardCharsets.UTF_8)
-
-
-    val split = fetchedPassword.split("\\}", 2)
-    val algo = split(0).replaceFirst("\\{", "")
-    val hash = split(1)
+    val pass = cursor.get().get("userPassword").getBytes
+    val cred = PasswordUtil.splitCredentials(pass)
 
     Option(
       PasswordInfo(
-        hasher = algo,
-        password = hash
+        hasher = cred.getAlgorithm.getName,
+        password = new String(cred.getPassword, StandardCharsets.UTF_8)
       )
     )
   }

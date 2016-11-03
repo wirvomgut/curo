@@ -8,6 +8,7 @@ GET         /password                        controllers.ApplicationController.p
 GET         /password/change                 controllers.LdapController.password
 GET         /email                           controllers.ApplicationController.email
 GET         /email/change                    controllers.LdapController.email
+GET         /directory                       controllers.ApplicationController.directory
 GET         /calendar                        controllers.ApplicationController.calendar
 GET         /chat                            controllers.ApplicationController.chat
 GET         /signIn                          controllers.ApplicationController.signIn

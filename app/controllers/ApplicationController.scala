@@ -51,6 +51,15 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the directory action.
+    *
+    * @return The result to display.
+    */
+  def directory = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.directory(request.identity, Seq())))
+  }
+
+  /**
     * Handles the calendar action.
     *
     * @return The result to display.

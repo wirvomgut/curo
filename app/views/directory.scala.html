@@ -1,0 +1,15 @@
+@import common._
+
+@(user: models.User, users: Seq[models.User])(implicit request: RequestHeader, messages: Messages)
+
+@mainLayout(Messages("home.title")) {
+    @mainMenu(Option(user))
+
+    <div class="ui text container" id="menu-spacer">
+        <div class="ui grid">
+            <div class="six teen wide column">
+
+            </div>
+        </div>
+    </div>
+}

@@ -1,11 +1,7 @@
 package controllers
 
-import java.nio.charset.StandardCharsets
-
-import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
 import org.apache.directory.api.ldap.model.message.SearchScope
-import org.apache.directory.api.ldap.model.password.PasswordUtil
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.PlaySpecification
 import services.LdapClient
@@ -80,14 +76,6 @@ class LdapClientISpec extends PlaySpecification {
       cursor.close()
 
       ok
-    }
-    "create a md5 hash password" in {
-      // test as MD5 hash in LDAP is {MD5}CY9rzUYh03PK3k6DJie09g==
-
-      val bytePassword = PasswordUtil.createStoragePassword("test", LdapSecurityConstants.HASH_METHOD_MD5)
-      val hashedPassword = new String(bytePassword, StandardCharsets.UTF_8)
-
-      hashedPassword must be equalTo "{MD5}CY9rzUYh03PK3k6DJie09g=="
     }
     "cleanup and close the connection" in {
       connection.delete("uid=given1last1,ou=users,dc=test,dc=com")
