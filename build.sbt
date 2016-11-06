@@ -5,7 +5,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 lazy val scalikejdbcPlayVersion = "2.5.+"
 lazy val h2Version = "1.4.+"
 
-name := "WIN"
+name := "Curo"
 
 version := "0.0.1"
 
