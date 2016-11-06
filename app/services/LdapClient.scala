@@ -23,12 +23,12 @@ import scala.concurrent.Future
   */
 @Singleton
 class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: ApplicationLifecycle){
-  val host = configuration.getString("ldap.host").getOrElse("localhost")
-  val port = configuration.getInt("ldap.port").getOrElse(389)
-  val userBind = configuration.getString("ldap.user.bind").getOrElse("")
-  val userBindPassword = sys.env.getOrElse("WVG_PROFILE_USER_BIND_PASSWORD", "")
+  val host:String = sys.env.getOrElse("WVG_PROFILE_LDAP_HOST", "localhost")
+  val port:Int = sys.env.getOrElse("WVG_PROFILE_LDAP_PORT", "389").toInt
+  val userBind = sys.env.getOrElse("WVG_PROFILE_LDAP_USER_BIND", "")
+  val userBindPassword = sys.env.getOrElse("WVG_PROFILE_LDAP_USER_BIND_PASSWORD", "")
 
-  val groupUsers = configuration.getString("ldap.group.users").getOrElse("")
+  val groupUsers = sys.env.getOrElse("WVG_PROFILE_LDAP_USERS_GROUP", "")
 
 
   def getUser(uid:String):Option[User] = {
