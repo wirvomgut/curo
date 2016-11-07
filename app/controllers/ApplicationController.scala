@@ -33,6 +33,15 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the profile action.
+    *
+    * @return The result to display.
+    */
+  def profile = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.profile(request.identity)))
+  }
+
+  /**
     * Handles the password action.
     *
     * @return The result to display.

@@ -4,6 +4,7 @@
 
 # Home page
 GET         /                                controllers.ApplicationController.index
+GET         /profile                         controllers.ApplicationController.profile
 GET         /password                        controllers.ApplicationController.password
 GET         /password/change                 controllers.LdapController.password
 GET         /email                           controllers.ApplicationController.email

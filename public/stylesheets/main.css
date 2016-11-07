@@ -19,3 +19,8 @@ body > .grid {
   border:none;
   seamless='seamless';
 }
+
+.padded {
+  margin: auto;
+  padding: 30px;
+}

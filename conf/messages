@@ -65,3 +65,5 @@ yahoo = Yahoo
 
 apps.calendar = Kalender
 apps.chat = Chat
+apps.files = Dateien
+apps.carsharing = Mitfahrzentrale

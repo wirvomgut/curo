@@ -2,13 +2,13 @@
 
 <div class="ui attached stackable menu">
     <div class="ui container">
-        <!--<a class="item" href="/"><i class="home icon"></i>@Messages("menu.home")</a>-->
+        <a class="item" href="/"><i class="home icon"></i>@Messages("menu.home")</a>
         <!--<a class="item" href="/chat"><i class="chat icon"></i>@Messages("apps.chat")</a>-->
 
         <div class="right menu">
 
             @user.map { u =>
-                <a class="item" href="@routes.ApplicationController.index"><i class="user icon"></i>@u.fullName</a>
+                <a class="item" href="@routes.ApplicationController.profile"><i class="user icon"></i>@u.fullName</a>
                 <a class="item" href="@routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
             }
         </div>
