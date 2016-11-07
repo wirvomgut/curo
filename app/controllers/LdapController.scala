@@ -1,5 +1,6 @@
 package controllers
 
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
@@ -10,6 +11,8 @@ import com.mohiva.play.silhouette.impl.providers.{CredentialsProvider, SocialPro
 import forms.{EmailForm, PasswordForm}
 import models.User
 import models.services.UserService
+import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
+import org.apache.directory.api.ldap.model.password.PasswordUtil
 import play.api.Configuration
 import play.api.i18n.{Messages, MessagesApi}
 import services.LdapClient
@@ -55,9 +58,7 @@ class LdapController @Inject()(
         val passwordConfirm = data.passwordConfirm
         val uid = request.identity.loginInfo.providerKey
 
-        val optPasswordInfo = ldapClient.getPasswordInfo(uid)
-
-        if(optPasswordInfo.isEmpty || !optPasswordInfo.get.password.equals(passwordOld)){
+        if(!ldapClient.authUser(uid, passwordOld)){
           Future.successful(
             Redirect(routes.ApplicationController.password()).flashing("error" -> Messages("password.old.error"))
           )

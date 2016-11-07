@@ -19,14 +19,14 @@ class PasswordHasherSHA256 extends PasswordHasher{
 
   //TODO: Here might be an oversight. It seems to be to complicated.
   override def matches(passwordInfo: PasswordInfo, suppliedPassword: String): Boolean = {
-    val suppliedStoragePassword =  PasswordUtil.createStoragePassword(
+    val suppliedStoragePW =  PasswordUtil.createStoragePassword(
       suppliedPassword,
       LdapSecurityConstants.getAlgorithm(passwordInfo.hasher)
     )
 
-    val split = new String(PasswordUtil.splitCredentials(suppliedStoragePassword).getPassword,StandardCharsets.UTF_8)
-    val test = passwordInfo.password
+    val suppliedPW = new String(PasswordUtil.splitCredentials(suppliedStoragePW).getPassword,StandardCharsets.UTF_8)
+    val storedPW = passwordInfo.password
 
-    split.equals(test)
+    suppliedPW.equals(storedPW)
   }
 }
