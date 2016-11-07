@@ -47,7 +47,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[DelegableAuthInfoDAO[OpenIDInfo]].to[OpenIDInfoDAO]
     bind[CacheLayer].to[PlayCacheLayer]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
-    bind[PasswordHasher].toInstance(new PasswordHasherSHA256)
+    bind[PasswordHasher].toInstance(new PasswordHasherMD5)
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
@@ -204,7 +204,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     authInfoRepository: AuthInfoRepository,
     passwordHasher: PasswordHasher): CredentialsProvider = {
 
-    new CredentialsProvider(authInfoRepository, passwordHasher, Seq(passwordHasher, new PasswordHasherMD5))
+    new CredentialsProvider(authInfoRepository, passwordHasher, Seq(passwordHasher, new PasswordHasherSHA256))
   }
 
   /**

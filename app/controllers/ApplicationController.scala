@@ -74,7 +74,25 @@ class ApplicationController @Inject() (
     * @return The result to display.
     */
   def calendar = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wvg.io/login")))
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/calendar")))
+  }
+
+  /**
+    * Handles the files action.
+    *
+    * @return The result to display.
+    */
+  def files = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/files/")))
+  }
+
+  /**
+    * Handles the carsharing action.
+    *
+    * @return The result to display.
+    */
+  def carsharing = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/external/1")))
   }
 
   /**

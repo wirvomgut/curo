@@ -82,7 +82,7 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     PasswordUtil.compareCredentials(password.getBytes(StandardCharsets.UTF_8), contents.get("userPassword").getBytes)
   }
 
-  def modifyPassword(uid:String, pass:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_SHA256): Unit = {
+  def modifyPassword(uid:String, pass:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit = {
     val bytePassword = PasswordUtil.createStoragePassword(pass, hash)
     val mod = new DefaultModification(
       ModificationOperation.REPLACE_ATTRIBUTE,
@@ -105,7 +105,7 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def addUser(givenName:String, lastname:String, password:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_SHA256): Unit ={
+  def addUser(givenName:String, lastname:String, password:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit ={
     val uid = givenName.toLowerCase + lastname.toLowerCase
     val bytePassword = PasswordUtil.createStoragePassword(password, hash)
 
