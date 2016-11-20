@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
@@ -48,6 +48,18 @@ class ApplicationController @Inject() (
     */
   def password = SecuredAction.async { implicit request =>
     Future.successful(Ok(views.html.password(request.identity, PasswordForm.form)))
+  }
+
+  /**
+    * Handles the no password action.
+    *
+    * @return The result to display.
+    */
+  def nopassword(uid:String) = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case None => Future.successful(Ok(views.html.nopassword(NoPasswordForm.form, uid)))
+    }
   }
 
   /**
@@ -112,7 +124,7 @@ class ApplicationController @Inject() (
   def signIn = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.signIn(SignInForm.form, socialProviderRegistry)))
+      case None => Future.successful(Ok(views.html.signIn(SignInForm.form, request.headers.get("uid").getOrElse(""))))
     }
   }
 

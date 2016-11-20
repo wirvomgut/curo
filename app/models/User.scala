@@ -1,7 +1,10 @@
 package models
 
 import java.util.UUID
-import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
+
+import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
+
+import scala.reflect.io.Streamable.Bytes
 
 /**
  * The user object.
@@ -18,4 +21,5 @@ case class User(
   firstName: Option[String],
   lastName: Option[String],
   fullName: Option[String],
-  email: Option[String]) extends Identity
+  email: Option[String],
+  passwordHash:Option[String]) extends Identity

@@ -33,6 +33,7 @@ welcome.signed.in = Welcome, you are now signed in!
 
 sign.up.account = Neuen Benutzer erstellen
 sign.in.credentials = Bitte melde Dich an
+sign.in.no.password = Bitte erstelle ein Passwort.
 
 menu.home = Startseite
 
@@ -45,6 +46,7 @@ full.name = Name
 email = E-Mail
 username = Benutzername
 password = Passwort
+confirm = Bestätigen
 sign.up = Registrieren
 sign.in = Anmelden
 sign.out = Abmelden

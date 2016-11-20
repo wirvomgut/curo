@@ -46,7 +46,8 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
       firstName = contents.find(a => a.getUpId.equals("givenName")).map(a => a.getString),
       lastName  = contents.find(a => a.getUpId.equals("sn")).map(a => a.getString),
       fullName  = contents.find(a => a.getUpId.equals("cn")).map(a => a.getString),
-      email = contents.find(a => a.getUpId.equals("mail")).map(a => a.getString)
+      email = contents.find(a => a.getUpId.equals("mail")).map(a => a.getString),
+      passwordHash = contents.find(a => a.getUpId.equals("userPassword")).map(a => new String(a.getBytes, StandardCharsets.UTF_8))
     ))
   }
 
@@ -58,8 +59,13 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
       return None
     }
 
-    val pass = cursor.get().get("userPassword").getBytes
-    val cred = PasswordUtil.splitCredentials(pass)
+    val pass = cursor.get().asScala.find(a => a.getUpId.equals("userPassword")).map(a => a.getBytes)
+
+    if(pass.isEmpty){
+      return None
+    }
+
+    val cred = PasswordUtil.splitCredentials(pass.get)
 
     Option(
       PasswordInfo(
@@ -89,6 +95,11 @@ class LdapClient @Inject() (configuration: play.api.Configuration, lifecycle: Ap
       "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
     )
     connection.modify("uid=" + uid + "," + groupUsers, mod)
+  }
+
+  def hasPassword(uid:String): Boolean = {
+    val user = getUser(uid)
+    user.isDefined && user.get.passwordHash.isDefined
   }
 
   def modifyEmail(uid:String, newEmail:String): Unit = {

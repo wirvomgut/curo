@@ -7,6 +7,9 @@ GET         /                                controllers.ApplicationController.i
 GET         /profile                         controllers.ApplicationController.profile
 GET         /password                        controllers.ApplicationController.password
 GET         /password/change                 controllers.LdapController.password
+GET         /password/check                  controllers.LdapController.nopasswordcheck(uid:String)
+GET         /password/reset                  controllers.ApplicationController.nopassword(uid:String)
+GET         /password/reset/change           controllers.LdapController.nopassword
 GET         /email                           controllers.ApplicationController.email
 GET         /email/change                    controllers.LdapController.email
 GET         /directory                       controllers.ApplicationController.directory

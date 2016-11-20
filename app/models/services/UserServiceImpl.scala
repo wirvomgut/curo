@@ -6,7 +6,6 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
 import models.User
 import models.daos.UserDAO
-import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
 
@@ -42,22 +41,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @return The user for whom the profile was saved.
    */
   def save(profile: CommonSocialProfile) = {
-    userDAO.find(profile.loginInfo).flatMap {
-      case Some(user) => // Update user with profile
-        userDAO.save(user.copy(
-          firstName = profile.firstName,
-          lastName = profile.lastName,
-          fullName = profile.fullName,
-          email = profile.email
-        ))
-      case None => // Insert a new user
-        userDAO.save(User(
-          loginInfo = profile.loginInfo,
-          firstName = profile.firstName,
-          lastName = profile.lastName,
-          fullName = profile.fullName,
-          email = profile.email
-        ))
-    }
+    //TODO: this should throw an exception instead
+    userDAO.save(null)
   }
 }

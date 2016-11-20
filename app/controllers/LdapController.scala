@@ -1,20 +1,20 @@
 package controllers
 
-import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.Clock
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.{CredentialsProvider, SocialProviderRegistry}
-import forms.{EmailForm, PasswordForm}
+import forms.{EmailForm, NoPasswordForm, PasswordForm}
 import models.User
 import models.services.UserService
-import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
-import org.apache.directory.api.ldap.model.password.PasswordUtil
 import play.api.Configuration
+import play.api.Play.current
+import play.api.cache.Cache
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.Action
 import services.LdapClient
 
 import scala.concurrent.Future
@@ -72,6 +72,61 @@ class LdapController @Inject()(
           }else{
             Future.successful(
               Redirect(routes.ApplicationController.password()).flashing("error" -> Messages("password.new.error"))
+            )
+          }
+        }
+      }
+    )
+  }
+
+  /**
+    * Checks if users password is missing.
+    *
+    * @return The result to display.
+    */
+  def nopasswordcheck(uid:String) = Action.async { implicit request =>
+    if(uid.isEmpty || ldapClient.getUser(uid).isEmpty || ldapClient.hasPassword(uid)){
+      Future.successful(
+        Redirect(routes.ApplicationController.signIn())
+          .withHeaders("uid" -> uid)
+          .flashing("error" -> Messages("invalid.credentials"))
+      )
+    }else{
+      Future.successful(
+        Redirect(routes.ApplicationController.nopassword(uid))
+      )
+    }
+  }
+
+  /**
+    * Changes the missing users password if form data is correct.
+    *
+    * @return The result to display.
+    */
+  def nopassword = Action.async { implicit request =>
+    NoPasswordForm.form.bindFromRequest.fold(
+      form => {
+        Future.successful(BadRequest(views.html.nopassword(form, form.data.getOrElse("uid", ""))))
+      },
+      data => {
+        val uid = data.uid
+        if(ldapClient.hasPassword(uid)){
+          Future.successful(
+            Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("invalid.credentials"))
+          )
+        }else{
+          val passwordNew = data.passwordNew
+          val passwordConfirm = data.passwordConfirm
+
+          if(passwordNew.equals(passwordConfirm) && !passwordNew.isEmpty){
+            ldapClient.modifyPassword(uid, passwordNew)
+
+            Future.successful(
+              Redirect(routes.ApplicationController.signIn()).flashing("success" -> Messages("password.save.success"))
+            )
+          }else{
+            Future.successful(
+              Redirect(routes.ApplicationController.nopassword(uid)).flashing("error" -> Messages("password.new.error"))
             )
           }
         }
