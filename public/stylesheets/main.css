@@ -1,12 +1,13 @@
-body > .grid {
+.login-page {
   height: 100%;
 }
 .login-column {
   max-width: 450px;
+  margin: 20px;
 }
 
-#menu-spacer {
-  padding-top: 20px;
+.menu-spacer {
+  padding-top: 50px;
 }
 
 #profile-table {
@@ -15,8 +16,8 @@ body > .grid {
 
 .fullpage {
   width: 100%;
-  height: 100%;
-  border:none;
+  height: calc(100% - 50px);;
+  border: none;
   seamless='seamless';
 }
 
