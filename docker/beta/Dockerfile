@@ -8,6 +8,7 @@ RUN apk add --update bash git \
     && mv /curo-dev/target/universal/stage /curo \
     && mv /curo-dev/docker/entry.sh /entry.sh \
     && rm -R /curo-dev \
+    && mkdir /conf \
     && apk del git \
     && rm -rf /var/cache/apk/*
 
