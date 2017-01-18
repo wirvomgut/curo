@@ -1,0 +1,10 @@
+dn: uid=test,ou=users,dc=example,dc=org
+cn: Test Tester
+givenname: Test
+mail: test@example.org
+objectclass: top
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: organizationalPerson
+sn: Tester
+uid: test
