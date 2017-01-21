@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.util.PasswordInfo
 import models.User
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
-import org.apache.directory.api.ldap.model.entry.{DefaultEntry, DefaultModification, ModificationOperation}
+import org.apache.directory.api.ldap.model.entry._
 import org.apache.directory.api.ldap.model.message.SearchScope
 import org.apache.directory.api.ldap.model.password.PasswordUtil
 import org.apache.directory.ldap.client.api.LdapNetworkConnection
@@ -16,6 +16,7 @@ import play.api.inject.ApplicationLifecycle
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
+import scala.util.Try
 
 /**
   * @author julianliebl 
@@ -33,23 +34,32 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
 
 
   def getUser(uid:String):Option[User] = {
-    val cursor:EntryCursor = connection
+    connection
       .search( "uid=" + uid + "," + groupUsers , "(objectclass=person)", SearchScope.OBJECT)
+      .asScala
+      .toSeq
+      .headOption
+      .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
+  }
 
-    if(!cursor.next()){
-      return None
-    }
+  def getUsers():Seq[User] = {
+    connection
+      .search(groupUsers , "(objectclass=person)", SearchScope.ONELEVEL)
+      .asScala
+      .toSeq
+      .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
+  }
 
-    val contents = cursor.get().asScala
-
-    Option(User(
-      loginInfo = LoginInfo(providerID = "LDAP", providerKey = uid),
-      firstName = contents.find(a => a.getUpId.equals("givenName")).map(a => a.getString),
-      lastName  = contents.find(a => a.getUpId.equals("sn")).map(a => a.getString),
-      fullName  = contents.find(a => a.getUpId.equals("cn")).map(a => a.getString),
-      email = contents.find(a => a.getUpId.equals("mail")).map(a => a.getString),
-      passwordHash = contents.find(a => a.getUpId.equals("userPassword")).map(a => new String(a.getBytes, StandardCharsets.UTF_8))
-    ))
+  private def parseUser(attributes: Seq[Attribute]): Option[User] ={
+    Try(User(
+      loginInfo = LoginInfo(providerID = "LDAP", providerKey = attributes.find(_.getUpId == "uid").map(_.getString).get),
+      firstName = attributes.find(_.getUpId == "givenName").map(_.getString),
+      lastName = attributes.find(_.getUpId == "sn").map(_.getString),
+      fullName = attributes.find(_.getUpId == "cn").map(_.getString),
+      email = attributes.find(_.getUpId == "mail").map(_.getString),
+      phone = attributes.find(_.getUpId == "homePhone").map(_.getString),
+      passwordHash = attributes.find(_.getUpId == "userPassword").map(a => new String(a.getBytes, StandardCharsets.UTF_8))
+    )).toOption
   }
 
   def getPasswordInfo(uid:String):Option[PasswordInfo] = {
@@ -103,13 +113,25 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     user.isDefined && user.get.passwordHash.isDefined
   }
 
-  def modifyEmail(uid:String, newEmail:String): Unit = {
-    val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, "mail", newEmail)
-    connection.modify("uid=" + uid + "," + groupUsers, mod)
-  }
-
   def addMail(uid:String, mail:String): Unit ={
     addAttribute(uid, "mail", mail)
+  }
+
+  def modifyMail(uid:String, mail:String): Unit ={
+    modifyAttribute(uid, "mail", mail)
+  }
+
+  def addPhone(uid:String, phone:String): Unit ={
+    addAttribute(uid, "homePhone", phone)
+  }
+
+  def modifyPhone(uid:String, phone:String): Unit ={
+    modifyAttribute(uid, "homePhone", phone)
+  }
+
+  def modifyAttribute(uid:String, key: String, value:String): Unit = {
+    val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, key, value)
+    connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
   def addAttribute(uid:String, key:String, value:String): Unit ={

@@ -5,10 +5,27 @@
 @mainLayout(Messages("home.title")) {
     @mainMenu(Option(user))
 
-    <div class="ui text container" id="menu-spacer">
+    <div class="ui text menu-spacer container">
         <div class="ui grid">
             <div class="six teen wide column">
-
+                <table class="ui very basic selectable table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>E-Mail</th>
+                        <th>Telefon</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for(user <- users) {
+                        <tr>
+                            <td>@user.fullName</td>
+                            <td>@user.email</td>
+                            <td>@user.phone</td>
+                        </tr>
+                    }
+                    </tbody>
+                </div>
             </div>
         </div>
     </div>

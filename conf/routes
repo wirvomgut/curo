@@ -12,6 +12,8 @@ GET         /password/reset                  controllers.ApplicationController.n
 GET         /password/reset/change           controllers.LdapController.nopassword
 GET         /email                           controllers.ApplicationController.email
 GET         /email/change                    controllers.LdapController.email
+GET         /phone                           controllers.ApplicationController.phone
+GET         /phone/change                    controllers.LdapController.phone
 GET         /directory                       controllers.ApplicationController.directory
 GET         /files                           controllers.ApplicationController.files
 GET         /carsharing                      controllers.ApplicationController.carsharing

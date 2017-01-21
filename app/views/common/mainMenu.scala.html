@@ -22,9 +22,9 @@
     <a class='@activeLink("/") item' href="/"><i class="home icon"></i>@Messages("menu.home")</a>
     <a class='@activeLink("/files") item' href="/files"><i class="file icon"></i>@Messages("apps.files")</a>
     <a class='@activeLink("/calendar") item' href="/calendar"><i class="calendar icon"></i>@Messages("apps.calendar")</a>
+    <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
     <a class='@activeLink("/carsharing") item' href="/carsharing"><i class="car icon"></i>@Messages("apps.carsharing")</a>
 </div>
-
 
 <div class="ui container menu-spacer">
     <div class="ui large top fixed secondary pointing menu">
@@ -35,7 +35,14 @@
         <a class='@activeLink("/") item' href="/"><i class="home icon"></i>@Messages("menu.home")</a>
         <a class='@activeLink("/files") item' href="/files"><i class="file icon"></i>@Messages("apps.files")</a>
         <a class='@activeLink("/calendar") item' href="/calendar"><i class="calendar icon"></i>@Messages("apps.calendar")</a>
-        <a class='@activeLink("/carsharing") item' href="/carsharing"><i class="car icon"></i>@Messages("apps.carsharing")</a>
+        <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
+
+        <div class="ui dropdown item">
+            <i class="caret down icon"></i>@Messages("menu.more")
+            <div class="menu">
+                <a class='@activeLink("/carsharing") item' href="/carsharing"><i class="car icon"></i>@Messages("apps.carsharing")</a>
+            </div>
+        </div>
 
         <div class="right item">
             @user.map { u =>
@@ -45,3 +52,10 @@
         </div>
     </div>
 </div>
+
+
+<script>
+$('.ui.dropdown')
+ .dropdown()
+;
+</script>

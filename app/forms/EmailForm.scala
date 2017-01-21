@@ -4,7 +4,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 /**
- * The form which handles the change of passwords.
+ * The form which handles the change of the e-mail.
  */
 object EmailForm {
 

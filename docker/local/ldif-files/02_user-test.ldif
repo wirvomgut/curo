@@ -8,3 +8,14 @@ objectclass: person
 objectclass: organizationalPerson
 sn: Tester
 uid: test
+
+dn: uid=hans,ou=users,dc=example,dc=org
+cn: Hans Müller
+givenname: Hans
+mail: test@example.org
+objectclass: top
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: organizationalPerson
+sn: Müller
+uid: hans

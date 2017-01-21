@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.api.util.Clock
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.{CredentialsProvider, SocialProviderRegistry}
-import forms.{EmailForm, NoPasswordForm, PasswordForm}
+import forms.{EmailForm, NoPasswordForm, PasswordForm, PhoneForm}
 import models.User
 import models.services.UserService
 import play.api.Configuration
@@ -145,10 +145,30 @@ class LdapController @Inject()(
         BadRequest(views.html.email(request.identity, form))
       ),
       data => {
-        ldapClient.modifyEmail(request.identity.loginInfo.providerKey, data.emailNew)
+        ldapClient.modifyMail(request.identity.loginInfo.providerKey, data.emailNew)
 
         Future.successful(
           Redirect(routes.ApplicationController.email()).flashing("success" -> Messages("email.save.success"))
+        )
+      }
+    )
+  }
+
+  /**
+    * Changes the users email if form data is correct.
+    *
+    * @return The result to display.
+    */
+  def phone = SecuredAction.async { implicit request =>
+    PhoneForm.form.bindFromRequest.fold(
+      form => Future.successful(
+        BadRequest(views.html.phone(request.identity, form))
+      ),
+      data => {
+        ldapClient.modifyPhone(request.identity.loginInfo.providerKey, data.phoneNew)
+
+        Future.successful(
+          Redirect(routes.ApplicationController.phone()).flashing("success" -> Messages("phone.save.success"))
         )
       }
     )

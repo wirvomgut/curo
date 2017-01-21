@@ -7,7 +7,9 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
+import play.api.Configuration
 import play.api.i18n.MessagesApi
+import services.LdapClient
 
 import scala.concurrent.Future
 
@@ -18,7 +20,9 @@ import scala.concurrent.Future
  * @param env The Silhouette environment.
  */
 class ApplicationController @Inject() (
+  val ldapClient: LdapClient,
   val messagesApi: MessagesApi,
+  val configuration: Configuration,
   val socialProviderRegistry: SocialProviderRegistry,
   val env: Environment[User, CookieAuthenticator])
   extends Silhouette[User, CookieAuthenticator] {
@@ -72,12 +76,21 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the phone number action.
+    *
+    * @return The result to display.
+    */
+  def phone = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.phone(request.identity, PhoneForm.form)))
+  }
+
+  /**
     * Handles the directory action.
     *
     * @return The result to display.
     */
   def directory = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.directory(request.identity, Seq())))
+    Future.successful(Ok(views.html.directory(request.identity, ldapClient.getUsers())))
   }
 
   /**
@@ -94,6 +107,7 @@ class ApplicationController @Inject() (
     *
     * @return The result to display.
     */
+  val nextcloudUrl: String = configuration.getString("nextcloud.url").getOrElse("http://localhost")
   def files = SecuredAction.async { implicit request =>
     Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/files/")))
   }

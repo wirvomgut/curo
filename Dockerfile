@@ -1,4 +1,4 @@
-from openjdk:8u92-jdk-alpine
+FROM openjdk:8u92-jdk-alpine
 
 RUN apk add --update bash git \
     && git clone https://github.com/wirvomgut/curo.git /curo-dev \
@@ -8,6 +8,7 @@ RUN apk add --update bash git \
     && mv /curo-dev/target/universal/stage /curo \
     && mv /curo-dev/docker/entry.sh /entry.sh \
     && rm -R /curo-dev \
+    && mkdir /conf \
     && apk del git \
     && rm -rf /var/cache/apk/*
 

@@ -6,21 +6,25 @@
     @mainMenu(Option(user))
 
     <div class="ui text menu-spacer container">
-        <div class="ui grid">
+        <div class="ui stackable grid">
             <div class="six wide column">
                 @sideMenu()(request, messages)
             </div>
             <div class="ten wide column">
                 <h2 class="ui header">@Messages("profile.title")</h2>
-                <table class="ui definition table" id="profile-table">
+                <table class="ui very basic table" id="profile-table">
                     <tbody>
                     <tr>
-                        <td>@Messages("full.name"):</td>
+                        <td>@Messages("full.name")</td>
                         <td class="right aligned">@user.fullName.getOrElse("None")</td>
                     </tr>
                     <tr>
-                        <td>@Messages("email"):</td>
+                        <td>@Messages("email")</td>
                         <td class="right aligned">@user.email.getOrElse("None")</td>
+                    </tr>
+                    <tr>
+                        <td>@Messages("phone")</td>
+                        <td class="right aligned">@user.phone.getOrElse("None")</td>
                     </tr>
                     </tbody>
                 </table>

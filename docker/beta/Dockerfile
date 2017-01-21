@@ -1,4 +1,4 @@
-from openjdk:8u92-jdk-alpine
+FROM openjdk:8u92-jdk-alpine
 
 RUN apk add --update bash git \
     && git clone -b develop https://github.com/wirvomgut/curo.git /curo-dev \
