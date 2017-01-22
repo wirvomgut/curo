@@ -48,6 +48,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
       .asScala
       .toSeq
       .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
+      .sortBy(_.loginInfo.providerKey)
   }
 
   private def parseUser(attributes: Seq[Attribute]): Option[User] ={
