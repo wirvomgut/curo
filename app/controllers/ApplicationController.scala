@@ -99,7 +99,7 @@ class ApplicationController @Inject() (
     * @return The result to display.
     */
   def calendar = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/calendar")))
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/index.php/apps/calendar")))
   }
 
   /**
@@ -109,7 +109,7 @@ class ApplicationController @Inject() (
     */
   val nextcloudUrl: String = configuration.getString("nextcloud.url").getOrElse("http://localhost")
   def files = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/files/")))
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/index.php/apps/files/")))
   }
 
   /**
@@ -118,7 +118,7 @@ class ApplicationController @Inject() (
     * @return The result to display.
     */
   def carsharing = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/external/1")))
+    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/index.php/apps/external/1")))
   }
 
   /**
