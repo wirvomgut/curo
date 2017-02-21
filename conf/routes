@@ -18,6 +18,7 @@ GET         /directory                       controllers.ApplicationController.d
 GET         /files                           controllers.ApplicationController.files
 GET         /carsharing                      controllers.ApplicationController.carsharing
 GET         /calendar                        controllers.ApplicationController.calendar
+GET         /forum                           controllers.ApplicationController.forum
 GET         /chat                            controllers.ApplicationController.chat
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signOut                         controllers.ApplicationController.signOut

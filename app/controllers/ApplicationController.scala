@@ -122,6 +122,15 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the forum action.
+    *
+    * @return The result to display.
+    */
+  def forum = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, "https://forum.wirvomgut.de/")))
+  }
+
+  /**
     * Handles the chat action.
     *
     * @return The result to display.
