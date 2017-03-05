@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 rm /curo/RUNNING_PID
 rm -R /curo/db

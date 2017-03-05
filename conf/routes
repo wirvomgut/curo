@@ -19,6 +19,9 @@ GET         /files                           controllers.ApplicationController.f
 GET         /carsharing                      controllers.ApplicationController.carsharing
 GET         /calendar                        controllers.ApplicationController.calendar
 GET         /chat                            controllers.ApplicationController.chat
+GET         /forum                           controllers.ApplicationController.forum
+GET         /kanban                          controllers.ApplicationController.kanban(path = "")
+GET         /kanban/$path<.*>                controllers.ApplicationController.kanban(path)
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signOut                         controllers.ApplicationController.signOut
 GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
