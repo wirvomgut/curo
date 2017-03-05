@@ -13,6 +13,7 @@ import services.LdapClient
 
 import scala.concurrent.Future
 
+
 /**
  * The basic application controller.
  *
@@ -93,23 +94,27 @@ class ApplicationController @Inject() (
     Future.successful(Ok(views.html.directory(request.identity, ldapClient.getUsers())))
   }
 
-  /**
-    * Handles the calendar action.
-    *
-    * @return The result to display.
-    */
-  def calendar = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/calendar")))
-  }
+  val protocol: String = configuration.getString("curo.protocol").get
+  val nextcloudUrl: String = configuration.getString("app.nextcloud.url").get
 
   /**
     * Handles the files action.
     *
     * @return The result to display.
     */
-  val nextcloudUrl: String = configuration.getString("nextcloud.url").getOrElse("http://localhost")
+  val nextcloudFilesPath: String = configuration.getString("app.nextcloud.files.path").get
   def files = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/files/")))
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudFilesPath)))
+  }
+
+  /**
+    * Handles the calendar action.
+    *
+    * @return The result to display.
+    */
+  val nextcloudCalendarPath: String = configuration.getString("app.nextcloud.calendar.path").get
+  def calendar = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudCalendarPath)))
   }
 
   /**
@@ -117,8 +122,29 @@ class ApplicationController @Inject() (
     *
     * @return The result to display.
     */
+  val nextcloudCarSharingPath: String = configuration.getString("app.nextcloud.carsharing.path").get
   def carsharing = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://cloud.wirvomgut.de/apps/external/1")))
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudCarSharingPath)))
+  }
+
+  /**
+    * Handles the forum action.
+    *
+    * @return The result to display.
+    */
+  val forumUrl: String = configuration.getString("app.discourse.url").get
+  def forum = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + forumUrl)))
+  }
+
+  /**
+    * Handles the kanban action.
+    *
+    * @return The result to display.
+    */
+  val kanbanUrl: String = configuration.getString("app.kanboard.url").get
+  def kanban(path:String = "") = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + kanbanUrl)))
   }
 
   /**
@@ -126,8 +152,9 @@ class ApplicationController @Inject() (
     *
     * @return The result to display.
     */
+  val chatUrl: String = configuration.getString("app.rocketchat.url").get
   def chat = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.iframe(request.identity, "https://chat.wvg.io")))
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + chatUrl)))
   }
 
   /**
