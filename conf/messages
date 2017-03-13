@@ -79,6 +79,8 @@ yahoo = Yahoo
 
 apps.calendar = Kalender
 apps.chat = Chat
+apps.forum = Grünes Brett
+apps.kanban = Kanban
 apps.files = Dateien
-apps.directory = Telefonbuch
+apps.directory = Mitglieder
 apps.carsharing = Mitfahrzentrale

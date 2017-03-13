@@ -1,3 +1,5 @@
+@import models.config.Links
+
 @(user: Option[models.User] = None)(implicit request: RequestHeader, messages: Messages)
 
 @activeLink(currentPath:String) = @{
@@ -23,6 +25,9 @@
     <a class='@activeLink("/files") item' href="/files"><i class="file icon"></i>@Messages("apps.files")</a>
     <a class='@activeLink("/calendar") item' href="/calendar"><i class="calendar icon"></i>@Messages("apps.calendar")</a>
     <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
+    <a class='@activeLink("/forum") item' href="@Links.forum.url" target="@Links.forum.target"><i class="book icon"></i>@Messages("apps.forum")</a>
+    <a class='@activeLink("/kanban") item' href="/kanban"><i class="columns icon"></i>@Messages("apps.kanban")</a>
+    <!--<a class='@activeLink("/chat") item' href="/chat"><i class="chat icon"></i>@Messages("apps.chat")</a>-->
     <a class='@activeLink("/carsharing") item' href="/carsharing"><i class="car icon"></i>@Messages("apps.carsharing")</a>
 </div>
 
@@ -36,10 +41,13 @@
         <a class='@activeLink("/files") item' href="/files"><i class="file icon"></i>@Messages("apps.files")</a>
         <a class='@activeLink("/calendar") item' href="/calendar"><i class="calendar icon"></i>@Messages("apps.calendar")</a>
         <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
+        <a class='@activeLink("/forum") item' href="@Links.forum.url" target="@Links.forum.target"><i class="book icon"></i>@Messages("apps.forum")</a>
 
         <div class="ui dropdown item">
             <i class="caret down icon"></i>@Messages("menu.more")
             <div class="menu">
+                <a class='@activeLink("/kanban") item' href="/kanban"><i class="columns icon"></i>@Messages("apps.kanban")</a>
+                <!--<a class='@activeLink("/chat") item' href="/chat"><i class="chat icon"></i>@Messages("apps.chat")</a>-->
                 <a class='@activeLink("/carsharing") item' href="/carsharing"><i class="car icon"></i>@Messages("apps.carsharing")</a>
             </div>
         </div>
