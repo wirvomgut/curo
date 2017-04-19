@@ -17,16 +17,22 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
+
 //********************************************************
 // Java - Scala
 //********************************************************
 libraryDependencies ++= Seq(
+  "org.scalikejdbc" %% "scalikejdbc"                    % "2.5.0",
+  "org.scalikejdbc" %% "scalikejdbc-config"             % "2.5.0",
+  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.4.2",
   "org.apache.directory.api" % "api-all" % "1.0.0-RC1",
   "com.mohiva" %% "play-silhouette" % "3.0.0",
   "net.codingwell" %% "scala-guice" % "4.0.0",
   "net.ceedubs" %% "ficus" % "1.1.2",
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
+  "org.scalikejdbc" %% "scalikejdbc-test"   % "2.5.0"   % "test",
   specs2 % Test,
   cache,
   filters,
