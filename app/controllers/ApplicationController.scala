@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
+import models.coin.Person
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import services.LdapClient
@@ -135,6 +136,18 @@ class ApplicationController @Inject() (
   val forumUrl: String = configuration.getString("app.discourse.url").get
   def forum = SecuredAction.async { implicit request =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + forumUrl)))
+  }
+
+  /**
+    * Handles the coin system action.
+    *
+    * @return The result to display.
+    */
+  def coin = SecuredAction.async { implicit request =>
+    val person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
+    val workEntries = Person.findWorkEntries(person.id)
+
+    Future.successful(Ok(views.html.coinsystem(request.identity, workEntries, CoinAddForm.form)))
   }
 
   /**

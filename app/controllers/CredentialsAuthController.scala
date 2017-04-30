@@ -50,7 +50,8 @@ class CredentialsAuthController @Inject() (
     */
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.signIn(form))),
+      form => {
+        Future.successful(BadRequest(views.html.signIn(form, form.value.map(_.username).getOrElse(""))))},
       data => {
         val credentials = Credentials(data.username, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>

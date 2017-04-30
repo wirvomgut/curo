@@ -84,3 +84,11 @@ apps.kanban = Kanban
 apps.files = Dateien
 apps.directory = Mitglieder
 apps.carsharing = Mitfahrzentrale
+
+coin.submit = Hinzufügen
+coin.select = Bitte auswählen
+coin.label.area = Wo
+coin.label.desc = Beschreibung
+coin.label.time = Zeit
+coin.label.coin = Coin
+coin.label.date = Datum

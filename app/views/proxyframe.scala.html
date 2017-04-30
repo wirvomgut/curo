@@ -1,0 +1,11 @@
+@import common._
+
+@(user: models.User, html: Html)(implicit request: RequestHeader, messages: Messages)
+
+@mainLayout(Messages("home.title")) {
+    @mainMenu(Option(user))
+
+    <div class="ui container">
+        @html
+    </div>
+}

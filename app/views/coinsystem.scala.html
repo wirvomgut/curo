@@ -1,0 +1,77 @@
+@import common._
+@import forms.common.SemanticForms._
+@import forms.CoinAddForm
+@import models.coin.WorkEntry
+
+@(user: models.User, workEntries: Seq[WorkEntry], coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
+
+
+@mainLayout(title = Messages("home.title"), head = Html("""
+<script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
+<link rel="stylesheet" href="/assets/lib/semantic-ui-calendar/dist/calendar.min.css" />
+""")) {
+    @mainMenu(Option(user))
+
+    <div class="ui container menu-spacer">
+        @helper.form(action = routes.CoinController.add(), 'class -> "ui form" ) {
+        @helper.CSRF.formField
+            <div class="four fields">
+                @helper.inputText(coinAddForm("area"), '_label -> Messages("coin.label.area"), 'placeholder -> "Herrenhaus / Scheune / Remise")
+                @helper.select(
+                    field = coinAddForm("time"),
+                    options = CoinAddForm.timeValues,
+                    'class -> "ui fluid dropdown",
+                    '_label -> Messages("coin.label.time"),
+                    '_default -> Messages("coin.select")
+                )
+                @helper.select(
+                    field = coinAddForm("coin"),
+                    options = CoinAddForm.coinValues,
+                    'class -> "ui fluid dropdown",
+                    '_label -> Messages("coin.label.coin"),
+                    '_default -> Messages("coin.select")
+                )
+                @helper.inputDate(field = coinAddForm("date"), 'size -> 10, '_label -> Messages("coin.label.date"))
+            </div>
+            @helper.inputText(coinAddForm("description"), '_label -> Messages("coin.label.desc"), 'placeholder -> "Klo putzen etc.")
+
+            <button id="submit" type="submit" value="submit" class="ui icon button">
+                <i class="plus icon"></i>
+                @Messages("coin.submit")
+            </button>
+        }
+
+        @if(workEntries.nonEmpty) {
+        <table class="ui compact unstackable table">
+            <thead>
+            <tr>
+                <th class="collapsing">@Messages("coin.label.area")</th>
+                <th>@Messages("coin.label.desc")</th>
+                <th class="collapsing">@Messages("coin.label.time")</th>
+                <th class="collapsing">@Messages("coin.label.coin")</th>
+                <th class="collapsing">@Messages("coin.label.date")</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(workEntry <- workEntries) {
+            <tr>
+                <td class="collapsing">@workEntry.area</td>
+                <td>@workEntry.description</td>
+                <td class="collapsing">@workEntry.timeSpent</td>
+                <td class="collapsing">@workEntry.coins</td>
+                <td class="collapsing">@workEntry.dateDone.toString("dd.MM.yyyy", lang.toLocale)</td>
+                <td class="collapsing">
+                    <a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+        }
+    </div>
+
+    <script>
+        $('.ui.dropdown').dropdown();
+    </script>
+}
