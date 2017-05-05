@@ -19,7 +19,7 @@ class WorkEntrySpec extends PlaySpecification with Matchers {
 
       val workEntry = WorkEntry.findById(id).get
 
-      workEntry.personId === "dummyPersonId"
+      workEntry.personId === 1l
       workEntry.area === "dummyArea"
     }
     "create a work entry with the same data" in new WithApplication() {

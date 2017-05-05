@@ -15,8 +15,23 @@
     <div class="ui container menu-spacer">
         @helper.form(action = routes.CoinController.add(), 'class -> "ui form" ) {
         @helper.CSRF.formField
-            <div class="four fields">
-                @helper.inputText(coinAddForm("area"), '_label -> Messages("coin.label.area"), 'placeholder -> "Herrenhaus / Scheune / Remise")
+            <div class="two fields">
+                @helper.select(
+                    field = coinAddForm("area"),
+                    options = CoinAddForm.areaValues,
+                    'class -> "ui fluid dropdown",
+                    '_label -> Messages("coin.label.area"),
+                    '_default -> Messages("coin.select")
+                )
+                @helper.select(
+                    field = coinAddForm("task"),
+                    options = CoinAddForm.taskValues,
+                    'class -> "ui fluid dropdown",
+                    '_label -> Messages("coin.label.task"),
+                    '_default -> Messages("coin.select")
+                )
+            </div>
+            <div class="three fields">
                 @helper.select(
                     field = coinAddForm("time"),
                     options = CoinAddForm.timeValues,
@@ -31,7 +46,12 @@
                     '_label -> Messages("coin.label.coin"),
                     '_default -> Messages("coin.select")
                 )
-                @helper.inputDate(field = coinAddForm("date"), 'size -> 10, '_label -> Messages("coin.label.date"))
+                @helper.input(coinAddForm("date"), '_label -> Messages("coin.label.date"), 'placeholder -> Messages("coin.select")) { (id, name, value, args) =>
+                <div class="ui calendar left icon input" id="datePicker">
+                    <i class="calendar icon"></i>
+                    <input type="text" name="@name" id="@id" value="@value" @toHtmlArgs(args)>
+                </div>
+                }
             </div>
             @helper.inputText(coinAddForm("description"), '_label -> Messages("coin.label.desc"), 'placeholder -> "Klo putzen etc.")
 
@@ -46,6 +66,7 @@
             <thead>
             <tr>
                 <th class="collapsing">@Messages("coin.label.area")</th>
+                <th class="collapsing">@Messages("coin.label.task")</th>
                 <th>@Messages("coin.label.desc")</th>
                 <th class="collapsing">@Messages("coin.label.time")</th>
                 <th class="collapsing">@Messages("coin.label.coin")</th>
@@ -57,6 +78,7 @@
             @for(workEntry <- workEntries) {
             <tr>
                 <td class="collapsing">@workEntry.area</td>
+                <td class="collapsing">@workEntry.task</td>
                 <td>@workEntry.description</td>
                 <td class="collapsing">@workEntry.timeSpent</td>
                 <td class="collapsing">@workEntry.coins</td>
@@ -73,5 +95,24 @@
 
     <script>
         $('.ui.dropdown').dropdown();
+        $('#datePicker').calendar({
+          type: 'date',
+          monthFirst: false,
+          popupOptions: {
+              position: 'bottom center',
+              lastResort: 'bottom center',
+              prefer: 'opposite',
+              hideOnScroll: false
+            },
+          formatter: {
+            date: function (date, settings) {
+              if (!date) return '';
+              var day = ("0" + date.getDate()).slice(-2);
+              var month = ("0" + (date.getMonth() + 1)).slice(-2);
+              var year = date.getFullYear();
+              return day + '.' + month + '.' + year;
+            }
+          }
+        });
     </script>
 }

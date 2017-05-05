@@ -11,6 +11,7 @@ object WorkEntryTestUtil {
     id = 1,
     personId = 1,
     area = "dummyArea",
+    task = "dummyTask",
     description = "",
     timeSpent = 0,
     coins = 0,
@@ -21,6 +22,7 @@ object WorkEntryTestUtil {
     createDummyWorkEntry(
       workEntry.personId,
       workEntry.area,
+      workEntry.task,
       workEntry.description,
       workEntry.timeSpent,
       workEntry.coins,
@@ -30,12 +32,14 @@ object WorkEntryTestUtil {
 
   def createDummyWorkEntry(personId: Long = dummyWorkEntry.personId,
                            area: String = dummyWorkEntry.area,
+                           task: String = dummyWorkEntry.task,
                            description: String = dummyWorkEntry.description,
                            timeSpent: Long = dummyWorkEntry.timeSpent,
                            coins: Int = dummyWorkEntry.coins,
                            dateDone: DateTime = dummyWorkEntry.dateDone): Long = WorkEntry.create(
     personId,
     area,
+    task,
     description,
     timeSpent,
     coins,

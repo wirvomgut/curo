@@ -5,7 +5,7 @@ import models.coin.WorkEntry.WorkEntryId
 import org.joda.time.DateTime
 import scalikejdbc._
 
-case class WorkEntry(id: WorkEntryId, personId: PersonId, area: String, description: String, timeSpent: Long, coins: Int, dateDone: DateTime)
+case class WorkEntry(id: WorkEntryId, personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Int, dateDone: DateTime)
 
 object WorkEntry extends SQLSyntaxSupport[WorkEntry]{
   override val tableName = "work_entries"
@@ -15,11 +15,12 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry]{
   val w: scalikejdbc.QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[WorkEntry], WorkEntry] = WorkEntry.syntax
   val wc: scalikejdbc.ColumnName[WorkEntry] = WorkEntry.column
 
-  def create(personId: PersonId, area: String, description: String, timeSpent: Long, coins: Int, dateDone:DateTime)(implicit s: DBSession = AutoSession): Long = {
+  def create(personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Int, dateDone:DateTime)(implicit s: DBSession = AutoSession): Long = {
     withSQL {
       insert.into(WorkEntry).namedValues(
         wc.personId -> personId,
         wc.area -> area,
+        wc.task -> task,
         wc.description -> description,
         wc.timeSpent -> timeSpent,
         wc.coins -> coins,
@@ -45,6 +46,6 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry]{
   }
 
   def apply(r: ResultName[WorkEntry])(rs: WrappedResultSet): WorkEntry = {
-    new WorkEntry(rs.long(r.id), rs.long(r.personId), rs.string(r.area), rs.string(r.description), rs.long(r.timeSpent), rs.int(r.coins), rs.jodaDateTime(r.dateDone))
+    new WorkEntry(rs.long(r.id), rs.long(r.personId), rs.string(r.area), rs.string(r.task), rs.string(r.description), rs.long(r.timeSpent), rs.int(r.coins), rs.jodaDateTime(r.dateDone))
   }
 }

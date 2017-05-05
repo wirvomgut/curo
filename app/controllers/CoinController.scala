@@ -30,7 +30,7 @@ class CoinController @Inject() (
       },
       data => {
         val person: Person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
-        WorkEntry.create(person.id, data.area, data.description, data.time, data.coin, data.date)
+        WorkEntry.create(person.id, data.area, data.task, data.description, data.time, data.coin, data.date)
         Future.successful(Redirect(routes.ApplicationController.coin()))
       }
     )
