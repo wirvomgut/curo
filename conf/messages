@@ -94,3 +94,8 @@ coin.label.desc = Beschreibung
 coin.label.time = Zeit
 coin.label.coin = Coin
 coin.label.date = Datum
+coin.delete.yes = Ja
+coin.delete.no = Nein
+coin.delete.title = Löschen
+coin.delete.message = Möchtest du den Eintrag wirklich löschen?
+

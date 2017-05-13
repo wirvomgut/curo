@@ -1,67 +1,41 @@
-@import common._
-@import forms.common.SemanticForms._
 @import forms.CoinAddForm
 @import models.coin.WorkEntry
 
 @(user: models.User, workEntries: Seq[WorkEntry], coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
 
 
-@mainLayout(title = Messages("home.title"), head = Html("""
+@common.mainLayout(title = Messages("home.title"), head = Html("""
 <script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
 <link rel="stylesheet" href="/assets/lib/semantic-ui-calendar/dist/calendar.min.css" />
 """)) {
-    @mainMenu(Option(user))
+    @common.mainMenu(Option(user))
 
     <div class="ui container menu-spacer">
-        @helper.form(action = routes.CoinController.add(), 'class -> "ui form" ) {
-        @helper.CSRF.formField
-            <div class="two fields">
-                @helper.select(
-                    field = coinAddForm("area"),
-                    options = CoinAddForm.areaValues,
-                    'class -> "ui fluid dropdown",
-                    '_label -> Messages("coin.label.area"),
-                    '_default -> Messages("coin.select")
-                )
-                @helper.select(
-                    field = coinAddForm("task"),
-                    options = CoinAddForm.taskValues,
-                    'class -> "ui fluid dropdown",
-                    '_label -> Messages("coin.label.task"),
-                    '_default -> Messages("coin.select")
-                )
-            </div>
-            <div class="three fields">
-                @helper.select(
-                    field = coinAddForm("time"),
-                    options = CoinAddForm.timeValues,
-                    'class -> "ui fluid dropdown",
-                    '_label -> Messages("coin.label.time"),
-                    '_default -> Messages("coin.select")
-                )
-                @helper.select(
-                    field = coinAddForm("coin"),
-                    options = CoinAddForm.coinValues,
-                    'class -> "ui fluid dropdown",
-                    '_label -> Messages("coin.label.coin"),
-                    '_default -> Messages("coin.select")
-                )
-                @helper.input(coinAddForm("date"), '_label -> Messages("coin.label.date"), 'placeholder -> Messages("coin.select")) { (id, name, value, args) =>
-                <div class="ui calendar left icon input" id="datePicker">
-                    <i class="calendar icon"></i>
-                    <input type="text" name="@name" id="@id" value="@value" @toHtmlArgs(args)>
-                </div>
-                }
-            </div>
-            @helper.inputText(coinAddForm("description"), '_label -> Messages("coin.label.desc"), 'placeholder -> "Klo putzen etc.")
-
-            <button id="submit" type="submit" value="submit" class="ui icon button">
-                <i class="plus icon"></i>
-                @Messages("coin.submit")
-            </button>
-        }
+        @views.html.coin.coinEntryForm(user, coinAddForm)
 
         @if(workEntries.nonEmpty) {
+        <div class="ui small modal">
+            <div class="ui icon header headline">
+                <i class="remove icon"></i>
+                @Messages("coin.delete.title")
+            </div>
+            <div class="content">
+                <p>@Messages("coin.delete.message")</p>
+            </div>
+            <div class="actions">
+                <div class="ui red cancel button">
+                    <i class="remove icon"></i>
+                    @Messages("coin.delete.no")
+                </div>
+                <a href="" class="coin entry delete">
+                    <div class="ui green ok button">
+                    <i class="checkmark icon"></i>
+                        @Messages("coin.delete.yes")
+                    </div>
+                </a>
+            </div>
+        </div>
+
         <div class="ui section divider"></div>
         <div class="ui three stackable cards">
             @for(workEntry <- workEntries) {
@@ -84,7 +58,8 @@
                     <i class="thumbs up icon"></i>
                     @workEntry.coins
                     <div class="right floated coins">
-                        <a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>
+                        <!--<a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>-->
+                        <i class="remove icon" onclick="showDeletePopup(@workEntry.id)"></i>
                     </div>
                 </div>
             </div>
@@ -94,6 +69,13 @@
     </div>
 
     <script>
+        function showDeletePopup(workEntryId) {
+            $('a.coin.entry.delete').attr("href", "/coin/remove/" + workEntryId)
+            $('.ui.modal')
+                .modal('setting', 'closable', false)
+                .modal('show')
+            ;
+        }
         $('.ui.dropdown').dropdown();
         $('#datePicker').calendar({
           type: 'date',
