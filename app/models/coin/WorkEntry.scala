@@ -5,7 +5,11 @@ import models.coin.WorkEntry.WorkEntryId
 import org.joda.time.DateTime
 import scalikejdbc._
 
-case class WorkEntry(id: WorkEntryId, personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Int, dateDone: DateTime)
+import scala.concurrent.duration._
+
+case class WorkEntry(id: WorkEntryId, personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Int, dateDone: DateTime) {
+  val prettyTimeSpent: String = s"0${timeSpent.minutes.toHours}:".takeRight(3) + s"0${timeSpent.minutes.minus(timeSpent.minutes.toHours.hours).toMinutes}".takeRight(2)
+}
 
 object WorkEntry extends SQLSyntaxSupport[WorkEntry]{
   override val tableName = "work_entries"

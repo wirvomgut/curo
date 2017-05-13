@@ -62,34 +62,34 @@
         }
 
         @if(workEntries.nonEmpty) {
-        <table class="ui compact unstackable table">
-            <thead>
-            <tr>
-                <th class="collapsing">@Messages("coin.label.area")</th>
-                <th class="collapsing">@Messages("coin.label.task")</th>
-                <th>@Messages("coin.label.desc")</th>
-                <th class="collapsing">@Messages("coin.label.time")</th>
-                <th class="collapsing">@Messages("coin.label.coin")</th>
-                <th class="collapsing">@Messages("coin.label.date")</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
+        <div class="ui section divider"></div>
+        <div class="ui three stackable cards">
             @for(workEntry <- workEntries) {
-            <tr>
-                <td class="collapsing">@workEntry.area</td>
-                <td class="collapsing">@workEntry.task</td>
-                <td>@workEntry.description</td>
-                <td class="collapsing">@workEntry.timeSpent</td>
-                <td class="collapsing">@workEntry.coins</td>
-                <td class="collapsing">@workEntry.dateDone.toString("dd.MM.yyyy", lang.toLocale)</td>
-                <td class="collapsing">
-                    <a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>
-                </td>
-            </tr>
+            <div class="card">
+                <div class="content">
+                    <div class="right floated date">
+                        <i class="calendar icon"></i>
+                        @workEntry.dateDone.toString("dd.MM.yyyy", lang.toLocale)
+                    </div>
+                    <div class="header">@workEntry.area</div>
+                    <div class="meta">@workEntry.task</div>
+
+                    <div class="description">
+                        @workEntry.description
+                    </div>
+                </div>
+                <div class="extra content">
+                    <i class="clock icon"></i>
+                    @workEntry.prettyTimeSpent
+                    <i class="thumbs up icon"></i>
+                    @workEntry.coins
+                    <div class="right floated coins">
+                        <a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>
+                    </div>
+                </div>
+            </div>
             }
-            </tbody>
-        </table>
+        </div>
         }
     </div>
 

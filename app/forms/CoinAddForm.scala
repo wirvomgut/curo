@@ -51,7 +51,7 @@ object CoinAddForm {
       "description" -> nonEmptyText(minLength=3, maxLength=255),
       "time" -> longNumber(min=0, max=720),
       "coin" -> number(min=0, max=12),
-      "date" -> jodaDate("d.m.y")
+      "date" -> jodaDate("dd.MM.yyyy")
     )(Data.apply)(Data.unapply)
   )
 
