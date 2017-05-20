@@ -1,4 +1,19 @@
+# --- Constraints
+constraint.required=Notwendig
+constraint.min=Kleinster Wert: {0}
+constraint.max=Größter Wert: {0}
+constraint.minLength=Minimale länge: {0}
+constraint.maxLength=Maximale länge: {0}
+constraint.email=Email
+
+# --- Errors
 error.required = Dieses Feld ist notwendig
+error.date = Datum ist nicht korrekt
+error.number = Zahl ist nicht korrekt
+error.unknown = Unbekannter Fehler
+error.minLength=Minimale Länge ist {0}
+error.maxLength=Maximale Länge ist {0}
+
 invalid.credentials = Deine Zugansdaten sind leider nicht korrekt.
 access.denied = Zugriff verweigert!
 user.exists = Es gibt bereits einen Benutzer mit dieser E-Mail Adresse!
@@ -90,7 +105,7 @@ coin.submit = Hinzufügen
 coin.select = Bitte auswählen
 coin.label.area = Wo
 coin.label.task = Bereich
-coin.label.desc = Beschreibung
+coin.label.desc = Beschreibung (maximal 255 Zeichen)
 coin.label.time = Zeit
 coin.label.coin = Coin
 coin.label.date = Datum

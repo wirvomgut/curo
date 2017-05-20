@@ -3,6 +3,7 @@ package forms
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.format.Formats
 
 import scala.concurrent.duration._
 
@@ -34,12 +35,13 @@ object CoinAddForm {
   ).map(v => v -> v)
 
   val timeValues: Seq[(String, String)] =
-    (Seq(15, 30, 45) ++ (60 until 300 by 30) ++ (300 until 780 by 60))
+    ((60 until 300 by 30) ++ (300 until 780 by 60))
       .map(ints => ints.toString -> ints.minutes)
       .map(m => m._1 -> (s"0${m._2.toHours}:".takeRight(3) + s"0${m._2.minus(m._2.toHours.hours).toMinutes}".takeRight(2)))
 
+  private val coinRawValues: Seq[Double] = (0 until 25).map(v => v * 0.5)
   val coinValues: Seq[(String, String)] =
-    (0 until 13).map(v => v.toString -> v.toString)
+    coinRawValues.map(v => v.toString -> v.toString.stripSuffix(".0"))
 
   /**
     * A play framework form.
@@ -50,7 +52,7 @@ object CoinAddForm {
       "task" -> nonEmptyText,
       "description" -> nonEmptyText(minLength=3, maxLength=255),
       "time" -> longNumber(min=0, max=720),
-      "coin" -> number(min=0, max=12),
+      "coin" -> of[Double](Formats.doubleFormat).verifying(d => coinRawValues.contains(d)),
       "date" -> jodaDate("dd.MM.yyyy")
     )(Data.apply)(Data.unapply)
   )
@@ -70,7 +72,7 @@ object CoinAddForm {
                    task: String,
                    description: String,
                    time: Long,
-                   coin: Int,
+                   coin: Double,
                    date: DateTime
                  )
 }

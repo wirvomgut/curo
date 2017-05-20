@@ -9,7 +9,7 @@ name := "Curo"
 
 version := "0.0.3"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
 
