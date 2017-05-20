@@ -23,6 +23,7 @@ javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
 // Java - Scala
 //********************************************************
 libraryDependencies ++= Seq(
+  "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % "2.5.0",
   "org.scalikejdbc" %% "scalikejdbc-config"             % "2.5.0",
   "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.4.2",
