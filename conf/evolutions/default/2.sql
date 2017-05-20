@@ -14,7 +14,7 @@ CREATE TABLE work_entries (
     time_spent int NOT NULL,
     coins double NOT NULL,
     date_done date NOT NULL,
-    date_created DATETIME NOT NULL DEFAULT(GETDATE())
+    date_created TIMESTAMP NOT NULL
 );
 
 # --- !Downs
