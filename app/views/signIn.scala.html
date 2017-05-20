@@ -2,8 +2,6 @@
 
 @(signInForm: Form[forms.SignInForm.Data], uid: String = "")(implicit request: RequestHeader, messages: Messages)
 
-@import com.mohiva.play.silhouette.impl.providers.oauth2.ClefProvider
-
 @mainLayout(title = Messages("sign.in.title")) {
 <div class="ui middle aligned center aligned grid login-page">
     <div class="column login-column">
@@ -26,6 +24,12 @@
                 <div class="ui left icon input">
                     <i class="lock icon"></i>
                     <input type="password" name="password" placeholder='@Messages("password")'>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="rememberMe" value="true">
+                    <label>@Messages("remember.me")</label>
                 </div>
             </div>
             <button id="submit" type="submit" value="submit" class="ui fluid large green submit button">@Messages("sign.in")</button>

@@ -1,8 +1,23 @@
-error.required = This field is required
+# --- Constraints
+constraint.required=Notwendig
+constraint.min=Kleinster Wert: {0}
+constraint.max=Größter Wert: {0}
+constraint.minLength=Minimale länge: {0}
+constraint.maxLength=Maximale länge: {0}
+constraint.email=Email
+
+# --- Errors
+error.required = Dieses Feld ist notwendig
+error.date = Datum ist nicht korrekt
+error.number = Zahl ist nicht korrekt
+error.unknown = Unbekannter Fehler
+error.minLength=Minimale Länge ist {0}
+error.maxLength=Maximale Länge ist {0}
+
 invalid.credentials = Deine Zugansdaten sind leider nicht korrekt.
-access.denied = Access denied!
-user.exists = There already exists a user with this email!
-could.not.authenticate = Could not authenticate with social provider! Please try again!
+access.denied = Zugriff verweigert!
+user.exists = Es gibt bereits einen Benutzer mit dieser E-Mail Adresse!
+could.not.authenticate = Es gab einen Fehler beim Anmelden. Bitte versuche es nochmal!
 
 home.title = Curo - Startseite
 sign.in.title = Curo - Anmelden
@@ -67,7 +82,7 @@ sign.up.now = Registrieren
 already.a.member = Bereits ein Mitglied?
 not.a.member = Noch kein Benutzerkonto?
 
-remember.me = Remember my login on this computer
+remember.me = Angemeldet bleiben
 or.use.social = Or use your existing account on one of the following services to sign in:
 
 google = Google
@@ -84,3 +99,18 @@ apps.kanban = Kanban
 apps.files = Dateien
 apps.directory = Mitglieder
 apps.carsharing = Mitfahrzentrale
+apps.coin = Coin-System
+
+coin.submit = Hinzufügen
+coin.select = Bitte auswählen
+coin.label.area = Wo
+coin.label.task = Bereich
+coin.label.desc = Beschreibung (maximal 255 Zeichen)
+coin.label.time = Zeit
+coin.label.coin = Coin
+coin.label.date = Datum
+coin.delete.yes = Ja
+coin.delete.no = Nein
+coin.delete.title = Löschen
+coin.delete.message = Möchtest du den Eintrag wirklich löschen?
+

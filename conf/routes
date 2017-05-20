@@ -20,6 +20,9 @@ GET         /carsharing                      controllers.ApplicationController.c
 GET         /calendar                        controllers.ApplicationController.calendar
 GET         /chat                            controllers.ApplicationController.chat
 GET         /forum                           controllers.ApplicationController.forum
+GET         /coin                            controllers.ApplicationController.coin
+GET         /coin/add                        controllers.CoinController.add
+GET         /coin/remove/:id                 controllers.CoinController.remove(id:Long)
 GET         /kanban                          controllers.ApplicationController.kanban(path = "")
 GET         /kanban/$path<.*>                controllers.ApplicationController.kanban(path)
 GET         /signIn                          controllers.ApplicationController.signIn
