@@ -35,7 +35,7 @@ object WorkEntryTestUtil {
                            task: String = dummyWorkEntry.task,
                            description: String = dummyWorkEntry.description,
                            timeSpent: Long = dummyWorkEntry.timeSpent,
-                           coins: Int = dummyWorkEntry.coins,
+                           coins: Double = dummyWorkEntry.coins,
                            dateDone: DateTime = dummyWorkEntry.dateDone): Long = WorkEntry.create(
     personId,
     area,

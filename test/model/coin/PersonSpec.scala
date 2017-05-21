@@ -1,17 +1,17 @@
 package model.coin
 
+import model.coin.utils.EmbeddedMariaDb
+import model.coin.utils.WorkEntryTestUtil._
 import models.coin.Person
 import org.specs2.matcher.Matchers
 import play.api.test.{PlaySpecification, WithApplication}
 
 import scala.language.postfixOps
 
-import model.coin.utils.WorkEntryTestUtil._
-
 /**
   * Created by julianliebl on 29.01.17.
   */
-class PersonSpec extends PlaySpecification with Matchers {
+class PersonSpec extends PlaySpecification with Matchers with EmbeddedMariaDb {
   sequential
 
   "Database" should {
@@ -42,7 +42,7 @@ class PersonSpec extends PlaySpecification with Matchers {
     }
     "not create a person with the same uid" in new WithApplication() {
       val id1First = Person.create("test1")
-      Person.create("test1") must throwA[org.h2.jdbc.JdbcSQLException]
+      Person.create("test1") must throwA[com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException]
 
       id1First must be equalTo 1
     }
@@ -60,7 +60,15 @@ class PersonSpec extends PlaySpecification with Matchers {
       workEntries1.size === 2
       workEntries2.size === 1
     }
+    "add work entries and count them" in new WithApplication() {
+      val personId1 = Person.create("personId1")
 
+      val workEntry1 = createDummyWorkEntry(dummyWorkEntry.copy(personId = personId1))
+      val workEntry2 = createDummyWorkEntry(dummyWorkEntry.copy(personId = personId1))
+
+      val workEntriesCount = Person.countWorkEntries(personId1)
+
+      workEntriesCount == 2
+    }
   }
-
 }

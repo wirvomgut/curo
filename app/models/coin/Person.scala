@@ -2,6 +2,7 @@ package models.coin
 
 import models.coin.Person.{PersonId, PersonUid}
 import scalikejdbc._
+import sqls.count
 
 case class Person(id: PersonId, uid: PersonUid)
 
@@ -41,6 +42,12 @@ object Person extends SQLSyntaxSupport[Person]{
     withSQL {
       select.from(WorkEntry as w).where.eq(w.personId, id).orderBy(w.dateDone).desc.limit(10)
     }.map(WorkEntry(w)).collection.apply()
+  }
+
+  def countWorkEntries(id: PersonId)(implicit s: DBSession = AutoSession): Long = {
+    withSQL {
+      select(count).from(WorkEntry as w)
+    }.map(_.long(1)).single.apply().get
   }
 
   def apply(p: SyntaxProvider[Person])(rs: WrappedResultSet): Person = {

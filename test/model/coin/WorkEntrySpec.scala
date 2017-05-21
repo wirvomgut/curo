@@ -1,5 +1,6 @@
 package model.coin
 
+import model.coin.utils.EmbeddedMariaDb
 import model.coin.utils.WorkEntryTestUtil._
 import models.coin.WorkEntry
 import org.specs2.matcher.Matchers
@@ -10,7 +11,7 @@ import scala.language.postfixOps
 /**
   * Created by julianliebl on 29.01.17.
   */
-class WorkEntrySpec extends PlaySpecification with Matchers {
+class WorkEntrySpec extends PlaySpecification with Matchers with EmbeddedMariaDb {
   sequential
 
   "Database" should {

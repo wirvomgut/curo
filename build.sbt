@@ -34,6 +34,7 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
   "org.scalikejdbc" %% "scalikejdbc-test"   % "2.5.0"   % "test",
+  "ch.vorburger.mariaDB4j" % "mariaDB4j" % "2.2.2" % "test",
   specs2 % Test,
   cache,
   filters,
