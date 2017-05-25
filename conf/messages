@@ -114,3 +114,6 @@ coin.delete.no = Nein
 coin.delete.title = Löschen
 coin.delete.message = Möchtest du den Eintrag wirklich löschen?
 
+pagination.next = Nächste Seite
+pagination.back = Vorherige Seite
+

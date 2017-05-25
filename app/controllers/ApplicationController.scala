@@ -139,18 +139,6 @@ class ApplicationController @Inject() (
   }
 
   /**
-    * Handles the coin system action.
-    *
-    * @return The result to display.
-    */
-  def coin = SecuredAction.async { implicit request =>
-    val person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
-    val workEntries = Person.findWorkEntries(person.id)
-
-    Future.successful(Ok(views.html.coinsystem(request.identity, workEntries, CoinAddForm.form)))
-  }
-
-  /**
     * Handles the kanban action.
     *
     * @return The result to display.

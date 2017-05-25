@@ -38,9 +38,9 @@ object Person extends SQLSyntaxSupport[Person]{
     findByUid(uid).getOrElse(findById(create(uid)).get)
   }
 
-  def findWorkEntries(id: PersonId)(implicit s: DBSession = AutoSession): Seq[WorkEntry] = {
+  def findWorkEntries(id: PersonId, limit: Int = 9, offset: Int = 0)(implicit s: DBSession = AutoSession): Seq[WorkEntry] = {
     withSQL {
-      select.from(WorkEntry as w).where.eq(w.personId, id).orderBy(w.dateDone).desc.limit(10)
+      select.from(WorkEntry as w).where.eq(w.personId, id).orderBy(w.dateDone).desc.limit(limit).offset(offset)
     }.map(WorkEntry(w)).collection.apply()
   }
 
