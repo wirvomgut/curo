@@ -20,7 +20,8 @@ object CoinAddForm {
     "Kleine Reithalle",
     "Große Reithalle",
     "Innenhöfe",
-    "Aussengelände"
+    "Aussengelände",
+    "Sonstiges"
   ).map(v => v -> v)
 
   val taskValues: Seq[(String, String)] = Seq(
@@ -35,11 +36,11 @@ object CoinAddForm {
   ).map(v => v -> v)
 
   val timeValues: Seq[(String, String)] =
-    ((60 until 300 by 30) ++ (300 until 780 by 60))
+    ((30 until 300 by 30) ++ (300 until 780 by 60))
       .map(ints => ints.toString -> ints.minutes)
       .map(m => m._1 -> (s"0${m._2.toHours}:".takeRight(3) + s"0${m._2.minus(m._2.toHours.hours).toMinutes}".takeRight(2)))
 
-  private val coinRawValues: Seq[Double] = (0 until 25).map(v => v * 0.5)
+  private val coinRawValues: Seq[Double] = (0 until 29).map(v => v * 0.5)
   val coinValues: Seq[(String, String)] =
     coinRawValues.map(v => v.toString -> v.toString.stripSuffix(".0"))
 

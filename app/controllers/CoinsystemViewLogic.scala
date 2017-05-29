@@ -16,7 +16,7 @@ class CoinsystemViewLogic(user: User, pagination: Pagination) {
   val workEntryCount: Long = Person.countWorkEntries(person.id)
   val pagesCount: Int = pagination.pages(workEntryCount)
 
-  val showPagination: Boolean = pagination.pages(workEntryCount) > 0
+  val showPagination: Boolean = pagination.pages(workEntryCount) > 1
   val showBackButton: Boolean = pagination.offset > 0
   val showNextButton: Boolean = pagination.offset + pagination.limit < workEntryCount
 
