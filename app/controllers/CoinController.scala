@@ -9,6 +9,7 @@ import models.User
 import models.coin.WorkEntry.WorkEntryId
 import models.coin.{Person, WorkEntry}
 import models.common.Pagination
+import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
@@ -48,11 +49,25 @@ class CoinController @Inject()(
     */
   def editPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request => Future.successful {
     WorkEntry
-      .findById(workEntryId).map(CoinAddForm.DataFromWorkEntry)
+      .findById(workEntryId).map(CoinAddForm.fill)
       .map(data => {
         Ok(views.html.coin.editCoinEntry(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data), workEntryId))
       }).getOrElse(BadRequest)
   }}
+
+  /**
+    * Handles the coin system copy page action.
+    *
+    * @return The result to display.
+    */
+  def copyPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request => Future.successful {
+    WorkEntry
+      .findById(workEntryId).map(_.copy(dateDone = DateTime.now)).map(CoinAddForm.fill)
+      .map(data => {
+        Ok(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data)))
+      }).getOrElse(BadRequest)
+  }}
+
 
   /**
     * Add a coin entry.
@@ -67,11 +82,13 @@ class CoinController @Inject()(
       data => {
         val person: Person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
 
+        val areaAndDetail = CoinAddForm.areaValueNameToAreaDetail(data.area)
+
         WorkEntry.create(
           personId = person.id,
           kind = data.kind,
-          area = data.area,
-          areaDetail = data.areaDetail,
+          area = areaAndDetail.area,
+          areaDetail = areaAndDetail.detail,
           description = data.description,
           timeSpent = data.time,
           coins = data.coin,
@@ -96,9 +113,13 @@ class CoinController @Inject()(
       data => {
         val workEntry: Option[WorkEntry] = WorkEntry.findById(workEntryId)
 
+        val areaAndDetail = CoinAddForm.areaValueNameToAreaDetail(data.area)
+
         workEntry.map(e => {
           WorkEntry.edit(e.copy(
-            area = data.area,
+            kind = data.kind,
+            area = areaAndDetail.area,
+            areaDetail = areaAndDetail.detail,
             description = data.description,
             timeSpent = data.time,
             coins = data.coin,

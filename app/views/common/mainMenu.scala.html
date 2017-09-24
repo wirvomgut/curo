@@ -44,7 +44,7 @@
         <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
         <a class='@activeLink("/forum") item' href="@Links.forum.url" target="@Links.forum.target"><i class="book icon"></i>@Messages("apps.forum")</a>
 
-        <div class="ui dropdown item">
+        <div class="ui top left pointing dropdown main-menu item">
             <i class="caret down icon"></i>@Messages("menu.more")
             <div class="menu">
                 <a class='@activeLink("/coin") item' href="/coin"><i class="thumbs up icon"></i>@Messages("apps.coin")</a>
@@ -54,12 +54,15 @@
             </div>
         </div>
 
-        <div class="right item">
             @user.map { u =>
-            <a class="ui secondary basic button" href="@routes.ApplicationController.profile"><i class="user icon"></i>@u.fullName</a>
-            <a class="ui secondary basic button" href="@routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
+            <div class="ui top pointing dropdown main-menu right item">
+                <i class="caret down icon"></i>@u.fullName
+                <div class="menu">
+                    <a class="item" href="@routes.ApplicationController.profile"><i class="user icon"></i>@Messages("profile.title")</a>
+                    <a class="item" href="@routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
+                </div>
+            </div>
             }
-        </div>
     </div>
 </div>
 

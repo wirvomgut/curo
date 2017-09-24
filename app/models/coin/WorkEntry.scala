@@ -3,16 +3,14 @@ package models.coin
 import models.coin.Person.PersonId
 import models.coin.WorkEntry.WorkEntryId
 import org.joda.time.DateTime
+import play.api.libs.json._
 import scalikejdbc._
 
 import scala.concurrent.duration._
 
-import play.api.libs.json._
 
-
-
-case class WorkEntry(id: WorkEntryId, personId: PersonId, kind: String, area: String, areaDetail: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
-  implicit val jsonWrites = WorkEntry.workEntryWrites
+case class WorkEntry(id: WorkEntryId, personId: PersonId, kind: String, area: String, areaDetail: String, description: Option[String], timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
+  implicit val jsonWrites: Writes[WorkEntry] = WorkEntry.workEntryWrites
 
   val prettyTimeSpent: String = s"0${timeSpent.minutes.toHours}:".takeRight(3) + s"0${timeSpent.minutes.minus(timeSpent.minutes.toHours.hours).toMinutes}".takeRight(2)
 
@@ -29,7 +27,7 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
   val w: scalikejdbc.QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[WorkEntry], WorkEntry] = WorkEntry.syntax
   val wc: scalikejdbc.ColumnName[WorkEntry] = WorkEntry.column
 
-  def create(personId: PersonId, kind: String, area: String, areaDetail: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime)(implicit s: DBSession = AutoSession): Long = {
+  def create(personId: PersonId, kind: String, area: String, areaDetail: String, description: Option[String], timeSpent: Long, coins: Double, dateDone: DateTime)(implicit s: DBSession = AutoSession): Long = {
     withSQL {
       insert.into(WorkEntry).namedValues(
         wc.personId -> personId,
@@ -80,13 +78,13 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
     kind = rs.string(r.kind),
     area = rs.string(r.area),
     areaDetail = rs.string(r.areaDetail),
-    description = rs.string(r.description),
+    description = rs.stringOpt(r.description),
     timeSpent = rs.long(r.timeSpent), coins = rs.double(r.coins),
     dateDone = rs.jodaDateTime(r.dateDone),
     dateCreated = rs.jodaDateTime(r.dateCreated)
   )
 
-  implicit val workEntryWrites = new Writes[WorkEntry] {
+  implicit val workEntryWrites: Writes[WorkEntry] = new Writes[WorkEntry] {
     def writes(workEntry: WorkEntry): JsObject = Json.obj(
       "id" -> workEntry.id,
       "personId" -> workEntry.personId,

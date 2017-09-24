@@ -23,6 +23,7 @@ GET         /forum                           controllers.ApplicationController.f
 GET         /coin                            controllers.CoinController.landing
 GET         /coin/page/:num                  controllers.CoinController.archive(num:Int)
 GET         /coin/edit/:id                   controllers.CoinController.editPage(id:Long)
+GET         /coin/copy/:id                   controllers.CoinController.copyPage(id:Long)
 GET         /coin/add                        controllers.CoinController.add
 GET         /coin/form/edit/:id              controllers.CoinController.edit(id:Long)
 GET         /coin/remove/:id                 controllers.CoinController.remove(id:Long)

@@ -11,6 +11,7 @@ CREATE TABLE work_entries (
     kind varchar(255) NOT NULL,
     area varchar(255) NOT NULL,
     area_detail varchar(255) NOT NULL,
+    description varchar(255),
     time_spent int NOT NULL,
     coins double NOT NULL,
     date_done date NOT NULL,

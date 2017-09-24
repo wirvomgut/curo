@@ -16,16 +16,9 @@
         @helper.select(
             field = coinAddForm("area"),
             options = CoinAddForm.areaValues,
-            'class -> "ui dropdown",
+            'class -> "ui search dropdown",
             'onChange -> "hello()",
             '_label -> Messages("coin.label.area"),
-            '_default -> Messages("coin.select")
-        )
-        @helper.select(
-            field = coinAddForm("areaDetail"),
-            options = Seq.empty,
-            'class -> "ui dropdown",
-            '_label -> Messages("coin.label.area.detail"),
             '_default -> Messages("coin.select")
         )
     </div>
@@ -33,14 +26,14 @@
         @helper.select(
             field = coinAddForm("time"),
             options = CoinAddForm.timeValues,
-            'class -> "ui fluid dropdown",
+            'class -> "ui dropdown",
             '_label -> Messages("coin.label.time"),
             '_default -> Messages("coin.select")
         )
         @helper.select(
             field = coinAddForm("coin"),
             options = CoinAddForm.coinValues,
-            'class -> "ui fluid dropdown",
+            'class -> "ui dropdown",
             '_label -> Messages("coin.label.coin"),
             '_default -> Messages("coin.select")
         )
@@ -60,39 +53,7 @@
 }
 
 <script>
-    $('.ui.dropdown').dropdown();
-
-    var taskAreas = JSON.parse('@forms.CoinAddForm.taskAreasJson'.split("&quot;").join('"'));
-
-    var elArea = $("#area");
-    elArea.parent().dropdown()
-    var elAreaDetail = $("#areaDetail");
-    var elAreaDetailDropdown = elAreaDetail.parent()
-
-    elAreaDetailDropdown.addClass('disabled');
-
-    function hello(){
-        var areaVal = elArea.val();
-        var subAreaValues = $.grep(taskAreas.areas, function(e){ return e.areaName === areaVal; })[0].subAreas;
-
-        elAreaDetail.empty();
-        if(subAreaValues.length == 1) {
-            elAreaDetailDropdown.dropdown('restore defaults');
-        }
-        $.each(subAreaValues, function(key,value) {
-            elAreaDetail.append($("<option></option>")
-             .attr("value", value).text(value));
-        });
-
-
-
-        if(subAreaValues.length == 1) {
-            elAreaDetailDropdown.addClass('disabled');
-        } else {
-            elAreaDetailDropdown.dropdown('restore defaults');
-            elAreaDetailDropdown.removeClass('disabled');
-        }
-    }
+    $('.ui.dropdown').dropdown({fullTextSearch: true});
 
     $('#datePicker').calendar({
       type: 'date',

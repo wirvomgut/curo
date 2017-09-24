@@ -16,24 +16,24 @@ class WorkEntrySpec extends PlaySpecification with Matchers with EmbeddedMariaDb
 
   "Database" should {
     "create and find a work entry by id" in new WithApplication() {
-      val id = createDummyWorkEntry()
+      val id: Long = createDummyWorkEntry()
 
-      val workEntry = WorkEntry.findById(id).get
+      val workEntry: WorkEntry = WorkEntry.findById(id).get
 
       workEntry.personId === 1l
       workEntry.area === "dummyArea"
     }
     "create a work entry with the same data" in new WithApplication() {
-      val id1First = createDummyWorkEntry()
-      val id1Second = createDummyWorkEntry()
+      val id1First: Long = createDummyWorkEntry()
+      val id1Second: Long = createDummyWorkEntry()
 
-      val workEntry1 = WorkEntry.findById(id1First).get
-      val workEntry2 = WorkEntry.findById(id1Second).get
+      val workEntry1: WorkEntry = WorkEntry.findById(id1First).get
+      val workEntry2: WorkEntry = WorkEntry.findById(id1Second).get
 
       workEntry1.id !=== workEntry2.id
     }
     "create a work entry and delete it" in new WithApplication() {
-      val workEntryId = createDummyWorkEntry()
+      val workEntryId: Long = createDummyWorkEntry()
 
       WorkEntry.findById(workEntryId).isDefined === true
 
@@ -42,13 +42,13 @@ class WorkEntrySpec extends PlaySpecification with Matchers with EmbeddedMariaDb
       WorkEntry.findById(workEntryId).isDefined === false
     }
     "create a work entry and edit it" in new WithApplication() {
-      val workEntryId = createDummyWorkEntry(area = "beforeEdit")
+      val workEntryId: Long = createDummyWorkEntry(area = "beforeEdit")
 
-      val workEntryBefore = WorkEntry.findById(workEntryId).get
+      val workEntryBefore: WorkEntry = WorkEntry.findById(workEntryId).get
 
       WorkEntry.edit(workEntryBefore.copy(area = "afterEdit"))
 
-      val workEntryAfter = WorkEntry.findById(workEntryId).get
+      val workEntryAfter: WorkEntry = WorkEntry.findById(workEntryId).get
 
       workEntryBefore.copy(area = "afterEdit") === workEntryAfter
     }

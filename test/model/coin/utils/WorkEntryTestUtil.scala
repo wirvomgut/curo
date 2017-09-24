@@ -10,19 +10,21 @@ object WorkEntryTestUtil {
   val dummyWorkEntry = WorkEntry(
     id = 1,
     personId = 1,
+    kind = "dummyKind",
     area = "dummyArea",
-    task = "dummyTask",
-    description = "",
+    areaDetail = "dummyAreaDetail",
+    description = Some(""),
     timeSpent = 0,
     coins = 0,
     dateDone = DateTime.now
   )
 
-  def createDummyWorkEntry(workEntry: WorkEntry): Unit ={
+  def createDummyWorkEntry(workEntry: WorkEntry): Unit = {
     createDummyWorkEntry(
       workEntry.personId,
+      workEntry.kind,
       workEntry.area,
-      workEntry.task,
+      workEntry.areaDetail,
       workEntry.description,
       workEntry.timeSpent,
       workEntry.coins,
@@ -31,15 +33,17 @@ object WorkEntryTestUtil {
   }
 
   def createDummyWorkEntry(personId: Long = dummyWorkEntry.personId,
+                           kind: String = dummyWorkEntry.kind,
                            area: String = dummyWorkEntry.area,
-                           task: String = dummyWorkEntry.task,
-                           description: String = dummyWorkEntry.description,
+                           areaDetail: String = dummyWorkEntry.areaDetail,
+                           description: Option[String] = dummyWorkEntry.description,
                            timeSpent: Long = dummyWorkEntry.timeSpent,
                            coins: Double = dummyWorkEntry.coins,
                            dateDone: DateTime = dummyWorkEntry.dateDone): Long = WorkEntry.create(
     personId,
+    kind,
     area,
-    task,
+    areaDetail,
     description,
     timeSpent,
     coins,
