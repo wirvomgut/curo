@@ -1,5 +1,6 @@
 package forms
 
+import models.coin.{Person, WorkEntry}
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
@@ -7,33 +8,94 @@ import play.api.data.format.Formats
 
 import scala.concurrent.duration._
 
+import play.api.libs.json._
+
 /**
   * The form which handles the submission of the credentials.
   */
 object CoinAddForm {
 
-  val areaValues: Seq[(String, String)] = Seq(
-    "Herrenhaus",
-    "Nordflügel",
-    "Remise",
-    "Scheune",
-    "Kleine Reithalle",
-    "Große Reithalle",
-    "Innenhöfe",
-    "Aussengelände",
-    "Sonstiges"
+  val kindValues: Seq[(String, String)] = Seq(
+    "Planung, Vorbereitung, Protokoll, Moderation",
+    "Teilnahme an Sitzungen",
+    "praktische Arbeit (wiederkehrend)",
+    "praktische Arbeit (einmalig)"
   ).map(v => v -> v)
 
-  val taskValues: Seq[(String, String)] = Seq(
-    "Verwaltung des Gutes",
-    "Instandhaltung und Technik",
-    "Raumpflege",
-    "Garten und Schneeräumen",
-    "Gemeinschaft",
-    "Kommunikation- und Öffentlichkeitsarbeit",
-    "Servicepoint und Anlaufstelle",
-    "Hauswirtschaft / Kochen"
-  ).map(v => v -> v)
+
+  case class TaskArea(areaName: String, subAreas: Seq[String])
+  case class TaskAreas(areas: Seq[TaskArea])
+  implicit val taskAreaWrites: Writes[TaskArea] = Json.writes[TaskArea]
+  implicit val taskAreasWrites: Writes[TaskAreas] = Json.writes[TaskAreas]
+
+  private val taskAreaValues: TaskAreas = TaskAreas(Seq(
+    TaskArea("Verwaltung der Genossenschaft", Seq(
+      "Vorstand",
+      "Aufsichtsrat",
+      "Stabsstellen",
+      "Generalversammlung",
+      "Sonstiges"
+    )),
+    TaskArea("Verwaltung der Gemeinschaft", Seq(
+      "Runder Tisch",
+      "Beiräte",
+      "Plenum"
+    )),
+    TaskArea("AG Gemeinschaft", Seq(
+      "AG Gemeinschaft",
+      "AK Gemeinschaftsaktionen",
+      "AK Gemeinschaftsbildung",
+      "AK Interessenten",
+      "AK Kommunikationsformen",
+      "AK NUSS-Knacker",
+      "AK Vertrauensrat",
+      "AK ZusammenLeben"
+    )),
+    TaskArea("AG Raute", Seq(
+      "AG Raute",
+      "AK Aussenbereichsplanung",
+      "AK Haustechnik",
+      "AK Innenraumplanung",
+      "AK Digitalisierung",
+      "AK Mobilität",
+      "AK Reaktivierung",
+      "Umweltbeauftragte"
+    )),
+    TaskArea("AG Gutsarbeiten", Seq(
+      "AG Gutsarbeiten",
+      "AK Coinsystem",
+      "AK Einkauf",
+      "AK Garten und Aussengelände",
+      "AK Kochen",
+      "AK Naturschutz",
+      "AK Putzen",
+      "AK Raumpaten"
+    )),
+    TaskArea("AG Markt und Kommunikation", Seq(
+      "AG Markt und Kommunikation",
+      "AK Coworking",
+      "AK interne Kommunikation",
+      "AK Öffentlichkeitsarbeit",
+      "AK Übernachtung",
+      "AK Veranstaltungen"
+    )),
+    TaskArea("von Gutsleuten für Gutsleute", Seq(
+      "Café",
+      "Chor",
+      "Digitales Gut",
+      "Yoga",
+      "kleiner Filmclub",
+      "Sonstiges"
+    )),
+    TaskArea("Sonstiges", Seq("Bitte Beschreibung ausfüllen"))
+  ))
+
+  val taskAreasJson: JsValue = Json.toJson(taskAreaValues)
+  println(taskAreasJson)
+
+  val areaValues: Seq[(String, String)] = taskAreaValues.areas.map(_.areaName).map(v => v -> v)
+
+  def subAreasForArea(areaName: String): Seq[String] = taskAreaValues.areas.find(_.areaName == areaName).map(_.subAreas).getOrElse(Seq.empty)
 
   val timeValues: Seq[(String, String)] =
     ((30 until 300 by 30) ++ (300 until 780 by 60))
@@ -44,13 +106,30 @@ object CoinAddForm {
   val coinValues: Seq[(String, String)] =
     coinRawValues.map(v => v.toString -> v.toString.stripSuffix(".0"))
 
+  def fill(workEntry: WorkEntry): Unit = {
+    Data(
+      id = Some(workEntry.id),
+      personId = Some(workEntry.personId),
+      kind = workEntry.kind,
+      area = workEntry.area,
+      areaDetail = workEntry.areaDetail,
+      description = workEntry.description,
+      time = workEntry.timeSpent,
+      coin = workEntry.coins,
+      date = workEntry.dateDone
+    )
+  }
+
   /**
     * A play framework form.
     */
   val form = Form(
     mapping(
+      "id" -> optional(longNumber),
+      "personId" -> optional(longNumber),
+      "kind" -> nonEmptyText,
       "area" -> nonEmptyText,
-      "task" -> nonEmptyText,
+      "areaDetail" -> nonEmptyText,
       "description" -> nonEmptyText(minLength=3, maxLength=255),
       "time" -> longNumber(min=0, max=720),
       "coin" -> of[Double](Formats.doubleFormat).verifying(d => coinRawValues.contains(d)),
@@ -61,19 +140,39 @@ object CoinAddForm {
   /**
     * The form data.
     *
+    * @param id optional work entry id
+    * @param personId optional person id
+    * @param kind Kind of task.
     * @param area Area where the task was executed.
-    * @param task Task area where the task was executed.
+    * @param areaDetail Area detail where the task was executed.
     * @param description Description of the task.
     * @param time Time spent executing this task.
     * @param coin Coin value issued for this task.
     * @param date Date when the task was done.
     */
   case class Data(
+                   id: Option[WorkEntry.WorkEntryId] = None,
+                   personId: Option[Person.PersonId] = None,
+                   kind: String,
                    area: String,
-                   task: String,
+                   areaDetail: String,
                    description: String,
                    time: Long,
                    coin: Double,
                    date: DateTime
                  )
+
+  def DataFromWorkEntry(workEntry: WorkEntry): Data = {
+    Data(
+      id = Some(workEntry.id),
+      personId = Some(workEntry.personId),
+      kind = workEntry.kind,
+      area = workEntry.area,
+      areaDetail = workEntry.areaDetail,
+      description = workEntry.description,
+      time = workEntry.timeSpent,
+      coin = workEntry.coins,
+      date = workEntry.dateDone
+    )
+  }
 }

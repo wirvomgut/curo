@@ -7,8 +7,18 @@ import scalikejdbc._
 
 import scala.concurrent.duration._
 
-case class WorkEntry(id: WorkEntryId, personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
+import play.api.libs.json._
+
+
+
+case class WorkEntry(id: WorkEntryId, personId: PersonId, kind: String, area: String, areaDetail: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
+  implicit val jsonWrites = WorkEntry.workEntryWrites
+
   val prettyTimeSpent: String = s"0${timeSpent.minutes.toHours}:".takeRight(3) + s"0${timeSpent.minutes.minus(timeSpent.minutes.toHours.hours).toMinutes}".takeRight(2)
+
+  def toJson: String = {
+    Json.toJson(this).toString
+  }
 }
 
 object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
@@ -19,18 +29,33 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
   val w: scalikejdbc.QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[WorkEntry], WorkEntry] = WorkEntry.syntax
   val wc: scalikejdbc.ColumnName[WorkEntry] = WorkEntry.column
 
-  def create(personId: PersonId, area: String, task: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime)(implicit s: DBSession = AutoSession): Long = {
+  def create(personId: PersonId, kind: String, area: String, areaDetail: String, description: String, timeSpent: Long, coins: Double, dateDone: DateTime)(implicit s: DBSession = AutoSession): Long = {
     withSQL {
       insert.into(WorkEntry).namedValues(
         wc.personId -> personId,
+        wc.kind -> kind,
         wc.area -> area,
-        wc.task -> task,
+        wc.areaDetail -> areaDetail,
         wc.description -> description,
         wc.timeSpent -> timeSpent,
         wc.coins -> coins,
         wc.dateDone -> dateDone
       )
     }.updateAndReturnGeneratedKey().apply()
+  }
+
+  def edit(workEntry: WorkEntry)(implicit s: DBSession = AutoSession): Int = {
+    withSQL {
+      update(WorkEntry).set(
+        wc.kind -> workEntry.kind,
+        wc.area -> workEntry.area,
+        wc.areaDetail -> workEntry.areaDetail,
+        wc.description -> workEntry.description,
+        wc.timeSpent -> workEntry.timeSpent,
+        wc.coins -> workEntry.coins,
+        wc.dateDone -> workEntry.dateDone
+      ).where.eq(wc.id, workEntry.id)
+    }.update.apply()
   }
 
   def findById(id: WorkEntryId)(implicit s: DBSession = AutoSession): Option[WorkEntry] = {
@@ -49,7 +74,30 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
     apply(w.resultName)(rs)
   }
 
-  def apply(r: ResultName[WorkEntry])(rs: WrappedResultSet): WorkEntry = {
-    new WorkEntry(rs.long(r.id), rs.long(r.personId), rs.string(r.area), rs.string(r.task), rs.string(r.description), rs.long(r.timeSpent), rs.double(r.coins), rs.jodaDateTime(r.dateDone), rs.jodaDateTime(r.dateCreated))
+  def apply(r: ResultName[WorkEntry])(rs: WrappedResultSet): WorkEntry = new WorkEntry(
+    id = rs.long(r.id),
+    personId = rs.long(r.personId),
+    kind = rs.string(r.kind),
+    area = rs.string(r.area),
+    areaDetail = rs.string(r.areaDetail),
+    description = rs.string(r.description),
+    timeSpent = rs.long(r.timeSpent), coins = rs.double(r.coins),
+    dateDone = rs.jodaDateTime(r.dateDone),
+    dateCreated = rs.jodaDateTime(r.dateCreated)
+  )
+
+  implicit val workEntryWrites = new Writes[WorkEntry] {
+    def writes(workEntry: WorkEntry): JsObject = Json.obj(
+      "id" -> workEntry.id,
+      "personId" -> workEntry.personId,
+      "kind" -> workEntry.kind,
+      "area" -> workEntry.area,
+      "areaDetail" -> workEntry.areaDetail,
+      "description" -> workEntry.description,
+      "timeSpent" -> workEntry.timeSpent,
+      "coins" -> workEntry.coins,
+      "dateDone" -> workEntry.dateDone,
+      "dateCreated" -> workEntry.dateCreated
+    )
   }
 }

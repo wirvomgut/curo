@@ -1,0 +1,22 @@
+@import forms.CoinAddForm
+@import models.coin.WorkEntry
+@import controllers.CoinsystemViewLogic
+
+@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data], workEntryId: Long)(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
+
+@formButtons() = {
+    <a href="/coin"><button class="ui red cancel button" id="cancel" name="cancel"  >
+        @Messages("coin.edit.cancel")
+    </button></a>
+}
+
+@views.html.common.mainLayout(title = Messages("home.title"), head = Html("""
+<script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
+<link rel="stylesheet" href="/assets/lib/semantic-ui-calendar/dist/calendar.min.css" />
+""")) {
+@views.html.common.mainMenu(Option(user))
+
+<div class="ui container menu-spacer">
+    @views.html.coin.coinEntryForm(user, coinAddForm, "coin.edit.submit", routes.CoinController.edit(workEntryId))
+</div>
+}

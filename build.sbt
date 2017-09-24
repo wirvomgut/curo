@@ -47,9 +47,9 @@ libraryDependencies ++= Seq(
 //********************************************************
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0",
-  "org.webjars.bower" % "semantic-ui" % "2.1.8",
-  "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8",
-  "org.webjars.npm" % "bulma" % "0.4.1"
+  "org.webjars.bower" % "semantic" % "2.2.13",
+  "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8"
+  //"org.webjars.npm" % "bulma" % "0.5.2"
 )
 
 routesGenerator := InjectedRoutesGenerator

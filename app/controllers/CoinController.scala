@@ -6,6 +6,7 @@ import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import forms.CoinAddForm
 import models.User
+import models.coin.WorkEntry.WorkEntryId
 import models.coin.{Person, WorkEntry}
 import models.common.Pagination
 import play.api.i18n.MessagesApi
@@ -41,6 +42,19 @@ class CoinController @Inject()(
   }
 
   /**
+    * Handles the coin system edit page action.
+    *
+    * @return The result to display.
+    */
+  def editPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request => Future.successful {
+    WorkEntry
+      .findById(workEntryId).map(CoinAddForm.DataFromWorkEntry)
+      .map(data => {
+        Ok(views.html.coin.editCoinEntry(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data), workEntryId))
+      }).getOrElse(BadRequest)
+  }}
+
+  /**
     * Add a coin entry.
     *
     * @return The result to display.
@@ -52,7 +66,46 @@ class CoinController @Inject()(
       },
       data => {
         val person: Person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
-        WorkEntry.create(person.id, data.area, data.task, data.description, data.time, data.coin, data.date)
+
+        WorkEntry.create(
+          personId = person.id,
+          kind = data.kind,
+          area = data.area,
+          areaDetail = data.areaDetail,
+          description = data.description,
+          timeSpent = data.time,
+          coins = data.coin,
+          dateDone = data.date
+        )
+
+        Future.successful(Redirect(routes.CoinController.landing()))
+      }
+    )
+  }
+
+  /**
+    * Edit a coin entry.
+    *
+    * @return The result to display.
+    */
+  def edit(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request =>
+    CoinAddForm.form.bindFromRequest.fold(
+      form => {
+        Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
+      },
+      data => {
+        val workEntry: Option[WorkEntry] = WorkEntry.findById(workEntryId)
+
+        workEntry.map(e => {
+          WorkEntry.edit(e.copy(
+            area = data.area,
+            description = data.description,
+            timeSpent = data.time,
+            coins = data.coin,
+            dateDone = data.date
+          ))
+        })
+
         Future.successful(Redirect(routes.CoinController.landing()))
       }
     )

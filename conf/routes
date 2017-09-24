@@ -21,9 +21,11 @@ GET         /calendar                        controllers.ApplicationController.c
 GET         /chat                            controllers.ApplicationController.chat
 GET         /forum                           controllers.ApplicationController.forum
 GET         /coin                            controllers.CoinController.landing
-GET         /coin/add                        controllers.CoinController.add
-GET         /coin/remove/:id                 controllers.CoinController.remove(id:Long)
 GET         /coin/page/:num                  controllers.CoinController.archive(num:Int)
+GET         /coin/edit/:id                   controllers.CoinController.editPage(id:Long)
+GET         /coin/add                        controllers.CoinController.add
+GET         /coin/form/edit/:id              controllers.CoinController.edit(id:Long)
+GET         /coin/remove/:id                 controllers.CoinController.remove(id:Long)
 GET         /kanban                          controllers.ApplicationController.kanban(path = "")
 GET         /kanban/$path<.*>                controllers.ApplicationController.kanban(path)
 GET         /signIn                          controllers.ApplicationController.signIn

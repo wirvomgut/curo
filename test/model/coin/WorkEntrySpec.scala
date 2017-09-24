@@ -32,7 +32,26 @@ class WorkEntrySpec extends PlaySpecification with Matchers with EmbeddedMariaDb
 
       workEntry1.id !=== workEntry2.id
     }
+    "create a work entry and delete it" in new WithApplication() {
+      val workEntryId = createDummyWorkEntry()
 
+      WorkEntry.findById(workEntryId).isDefined === true
+
+      WorkEntry.remove(workEntryId)
+
+      WorkEntry.findById(workEntryId).isDefined === false
+    }
+    "create a work entry and edit it" in new WithApplication() {
+      val workEntryId = createDummyWorkEntry(area = "beforeEdit")
+
+      val workEntryBefore = WorkEntry.findById(workEntryId).get
+
+      WorkEntry.edit(workEntryBefore.copy(area = "afterEdit"))
+
+      val workEntryAfter = WorkEntry.findById(workEntryId).get
+
+      workEntryBefore.copy(area = "afterEdit") === workEntryAfter
+    }
   }
 
 }

@@ -1,22 +1,31 @@
 @import forms.CoinAddForm
+@import models.coin.WorkEntry
 @import forms.common.SemanticForms._
-@(user: models.User, coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages)
+@(user: models.User, coinAddForm: Form[forms.CoinAddForm.Data], submitText: String, action: play.api.mvc.Call)(implicit request: RequestHeader, messages: Messages)
 
 
-@helper.form(action = routes.CoinController.add(), 'class -> "ui form" ) {
+@helper.form(action = action, 'class -> "ui form" ) {
     <div class="two fields">
+        @helper.select(
+            field = coinAddForm("kind"),
+            options = CoinAddForm.kindValues,
+            'class -> "ui dropdown",
+            '_label -> Messages("coin.label.kind"),
+            '_default -> Messages("coin.select")
+        )
         @helper.select(
             field = coinAddForm("area"),
             options = CoinAddForm.areaValues,
-            'class -> "ui fluid dropdown",
+            'class -> "ui dropdown",
+            'onChange -> "hello()",
             '_label -> Messages("coin.label.area"),
             '_default -> Messages("coin.select")
         )
         @helper.select(
-            field = coinAddForm("task"),
-            options = CoinAddForm.taskValues,
-            'class -> "ui fluid dropdown",
-            '_label -> Messages("coin.label.task"),
+            field = coinAddForm("areaDetail"),
+            options = Seq.empty,
+            'class -> "ui dropdown",
+            '_label -> Messages("coin.label.area.detail"),
             '_default -> Messages("coin.select")
         )
     </div>
@@ -46,6 +55,62 @@
 
     <button id="submit" type="submit" value="submit" class="ui icon button">
         <i class="plus icon"></i>
-        @Messages("coin.submit")
+        @Messages(submitText)
     </button>
 }
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+    var taskAreas = JSON.parse('@forms.CoinAddForm.taskAreasJson'.split("&quot;").join('"'));
+
+    var elArea = $("#area");
+    elArea.parent().dropdown()
+    var elAreaDetail = $("#areaDetail");
+    var elAreaDetailDropdown = elAreaDetail.parent()
+
+    elAreaDetailDropdown.addClass('disabled');
+
+    function hello(){
+        var areaVal = elArea.val();
+        var subAreaValues = $.grep(taskAreas.areas, function(e){ return e.areaName === areaVal; })[0].subAreas;
+
+        elAreaDetail.empty();
+        if(subAreaValues.length == 1) {
+            elAreaDetailDropdown.dropdown('restore defaults');
+        }
+        $.each(subAreaValues, function(key,value) {
+            elAreaDetail.append($("<option></option>")
+             .attr("value", value).text(value));
+        });
+
+
+
+        if(subAreaValues.length == 1) {
+            elAreaDetailDropdown.addClass('disabled');
+        } else {
+            elAreaDetailDropdown.dropdown('restore defaults');
+            elAreaDetailDropdown.removeClass('disabled');
+        }
+    }
+
+    $('#datePicker').calendar({
+      type: 'date',
+      monthFirst: false,
+      popupOptions: {
+          position: 'bottom center',
+          lastResort: 'bottom center',
+          prefer: 'opposite',
+          hideOnScroll: false
+        },
+      formatter: {
+        date: function (date, settings) {
+          if (!date) return '';
+          var day = ("0" + date.getDate()).slice(-2);
+          var month = ("0" + (date.getMonth() + 1)).slice(-2);
+          var year = date.getFullYear();
+          return day + '.' + month + '.' + year;
+        }
+      }
+    });
+</script>

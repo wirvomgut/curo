@@ -102,9 +102,12 @@ apps.carsharing = Mitfahrzentrale
 apps.coin = Coin-System
 
 coin.submit = Hinzufügen
+coin.edit.submit = Speichern
+coin.edit.cancel = Abbrechen
 coin.select = Bitte auswählen
-coin.label.area = Wo
-coin.label.task = Bereich
+coin.label.kind = Art der Arbeit
+coin.label.area = Aufgabenbereich
+coin.label.area.detail = Detail
 coin.label.desc = Beschreibung (maximal 255 Zeichen)
 coin.label.time = Zeit
 coin.label.coin = Coin

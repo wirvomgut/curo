@@ -4,7 +4,6 @@
 
 @(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
 
-
 @views.html.common.mainLayout(title = Messages("home.title"), head = Html("""
 <script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
 <link rel="stylesheet" href="/assets/lib/semantic-ui-calendar/dist/calendar.min.css" />
@@ -12,10 +11,10 @@
     @views.html.common.mainMenu(Option(user))
 
     <div class="ui container menu-spacer">
-        @views.html.coin.coinEntryForm(user, coinAddForm)
+        @views.html.coin.coinEntryForm(user, coinAddForm, "coin.submit", routes.CoinController.add())
 
         @if(logic.workEntries.nonEmpty) {
-            <div class="ui small modal">
+            <div class="ui small delete modal">
                 <div class="ui icon header headline">
                     <i class="remove icon"></i>
                     @Messages("coin.delete.title")
@@ -47,7 +46,7 @@
                             @workEntry.dateDone.toString("dd.MM.yyyy", lang.toLocale)
                         </div>
                         <div class="header">@workEntry.area</div>
-                        <div class="meta">@workEntry.task</div>
+                        <div class="meta">@workEntry.areaDetail</div>
 
                         <div class="description">
                             @workEntry.description
@@ -60,6 +59,7 @@
                         @workEntry.coins
                         <div class="right floated coins">
                             <!--<a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>-->
+                            <a href="/coin/edit/@workEntry.id"><i class="edit icon"></i></a>
                             <i class="remove icon" onclick="showDeletePopup(@workEntry.id)"></i>
                         </div>
                     </div>
@@ -80,7 +80,6 @@
                         <button class="ui right floated button">@Messages("pagination.next")</button>
                     </a>
                 }
-
             }
 
         }
@@ -89,30 +88,10 @@
     <script>
         function showDeletePopup(workEntryId) {
             $('a.coin.entry.delete').attr("href", "/coin/remove/" + workEntryId)
-            $('.ui.modal')
+            $('.ui.delete.modal')
                 .modal('setting', 'closable', false)
                 .modal('show')
             ;
         }
-        $('.ui.dropdown').dropdown();
-        $('#datePicker').calendar({
-          type: 'date',
-          monthFirst: false,
-          popupOptions: {
-              position: 'bottom center',
-              lastResort: 'bottom center',
-              prefer: 'opposite',
-              hideOnScroll: false
-            },
-          formatter: {
-            date: function (date, settings) {
-              if (!date) return '';
-              var day = ("0" + date.getDate()).slice(-2);
-              var month = ("0" + (date.getMonth() + 1)).slice(-2);
-              var year = date.getFullYear();
-              return day + '.' + month + '.' + year;
-            }
-          }
-        });
     </script>
 }
