@@ -16,14 +16,11 @@ import play.api.libs.json._
 object CoinAddForm {
 
   val kindValues: Seq[(String, String)] = Seq(
-    "Planung, Vorbereitung, Protokoll, Moderation",
     "Teilnahme an Sitzungen",
+    "Kopfarbeit (z.B. Arbeit am PC, Organisation)",
     "Praktische Arbeit (wiederkehrend)",
-    "Praktische Arbeit (einmalig)",
-    "Kopf Arbeit (wiederkehrend)",
-    "Kopf Arbeit (einmalig)"
+    "Praktische Arbeit (einmalig)"
   ).map(v => v -> v)
-
 
   def valueName(area: String, subArea: String): String = s"${area.toLowerCase}_${subArea.toLowerCase}"
     .replaceAll("ü", "ue")
@@ -31,7 +28,6 @@ object CoinAddForm {
     .replaceAll("ä", "ae")
     .replaceAll("ß", "ss")
     .replaceAll(" ", "_")
-
 
   case class TaskArea(areaName: String, subAreas: Seq[String]) {
     def valueName(subArea: String): String = CoinAddForm.valueName(areaName, subArea)
