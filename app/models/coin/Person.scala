@@ -46,7 +46,7 @@ object Person extends SQLSyntaxSupport[Person]{
 
   def countWorkEntries(id: PersonId)(implicit s: DBSession = AutoSession): Long = {
     withSQL {
-      select(count).from(WorkEntry as w)
+      select(count).from(WorkEntry as w).where.eq(w.personId, id)
     }.map(_.long(1)).single.apply().get
   }
 
