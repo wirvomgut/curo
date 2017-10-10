@@ -8,7 +8,6 @@ import scalikejdbc._
 
 import scala.concurrent.duration._
 
-
 case class WorkEntry(id: WorkEntryId, personId: PersonId, kind: String, area: String, areaDetail: String, description: Option[String], timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
   implicit val jsonWrites: Writes[WorkEntry] = WorkEntry.workEntryWrites
 

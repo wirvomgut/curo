@@ -1,27 +1,27 @@
 package modules
 
-import com.google.inject.{AbstractModule, Provides}
+import com.google.inject.{ AbstractModule, Provides }
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services._
 import com.mohiva.play.silhouette.api.util._
-import com.mohiva.play.silhouette.api.{Environment, EventBus}
+import com.mohiva.play.silhouette.api.{ Environment, EventBus }
 import com.mohiva.play.silhouette.impl.authenticators._
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.impl.providers.oauth1._
-import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
+import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{ CookieSecretProvider, CookieSecretSettings }
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
 import com.mohiva.play.silhouette.impl.providers.oauth2._
-import com.mohiva.play.silhouette.impl.providers.oauth2.state.{CookieStateProvider, CookieStateSettings, DummyStateProvider}
+import com.mohiva.play.silhouette.impl.providers.oauth2.state.{ CookieStateProvider, CookieStateSettings, DummyStateProvider }
 import com.mohiva.play.silhouette.impl.providers.openid.YahooProvider
 import com.mohiva.play.silhouette.impl.providers.openid.services.PlayOpenIDService
 import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
 import com.mohiva.play.silhouette.impl.services._
 import com.mohiva.play.silhouette.impl.util._
-import controllers.{PasswordHasherMD5, PasswordHasherSHA256}
+import controllers.{ PasswordHasherMD5, PasswordHasherSHA256 }
 import models.User
 import models.daos._
-import models.services.{UserService, UserServiceImpl}
+import models.services.{ UserService, UserServiceImpl }
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import net.codingwell.scalaguice.ScalaModule
@@ -106,14 +106,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     xingProvider: XingProvider,
     yahooProvider: YahooProvider): SocialProviderRegistry = {
 
-    SocialProviderRegistry(Seq(
-//      googleProvider,
-//      facebookProvider,
-//      twitterProvider,
-//      vkProvider,
-//      xingProvider,
-//      yahooProvider,
-//      clefProvider
+    SocialProviderRegistry(Seq( //      googleProvider,
+    //      facebookProvider,
+    //      twitterProvider,
+    //      vkProvider,
+    //      xingProvider,
+    //      yahooProvider,
+    //      clefProvider
     ))
   }
 

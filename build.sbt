@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtScalariform._
+
 import scalariform.formatter.preferences._
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
@@ -28,15 +30,15 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-config"             % "2.5.0",
   "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.4.2",
   "org.apache.directory.api" % "api-all" % "1.0.0-RC1",
-  "com.mohiva" %% "play-silhouette" % "3.0.0",
+  "com.mohiva" %% "play-silhouette" % "5.0.0",
   "net.codingwell" %% "scala-guice" % "4.0.0",
   "net.ceedubs" %% "ficus" % "1.1.2",
-  "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test",
+  "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
   "org.scalikejdbc" %% "scalikejdbc-test"   % "2.5.0"   % "test",
   "ch.vorburger.mariaDB4j" % "mariaDB4j" % "2.2.2" % "test",
   specs2 % Test,
-  cache,
+  ehcache,
   filters,
   jdbc,
   evolutions
@@ -76,4 +78,4 @@ defaultScalariformSettings
 ScalariformKeys.preferences := ScalariformKeys.preferences.value
   .setPreference(FormatXml, false)
   .setPreference(DoubleIndentClassDeclaration, false)
-  .setPreference(PreserveDanglingCloseParenthesis, true)
+  .setPreference(DanglingCloseParenthesis, Preserve)

@@ -23,7 +23,7 @@ object NoPasswordForm {
    * @param passwordConfirm The new confirmed password of the user.
    */
   case class Data(
-    uid:String,
+    uid: String,
     passwordNew: String,
     passwordConfirm: String)
 }

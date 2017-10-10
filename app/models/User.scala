@@ -2,20 +2,20 @@ package models
 
 import java.util.UUID
 
-import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
+import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 
 import scala.reflect.io.Streamable.Bytes
 
- /**
-  * The user object.
-  *
-  * @param loginInfo The linked login info.
-  * @param firstName Maybe the first name of the authenticated user.
-  * @param lastName Maybe the last name of the authenticated user.
-  * @param fullName Maybe the full name of the authenticated user.
-  * @param email Maybe the email of the authenticated provider.
-  * @param phone Maybe the phone number of the authenticated provider.
-  */
+/**
+ * The user object.
+ *
+ * @param loginInfo The linked login info.
+ * @param firstName Maybe the first name of the authenticated user.
+ * @param lastName Maybe the last name of the authenticated user.
+ * @param fullName Maybe the full name of the authenticated user.
+ * @param email Maybe the email of the authenticated provider.
+ * @param phone Maybe the phone number of the authenticated provider.
+ */
 case class User(
   loginInfo: LoginInfo,
   firstName: Option[String],
@@ -23,4 +23,4 @@ case class User(
   fullName: Option[String],
   email: Option[String],
   phone: Option[String],
-  passwordHash:Option[String]) extends Identity
+  passwordHash: Option[String]) extends Identity

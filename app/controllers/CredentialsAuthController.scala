@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.Authenticator.Implicits._
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.util.{Clock, Credentials}
+import com.mohiva.play.silhouette.api.util.{ Clock, Credentials }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers._
@@ -24,34 +24,35 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 /**
-  * The credentials auth controller.
-  *
-  * @param messagesApi The Play messages API.
-  * @param env The Silhouette environment.
-  * @param userService The user service implementation.
-  * @param authInfoRepository The auth info repository implementation.
-  * @param credentialsProvider The credentials provider.
-  * @param configuration The Play configuration.
-  * @param clock The clock instance.
-  */
+ * The credentials auth controller.
+ *
+ * @param messagesApi The Play messages API.
+ * @param env The Silhouette environment.
+ * @param userService The user service implementation.
+ * @param authInfoRepository The auth info repository implementation.
+ * @param credentialsProvider The credentials provider.
+ * @param configuration The Play configuration.
+ * @param clock The clock instance.
+ */
 class CredentialsAuthController @Inject() (
-                                            val messagesApi: MessagesApi,
-                                            val env: Environment[User, CookieAuthenticator],
-                                            userService: UserService,
-                                            authInfoRepository: AuthInfoRepository,
-                                            credentialsProvider: CredentialsProvider,
-                                            configuration: Configuration,
-                                            clock: Clock)
+  val messagesApi: MessagesApi,
+  val env: Environment[User, CookieAuthenticator],
+  userService: UserService,
+  authInfoRepository: AuthInfoRepository,
+  credentialsProvider: CredentialsProvider,
+  configuration: Configuration,
+  clock: Clock)
   extends Silhouette[User, CookieAuthenticator] {
   /**
-    * Authenticates a user against the credentials provider.
-    *
-    * @return The result to display.
-    */
+   * Authenticates a user against the credentials provider.
+   *
+   * @return The result to display.
+   */
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
       form => {
-        Future.successful(BadRequest(views.html.signIn(form, form.value.map(_.username).getOrElse(""))))},
+        Future.successful(BadRequest(views.html.signIn(form, form.value.map(_.username).getOrElse(""))))
+      },
       data => {
         val credentials = Credentials(data.username, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>

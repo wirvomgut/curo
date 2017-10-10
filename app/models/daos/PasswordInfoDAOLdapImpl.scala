@@ -16,7 +16,7 @@ import scala.concurrent.Future
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends DelegableAuthInfoDAO[PasswordInfo] {
+class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient) extends DelegableAuthInfoDAO[PasswordInfo] {
 
   /**
    * Finds the auth info which is linked with the specified login info.
@@ -96,7 +96,6 @@ class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends Delega
    */
   def remove(loginInfo: LoginInfo): Future[Unit] = {
     var passwordInfo: Option[PasswordInfo] = None
-
 
     Future.successful(())
   }

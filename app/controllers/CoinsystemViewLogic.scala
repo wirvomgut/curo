@@ -1,7 +1,7 @@
 package controllers
 
 import models.User
-import models.coin.{Person, WorkEntry}
+import models.coin.{ Person, WorkEntry }
 import models.common.Pagination
 
 object CoinsystemViewLogic {
