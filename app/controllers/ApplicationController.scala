@@ -149,6 +149,16 @@ class ApplicationController @Inject() (
   }
 
   /**
+    * Handles the kanban action.
+    *
+    * @return The result to display.
+    */
+  val kinoUrl: String = configuration.getString("app.kino.url").get
+  def kino() = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.iframe(request.identity, protocol + kinoUrl)))
+  }
+
+  /**
     * Handles the chat action.
     *
     * @return The result to display.

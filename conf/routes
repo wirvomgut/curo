@@ -17,6 +17,7 @@ GET         /phone/change                    controllers.LdapController.phone
 GET         /directory                       controllers.ApplicationController.directory
 GET         /files                           controllers.ApplicationController.files
 GET         /carsharing                      controllers.ApplicationController.carsharing
+GET         /kino                            controllers.ApplicationController.kino
 GET         /calendar                        controllers.ApplicationController.calendar
 GET         /chat                            controllers.ApplicationController.chat
 GET         /forum                           controllers.ApplicationController.forum
