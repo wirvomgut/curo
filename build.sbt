@@ -7,9 +7,9 @@ lazy val h2Version = "1.4.+"
 
 name := "Curo"
 
-version := "0.0.7"
+version := "0.0.8"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
 
