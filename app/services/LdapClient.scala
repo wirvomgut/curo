@@ -1,10 +1,10 @@
 package services
 
 import java.nio.charset.StandardCharsets
-import javax.inject._
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
+import javax.inject._
 import models.User
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
@@ -25,12 +25,12 @@ import scala.util.Try
 @Singleton
 class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: ApplicationLifecycle) {
 
-  val host: String = conf.getString("ldap.host").get
-  val port: Int = conf.getInt("ldap.port").get
-  val bindUserName = conf.getString("ldap.bind.user.name").get
-  val bindUserPass = conf.getString("ldap.bind.user.pass").get
+  val host: String = conf.get[String]("ldap.host")
+  val port: Int = conf.get[Int]("ldap.port")
+  val bindUserName: String = conf.get[String]("ldap.bind.user.name")
+  val bindUserPass: String = conf.get[String]("ldap.bind.user.pass")
 
-  val groupUsers = conf.getString("ldap.group.users").get
+  val groupUsers: String = conf.get[String]("ldap.group.users")
 
   def getUser(uid: String): Option[User] = {
     connection
@@ -58,8 +58,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
       fullName = attributes.find(_.getUpId == "cn").map(_.getString),
       email = attributes.find(_.getUpId == "mail").map(_.getString),
       phone = attributes.find(_.getUpId == "homePhone").map(_.getString),
-      passwordHash = attributes.find(_.getUpId == "userPassword").map(a => new String(a.getBytes, StandardCharsets.UTF_8))
-    )).toOption
+      passwordHash = attributes.find(_.getUpId == "userPassword").map(a => new String(a.getBytes, StandardCharsets.UTF_8)))).toOption
   }
 
   def getPasswordInfo(uid: String): Option[PasswordInfo] = {
@@ -81,9 +80,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     Option(
       PasswordInfo(
         hasher = cred.getAlgorithm.getName,
-        password = new String(cred.getPassword, StandardCharsets.UTF_8)
-      )
-    )
+        password = new String(cred.getPassword, StandardCharsets.UTF_8)))
   }
 
   def authUser(uid: String, password: String): Boolean = {
@@ -103,8 +100,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     val bytePassword = PasswordUtil.createStoragePassword(pass, hash)
     val mod = new DefaultModification(
       ModificationOperation.REPLACE_ATTRIBUTE,
-      "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
-    )
+      "userpassword", new String(bytePassword, StandardCharsets.UTF_8))
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
@@ -154,21 +150,19 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
         "sn", lastname,
         "givenname", givenName,
         "uid", uid,
-        "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
-      ))
+        "userpassword", new String(bytePassword, StandardCharsets.UTF_8)))
   }
 
-  def addGroup(dn: String, groupName: String) = {
+  def addGroup(dn: String, groupName: String): Unit = {
     connection.add(
       new DefaultEntry(
         "ou=" + groupName + "," + dn, // The Dn
         "objectclass: organizationalUnit",
         "objectclass: top",
-        "ou: " + groupName
-      ))
+        "ou: " + groupName))
   }
 
-  def connection = {
+  def connection: LdapNetworkConnection = {
     val ldap = new LdapNetworkConnection(host, port)
 
     ldap.bind(bindUserName, bindUserPass)

@@ -1,24 +1,25 @@
 package controllers
 
-import javax.inject.Inject
-
-import com.mohiva.play.silhouette.api.{ Environment, Silhouette }
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import forms.CoinAddForm
-import models.User
+import javax.inject.Inject
 import models.coin.WorkEntry.WorkEntryId
 import models.coin.{ Person, WorkEntry }
 import models.common.Pagination
 import org.joda.time.DateTime
-import play.api.i18n.MessagesApi
-import play.api.mvc.{ Action, AnyContent }
+import play.api.i18n.{ I18nSupport, Lang }
+import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
+import utils.auth.DefaultEnv
 
 import scala.concurrent.Future
 
 class CoinController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User, CookieAuthenticator]
-) extends Silhouette[User, CookieAuthenticator] {
+  cc: ControllerComponents,
+  silhouette: Silhouette[DefaultEnv])
+  extends AbstractController(cc) with I18nSupport {
+
+  lazy val defaultLang: Lang = Lang(java.util.Locale.getDefault)
 
   val itemsPerPage = 9
 
@@ -27,7 +28,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def landing: Action[AnyContent] = SecuredAction.async { implicit request =>
+  def landing: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form)))
   }
 
@@ -36,7 +37,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def archive(page: Int): Action[AnyContent] = SecuredAction.async { implicit request =>
+  def archive(page: Int): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val logic = CoinsystemViewLogic(request.identity, Pagination(itemsPerPage, page * itemsPerPage))
     Future.successful(Ok(views.html.coinsystem(request.identity, logic, CoinAddForm.form)))
   }
@@ -46,7 +47,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def editPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request =>
+  def editPage(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful {
       WorkEntry
         .findById(workEntryId).map(CoinAddForm.fill)
@@ -61,7 +62,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def copyPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request =>
+  def copyPage(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful {
       WorkEntry
         .findById(workEntryId).map(_.copy(dateDone = DateTime.now)).map(CoinAddForm.fill)
@@ -76,7 +77,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def add: Action[AnyContent] = SecuredAction.async { implicit request =>
+  def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     CoinAddForm.form.bindFromRequest.fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
@@ -94,12 +95,10 @@ class CoinController @Inject() (
           description = data.description,
           timeSpent = data.time,
           coins = data.coin,
-          dateDone = data.date
-        )
+          dateDone = data.date)
 
         Future.successful(Redirect(routes.CoinController.landing()))
-      }
-    )
+      })
   }
 
   /**
@@ -107,7 +106,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def edit(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request =>
+  def edit(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     CoinAddForm.form.bindFromRequest.fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
@@ -125,13 +124,11 @@ class CoinController @Inject() (
             description = data.description,
             timeSpent = data.time,
             coins = data.coin,
-            dateDone = data.date
-          ))
+            dateDone = data.date))
         })
 
         Future.successful(Redirect(routes.CoinController.landing()))
-      }
-    )
+      })
   }
 
   /**
@@ -139,7 +136,7 @@ class CoinController @Inject() (
    *
    * @return The result to display.
    */
-  def remove(id: Long): Action[AnyContent] = SecuredAction.async { implicit request =>
+  def remove(id: Long): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     WorkEntry.remove(id)
     Future.successful(Redirect(routes.CoinController.landing()))
   }

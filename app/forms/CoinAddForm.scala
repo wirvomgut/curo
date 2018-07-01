@@ -4,11 +4,11 @@ import models.coin.{ Person, WorkEntry }
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.JodaForms._
 import play.api.data.format.Formats
+import play.api.libs.json._
 
 import scala.concurrent.duration._
-
-import play.api.libs.json._
 
 /**
  * The form which handles the submission of the credentials.
@@ -19,8 +19,7 @@ object CoinAddForm {
     "Teilnahme an Sitzungen",
     "Kopfarbeit (z.B. Arbeit am PC, Organisation)",
     "Praktische Arbeit (wiederkehrend)",
-    "Praktische Arbeit (einmalig)"
-  ).map(v => v -> v)
+    "Praktische Arbeit (einmalig)").map(v => v -> v)
 
   def valueName(area: String, subArea: String): String = s"${area.toLowerCase}_${subArea.toLowerCase}"
     .replaceAll("ü", "ue")
@@ -46,8 +45,7 @@ object CoinAddForm {
       "AK Kochen",
       "AK Naturschutz",
       "AK Putzen",
-      "AK Raumpaten"
-    )),
+      "AK Raumpaten")),
     TaskArea("AG Gemeinschaft", Seq(
       "AG Gemeinschaft",
       "AK Gemeinschaftsaktionen",
@@ -56,16 +54,14 @@ object CoinAddForm {
       "AK Kommunikationsformen",
       "AK NUSS-Knacker",
       "AK Vertrauensrat",
-      "AK ZusammenLeben"
-    )),
+      "AK ZusammenLeben")),
     TaskArea("AG Markt und Kommunikation", Seq(
       "AG Markt und Kommunikation",
       "AK Coworking",
       "AK interne Kommunikation",
       "AK Öffentlichkeitsarbeit",
       "AK Übernachtung",
-      "AK Veranstaltungen"
-    )),
+      "AK Veranstaltungen")),
     TaskArea("AG Raute", Seq(
       "AG Raute",
       "AK Aussenbereichsplanung",
@@ -74,30 +70,25 @@ object CoinAddForm {
       "AK Digitalisierung",
       "AK Mobilität",
       "AK Reaktivierung",
-      "Umweltbeauftragte"
-    )),
+      "Umweltbeauftragte")),
     TaskArea("Von Gutsleuten für Gutsleute", Seq(
       "Café",
       "Chor",
       "Digitales Gut",
       "Yoga",
       "kleiner Filmclub",
-      "Sonstiges"
-    )),
+      "Sonstiges")),
     TaskArea("Verwaltung der Gemeinschaft", Seq(
       "Runder Tisch",
       "Beiräte",
-      "Plenum"
-    )),
+      "Plenum")),
     TaskArea("Verwaltung der Genossenschaft", Seq(
       "Vorstand",
       "Aufsichtsrat",
       "Stabsstellen",
       "Generalversammlung",
-      "Sonstiges"
-    )),
-    TaskArea("Sonstiges", Seq(""))
-  ))
+      "Sonstiges")),
+    TaskArea("Sonstiges", Seq(""))))
 
   case class AreaAndDetail(area: String, detail: String)
   val areaValueNameToAreaDetail: Map[String, AreaAndDetail] = taskAreaValues
@@ -130,8 +121,7 @@ object CoinAddForm {
       description = workEntry.description,
       time = workEntry.timeSpent,
       coin = workEntry.coins,
-      date = workEntry.dateDone
-    )
+      date = workEntry.dateDone)
   }
 
   /**
@@ -146,9 +136,7 @@ object CoinAddForm {
       "description" -> optional(text(minLength = 3, maxLength = 255)),
       "time" -> longNumber(min = 0, max = 720),
       "coin" -> of[Double](Formats.doubleFormat).verifying(d => coinRawValues.contains(d)),
-      "date" -> jodaDate("dd.MM.yyyy")
-    )(Data.apply)(Data.unapply)
-  )
+      "date" -> jodaDate("dd.MM.yyyy"))(Data.apply)(Data.unapply))
 
   /**
    * The form data.
@@ -170,6 +158,5 @@ object CoinAddForm {
     description: Option[String],
     time: Long,
     coin: Double,
-    date: DateTime
-  )
+    date: DateTime)
 }

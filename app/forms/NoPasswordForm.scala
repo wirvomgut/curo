@@ -12,9 +12,7 @@ object NoPasswordForm {
     mapping(
       "uid" -> nonEmptyText,
       "password-new" -> nonEmptyText,
-      "password-confirm" -> nonEmptyText
-    )(Data.apply)(Data.unapply)
-  )
+      "password-confirm" -> nonEmptyText)(Data.apply)(Data.unapply))
 
   /**
    * The form data.

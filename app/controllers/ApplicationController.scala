@@ -1,38 +1,31 @@
 package controllers
 
-import javax.inject.Inject
-
-import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
-import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
 import forms._
-import models.User
+import javax.inject.Inject
 import play.api.Configuration
-import play.api.i18n.MessagesApi
+import play.api.i18n.I18nSupport
+import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents }
 import services.LdapClient
+import utils.auth.DefaultEnv
 
 import scala.concurrent.Future
 
-/**
- * The basic application controller.
- *
- * @param messagesApi The Play messages API.
- * @param env The Silhouette environment.
- */
+//noinspection TypeAnnotation
 class ApplicationController @Inject() (
-  val ldapClient: LdapClient,
-  val messagesApi: MessagesApi,
-  val configuration: Configuration,
-  val socialProviderRegistry: SocialProviderRegistry,
-  val env: Environment[User, CookieAuthenticator])
-  extends Silhouette[User, CookieAuthenticator] {
+  cc: ControllerComponents,
+  ldapClient: LdapClient,
+  configuration: Configuration,
+  silhouette: Silhouette[DefaultEnv])
+  extends AbstractController(cc) with I18nSupport {
 
   /**
    * Handles the index action.
    *
    * @return The result to display.
    */
-  def index = SecuredAction.async { implicit request =>
+  def index = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.home(request.identity)))
   }
 
@@ -41,7 +34,7 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def profile = SecuredAction.async { implicit request =>
+  def profile = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.profile(request.identity)))
   }
 
@@ -50,7 +43,7 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def password = SecuredAction.async { implicit request =>
+  def password = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.password(request.identity, PasswordForm.form)))
   }
 
@@ -59,9 +52,9 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def nopassword(uid: String) = UserAwareAction.async { implicit request =>
+  def nopassword(uid: String) = silhouette.UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None => Future.successful(Ok(views.html.nopassword(NoPasswordForm.form, uid)))
     }
   }
@@ -71,7 +64,7 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def email = SecuredAction.async { implicit request =>
+  def email = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.email(request.identity, EmailForm.form)))
   }
 
@@ -80,7 +73,7 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def phone = SecuredAction.async { implicit request =>
+  def phone = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.phone(request.identity, PhoneForm.form)))
   }
 
@@ -89,20 +82,20 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def directory = SecuredAction.async { implicit request =>
+  def directory = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.directory(request.identity, ldapClient.getUsers())))
   }
 
-  val protocol: String = configuration.getString("curo.protocol").get
-  val nextcloudUrl: String = configuration.getString("app.nextcloud.url").get
+  val protocol: String = configuration.get[String]("curo.protocol")
+  val nextcloudUrl: String = configuration.get[String]("app.nextcloud.url")
 
   /**
    * Handles the files action.
    *
    * @return The result to display.
    */
-  val nextcloudFilesPath: String = configuration.getString("app.nextcloud.files.path").get
-  def files = SecuredAction.async { implicit request =>
+  val nextcloudFilesPath: String = configuration.get[String]("app.nextcloud.files.path")
+  def files = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudFilesPath)))
   }
 
@@ -111,8 +104,8 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  val nextcloudCalendarPath: String = configuration.getString("app.nextcloud.calendar.path").get
-  def calendar = SecuredAction.async { implicit request =>
+  val nextcloudCalendarPath: String = configuration.get[String]("app.nextcloud.calendar.path")
+  def calendar = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudCalendarPath)))
   }
 
@@ -121,8 +114,8 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  val nextcloudCarSharingPath: String = configuration.getString("app.nextcloud.carsharing.path").get
-  def carsharing = SecuredAction.async { implicit request =>
+  val nextcloudCarSharingPath: String = configuration.get[String]("app.nextcloud.carsharing.path")
+  def carsharing = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + nextcloudUrl + nextcloudCarSharingPath)))
   }
 
@@ -131,8 +124,8 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  val forumUrl: String = configuration.getString("app.discourse.url").get
-  def forum = SecuredAction.async { implicit request =>
+  val forumUrl: String = configuration.get[String]("app.discourse.url")
+  def forum = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + forumUrl)))
   }
 
@@ -141,8 +134,8 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  val kanbanUrl: String = configuration.getString("app.kanboard.url").get
-  def kanban(path: String = "") = SecuredAction.async { implicit request =>
+  val kanbanUrl: String = configuration.get[String]("app.kanboard.url")
+  def kanban(path: String = "") = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + kanbanUrl)))
   }
 
@@ -151,8 +144,8 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  val chatUrl: String = configuration.getString("app.rocketchat.url").get
-  def chat = SecuredAction.async { implicit request =>
+  val chatUrl: String = configuration.get[String]("app.rocketchat.url")
+  def chat = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + chatUrl)))
   }
 
@@ -161,9 +154,9 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def signIn = UserAwareAction.async { implicit request =>
+  def signIn = silhouette.UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None => Future.successful(Ok(views.html.signIn(SignInForm.form, request.headers.get("uid").getOrElse(""))))
     }
   }
@@ -173,10 +166,10 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def signOut = SecuredAction.async { implicit request =>
+  def signOut = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val result = Redirect(routes.ApplicationController.index())
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
+    silhouette.env.eventBus.publish(LogoutEvent(request.identity, request))
 
-    env.authenticatorService.discard(request.authenticator, result)
+    silhouette.env.authenticatorService.discard(request.authenticator, result)
   }
 }

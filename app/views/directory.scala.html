@@ -1,3 +1,5 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
 @import views.html.common._
 
 @(user: models.User, users: Seq[models.User])(implicit request: RequestHeader, messages: Messages)
@@ -25,7 +27,7 @@
                         </tr>
                     }
                     </tbody>
-                </div>
+                </table>
             </div>
         </div>
     </div>

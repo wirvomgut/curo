@@ -1,8 +1,7 @@
 package models.daos
 
-import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.LoginInfo
+import javax.inject.Inject
 import models.User
 import services.LdapClient
 
@@ -19,7 +18,7 @@ class UserDAOLdapImpl @Inject() (ldapClient: LdapClient) extends UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo) = {
+  def find(loginInfo: LoginInfo): Future[Option[User]] = {
     find(loginInfo.providerKey)
   }
 
@@ -29,7 +28,7 @@ class UserDAOLdapImpl @Inject() (ldapClient: LdapClient) extends UserDAO {
    * @param uid The uid of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def find(uid: String) = {
+  def find(uid: String): Future[Option[User]] = {
     Future.successful(ldapClient.getUser(uid))
   }
 

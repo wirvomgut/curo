@@ -1,10 +1,6 @@
 package models
 
-import java.util.UUID
-
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
-
-import scala.reflect.io.Streamable.Bytes
 
 /**
  * The user object.

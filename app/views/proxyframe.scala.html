@@ -1,3 +1,7 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.twirl.api.Html
+
 @import views.html.common._
 
 @(user: models.User, html: Html)(implicit request: RequestHeader, messages: Messages)

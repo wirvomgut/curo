@@ -10,9 +10,7 @@ object EmailForm {
 
   val form = Form(
     mapping(
-      "email-new" -> email
-    )(Data.apply)(Data.unapply)
-  )
+      "email-new" -> email)(Data.apply)(Data.unapply))
 
   /**
    * The form data.
@@ -20,6 +18,5 @@ object EmailForm {
    * @param emailNew The new e-mail of the user.
    */
   case class Data(
-    emailNew: String
-  )
+    emailNew: String)
 }

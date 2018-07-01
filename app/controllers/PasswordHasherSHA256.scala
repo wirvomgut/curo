@@ -21,12 +21,13 @@ class PasswordHasherSHA256 extends PasswordHasher {
   override def matches(passwordInfo: PasswordInfo, suppliedPassword: String): Boolean = {
     val suppliedStoragePW = PasswordUtil.createStoragePassword(
       suppliedPassword,
-      LdapSecurityConstants.getAlgorithm(passwordInfo.hasher)
-    )
+      LdapSecurityConstants.getAlgorithm(passwordInfo.hasher))
 
     val suppliedPW = new String(PasswordUtil.splitCredentials(suppliedStoragePW).getPassword, StandardCharsets.UTF_8)
     val storedPW = passwordInfo.password
 
     suppliedPW.equals(storedPW)
   }
+
+  override def isDeprecated(passwordInfo: PasswordInfo): Option[Boolean] = Some(false)
 }
