@@ -140,10 +140,10 @@ class ApplicationController @Inject() (
   }
 
   /**
-    * Handles the kanban action.
-    *
-    * @return The result to display.
-    */
+   * Handles the kino action.
+   *
+   * @return The result to display.
+   */
   val kinoUrl: String = configuration.get[String]("app.kino.url")
   def kino() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.iframe(request.identity, protocol + kinoUrl)))
