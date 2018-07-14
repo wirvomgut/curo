@@ -10,5 +10,9 @@ resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositor
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.15")
 
-// Use the Scalariform plugin to reformat the code
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.2")
+// Use Scala.js
+addSbtPlugin("com.vmunier"               % "sbt-web-scalajs"           % "1.0.8")
+addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.0.0-M3")
+addSbtPlugin("org.portable-scala"        % "sbt-scalajs-crossproject"  % "0.5.0")
+addSbtPlugin("com.typesafe.sbt"          % "sbt-gzip"                  % "1.0.2")
+addSbtPlugin("com.typesafe.sbt"          % "sbt-digest"                % "1.1.4")
