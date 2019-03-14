@@ -1,15 +1,11 @@
-import com.typesafe.sbt.SbtScalariform._
-
-import scalariform.formatter.preferences._
-
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-lazy val scalikejdbcPlayVersion = "2.5.+"
+lazy val scalikejdbcPlayVersion = "2.6.+"
 lazy val h2Version = "1.4.+"
 
 name := "Curo"
 
-version := "0.1.0"
+version := "0.2.0"
 
 scalaVersion := "2.12.5"
 
@@ -25,8 +21,8 @@ javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
 // Java - Scala
 //********************************************************
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.6.9",
-  "com.typesafe.play" %% "play-json-joda" % "2.6.9",
+  "com.typesafe.play" %% "play-json" % "2.6.13",
+  "com.typesafe.play" %% "play-json-joda" % "2.6.13",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % "3.2.2",
   "org.scalikejdbc" %% "scalikejdbc-joda-time"          % "3.2.2",
@@ -60,7 +56,6 @@ libraryDependencies ++= Seq(
   "org.webjars.bower" % "jquery" % "3.3.1",
   "org.webjars.bower" % "semantic" % "2.2.14",
   "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8"
-  //"org.webjars.npm" % "bulma" % "0.5.2"
 )
 
 routesImport += "utils.route.Binders._"
@@ -79,19 +74,4 @@ scalacOptions ++= Seq(
   "-Ywarn-inaccessible", // Warn about inaccessible types in method signatures.
   "-Ywarn-nullary-override", // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
   "-Ywarn-numeric-widen", // Warn when numerics are widened.
-  // Play has a lot of issues with unused imports and unsued params
-  // https://github.com/playframework/playframework/issues/6690
-  // https://github.com/playframework/twirl/issues/105
-  "-Xlint:-unused,_"
 )
-
-//********************************************************
-// Scalariform settings
-//********************************************************
-
-scalariformAutoformat := true
-
-ScalariformKeys.preferences := ScalariformKeys.preferences.value
-  .setPreference(FormatXml, false)
-  .setPreference(DoubleIndentConstructorArguments, false)
-  .setPreference(DanglingCloseParenthesis, Preserve)
