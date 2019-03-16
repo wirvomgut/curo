@@ -1,8 +1,8 @@
-package controllers
+package views.logic
 
 import models.User
-import models.coin.{ Person, WorkEntry }
-import models.common.Pagination
+import models.coin.WorkEntry
+import models.common.{Pagination, Person}
 
 object CoinsystemViewLogic {
   def apply(user: User, pagination: Pagination = Pagination()): CoinsystemViewLogic = new CoinsystemViewLogic(user, pagination)

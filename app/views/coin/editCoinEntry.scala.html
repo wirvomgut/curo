@@ -3,7 +3,7 @@
 @import play.api.data.Form
 @import forms.CoinAddForm
 @import models.coin.WorkEntry
-@import controllers.CoinsystemViewLogic
+@import views.logic.CoinsystemViewLogic
 @import play.twirl.api.Html
 
 @(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data], workEntryId: Long)(implicit request: RequestHeader, messages: Messages)

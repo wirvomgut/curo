@@ -1,6 +1,7 @@
 package forms
 
-import models.coin.{ Person, WorkEntry }
+import models.coin.WorkEntry
+import models.common.Person
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
@@ -136,7 +137,8 @@ object CoinAddForm {
       "description" -> optional(text(minLength = 3, maxLength = 255)),
       "time" -> longNumber(min = 0, max = 720),
       "coin" -> of[Double](Formats.doubleFormat).verifying(d => coinRawValues.contains(d)),
-      "date" -> jodaDate("dd.MM.yyyy"))(Data.apply)(Data.unapply))
+      "date" -> jodaDate("dd.MM.yyyy"))(Data.apply)(Data.unapply)
+  )
 
   /**
    * The form data.

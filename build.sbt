@@ -9,6 +9,8 @@ version := "0.2.0"
 
 scalaVersion := "2.12.5"
 
+maintainer := "Julian Pieles"
+
 resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
@@ -21,8 +23,10 @@ javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
 // Java - Scala
 //********************************************************
 libraryDependencies ++= Seq(
+  "io.monix" %% "monix-execution" % "3.0.0-RC2",
   "com.typesafe.play" %% "play-json" % "2.6.13",
   "com.typesafe.play" %% "play-json-joda" % "2.6.13",
+  "ai.x" %% "play-json-extensions" % "0.30.1",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % "3.2.2",
   "org.scalikejdbc" %% "scalikejdbc-joda-time"          % "3.2.2",
@@ -35,6 +39,7 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.5",
   "net.codingwell" %% "scala-guice" % "4.2.1",
   "com.iheart" %% "ficus" % "1.4.3",
+  "com.squareup.okhttp3" % "okhttp" % "3.14.0",
   "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
   "org.scalikejdbc" %% "scalikejdbc-test"   % "2.5.0"   % "test",

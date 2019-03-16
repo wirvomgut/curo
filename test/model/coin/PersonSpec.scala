@@ -2,8 +2,9 @@ package model.coin
 
 import model.coin.utils.EmbeddedMariaDb
 import model.coin.utils.WorkEntryTestUtil._
-import models.coin.Person.PersonId
-import models.coin.{Person, WorkEntry}
+import models.coin.WorkEntry
+import models.common.Person
+import models.common.Person.PersonId
 import org.specs2.matcher.Matchers
 import play.api.test.{PlaySpecification, WithApplication}
 

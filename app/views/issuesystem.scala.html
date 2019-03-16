@@ -3,10 +3,10 @@
 @import play.api.data.Form
 @import play.twirl.api.Html
 @import forms.CoinAddForm
-@import models.coin.WorkEntry
-@import views.logic.CoinsystemViewLogic
+@import forms.IssueAddForm
+@import views.logic.IssueSystemViewLogic
 
-@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages)
+@(user: models.User, logic: IssueSystemViewLogic, issueAddForm: Form[forms.IssueAddForm.Data])(implicit request: RequestHeader, messages: Messages)
 
 @views.html.common.mainLayout(title = Messages("home.title"), head = Html("""
 <script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
@@ -15,9 +15,9 @@
     @views.html.common.mainMenu(Option(user))
 
     <div class="ui container menu-spacer">
-        @views.html.coin.coinEntryForm(user, coinAddForm, "coin.submit", controllers.routes.CoinController.add())
+        @views.html.coin.issueEntryForm(user, issueAddForm, logic, controllers.routes.IssueController.add())
 
-        @if(logic.workEntries.nonEmpty) {
+        @if(logic.issueEntries.nonEmpty) {
             <div class="ui small delete modal">
                 <div class="ui icon header headline">
                     <i class="remove icon"></i>
@@ -42,31 +42,31 @@
 
             <div class="ui section divider"></div>
             <div class="ui three stackable cards">
-                @for(workEntry <- logic.workEntries) {
-                <div class="card">
+                @for(issueEntry <- logic.issueEntries) {
+                <div class="card @issueEntry.color">
                     <div class="content">
                         <div class="right floated date">
                             <i class="calendar icon"></i>
-                            @workEntry.prettyDateDone
+                            @issueEntry.prettyDateReported
                         </div>
-                        <div class="header">@workEntry.areaDetail</div>
-                        <div class="meta">@workEntry.area</div>
+                        <div class="header">@issueEntry.title</div>
+                        <a class="ui @issueEntry.color ribbon label">@Messages(issueEntry.status)</a>
+
+                        <div class="meta">Bereich: @issueEntry.area Domaine: @issueEntry.kind</div>
 
                         <div class="description">
-                            @workEntry.description
+                            @issueEntry.shortDescription
                         </div>
                     </div>
                     <div class="extra content">
-                        <i class="clock icon"></i>
-                        @workEntry.prettyTimeSpent
-                        <i class="thumbs up icon"></i>
-                        @workEntry.coins
-                        <div class="right floated coins">
-                            <!--<a href="/coin/remove/@workEntry.id"><i class="remove icon"></i></a>-->
-                            <a href="/coin/copy/@workEntry.id"><i class="copy icon"></i></a>
-                            <a href="/coin/edit/@workEntry.id"><i class="edit icon"></i></a>
-                            <i class="remove icon" onclick="showDeletePopup(@workEntry.id)"></i>
-                        </div>
+                        @if(issueEntry.assignee.isDefined) {
+                            <i class="user icon"></i>
+                            Ansprechpartner: @issueEntry.assignee.get
+                        }
+                        @if(issueEntry.assignee.isEmpty) {
+                            <i class="user icon"></i>
+                            Ansprechpartner: @Messages("issue.assigned.nobody")
+                        }
                     </div>
                 </div>
                 }
@@ -89,14 +89,4 @@
 
         }
     </div>
-
-    <script>
-        function showDeletePopup(workEntryId) {
-            $('a.coin.entry.delete').attr("href", "/coin/remove/" + workEntryId)
-            $('.ui.delete.modal')
-                .modal('setting', 'closable', false)
-                .modal('show')
-            ;
-        }
-    </script>
 }

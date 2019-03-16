@@ -28,6 +28,8 @@ GET         /coin/copy/:id                   controllers.CoinController.copyPage
 GET         /coin/add                        controllers.CoinController.add
 GET         /coin/form/edit/:id              controllers.CoinController.edit(id:Long)
 GET         /coin/remove/:id                 controllers.CoinController.remove(id:Long)
+GET         /issue                           controllers.IssueController.landing
+GET         /issue/add                       controllers.IssueController.add
 GET         /kanban                          controllers.ApplicationController.kanban(path = "")
 GET         /kanban/$path<.*>                controllers.ApplicationController.kanban(path)
 GET         /signIn                          controllers.ApplicationController.signIn

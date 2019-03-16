@@ -5,12 +5,13 @@ import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import forms.CoinAddForm
 import javax.inject.Inject
 import models.coin.WorkEntry.WorkEntryId
-import models.coin.{ Person, WorkEntry }
-import models.common.Pagination
+import models.coin.WorkEntry
+import models.common.{Pagination, Person}
 import org.joda.time.DateTime
-import play.api.i18n.{ I18nSupport, Lang }
-import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
+import play.api.i18n.{I18nSupport, Lang}
+import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import utils.auth.DefaultEnv
+import views.logic.CoinsystemViewLogic
 
 import scala.concurrent.Future
 

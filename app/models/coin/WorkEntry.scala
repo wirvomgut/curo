@@ -2,13 +2,13 @@ package models.coin
 
 import java.util.Locale
 
-import models.coin.Person.PersonId
 import models.coin.WorkEntry.WorkEntryId
+import models.common.Person.PersonId
 import org.joda.time.DateTime
 import play.api.libs.json._
 import scalikejdbc._
-import scalikejdbc.jodatime.JodaTypeBinder._
 import scalikejdbc.jodatime.JodaParameterBinderFactory._
+import scalikejdbc.jodatime.JodaTypeBinder._
 
 import scala.concurrent.duration._
 

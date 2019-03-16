@@ -1,6 +1,7 @@
-package models.coin
+package models.common
 
-import models.coin.Person.{ PersonId, PersonUid }
+import models.coin.WorkEntry
+import models.common.Person.{PersonId, PersonUid}
 import scalikejdbc._
 import sqls.count
 
