@@ -1,12 +1,13 @@
-package models.coin
+package models.common
 
-import models.coin.Person.{PersonId, PersonUid}
+import models.coin.WorkEntry
+import models.common.Person.{PersonId, PersonUid}
 import scalikejdbc._
 import sqls.count
 
 case class Person(id: PersonId, uid: PersonUid)
 
-object Person extends SQLSyntaxSupport[Person]{
+object Person extends SQLSyntaxSupport[Person] {
   override val tableName = "persons"
 
   type PersonId = Long

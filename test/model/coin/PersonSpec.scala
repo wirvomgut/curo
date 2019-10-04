@@ -2,8 +2,9 @@ package model.coin
 
 import model.coin.utils.EmbeddedMariaDb
 import model.coin.utils.WorkEntryTestUtil._
-import models.coin.Person.PersonId
-import models.coin.{Person, WorkEntry}
+import models.coin.WorkEntry
+import models.common.Person
+import models.common.Person.PersonId
 import org.specs2.matcher.Matchers
 import play.api.test.{PlaySpecification, WithApplication}
 
@@ -63,13 +64,17 @@ class PersonSpec extends PlaySpecification with Matchers with EmbeddedMariaDb {
     }
     "add work entries and count them" in new WithApplication() {
       val personId1: PersonId = Person.create("personId1")
+      val personId2: PersonId = Person.create("personId2")
 
       createDummyWorkEntry(dummyWorkEntry.copy(personId = personId1))
       createDummyWorkEntry(dummyWorkEntry.copy(personId = personId1))
+      createDummyWorkEntry(dummyWorkEntry.copy(personId = personId2))
 
-      val workEntriesCount: PersonId = Person.countWorkEntries(personId1)
+      val workEntriesCount1: Long = Person.countWorkEntries(personId1)
+      val workEntriesCount2: Long = Person.countWorkEntries(personId2)
 
-      workEntriesCount == 2
+      workEntriesCount1 == 2
+      workEntriesCount2 == 1
     }
   }
 }

@@ -100,6 +100,7 @@ apps.files = Dateien
 apps.directory = Mitglieder
 apps.carsharing = Mitfahrzentrale
 apps.coin = Coin-System
+apps.issue = Störung melden
 apps.kino = Kino
 
 coin.submit = Hinzufügen
@@ -117,6 +118,21 @@ coin.delete.yes = Ja
 coin.delete.no = Nein
 coin.delete.title = Löschen
 coin.delete.message = Möchtest du den Eintrag wirklich löschen?
+
+issue.submit = Melden
+issue.select = Bitte auswählen
+issue.status.new = Neu
+issue.status.progress = In Bearbeitung
+issue.status.done = Fertig
+issue.status.unknwon = Unbekannt
+issue.assigned.nobody = noch nicht zugewiesen
+issue.label.area = Ort
+issue.label.kind = Aufgabenbereich
+issue.label.title = Titel
+issue.label.desc = Beschreibung
+issue.label.alarm = Eilt / Notfall
+issue.placeholder.title = Glühbirne defekt
+issue.placeholder.desc = Glühbirne im ersten Stock direkt am Treppenaufgang flackert funktioniert aber manchmal.
 
 pagination.next = Nächste Seite
 pagination.back = Vorherige Seite

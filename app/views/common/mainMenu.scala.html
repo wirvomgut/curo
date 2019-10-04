@@ -1,3 +1,5 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
 @import models.config.Links
 
 @(user: Option[models.User] = None)(implicit request: RequestHeader, messages: Messages)
@@ -26,6 +28,7 @@
     <a class='@activeLink("/calendar") item' href="/calendar"><i class="calendar icon"></i>@Messages("apps.calendar")</a>
     <a class='@activeLink("/directory") item' href="/directory"><i class="users icon"></i>@Messages("apps.directory")</a>
     <a class='@activeLink("/forum") item' href="@Links.forum.url" target="@Links.forum.target"><i class="book icon"></i>@Messages("apps.forum")</a>
+    <a class='@activeLink("/issue") item' href="/issue"><i class="heartbeat icon"></i>@Messages("apps.issue")</a>
     <a class='@activeLink("/coin") item' href="/coin"><i class="thumbs up icon"></i>@Messages("apps.coin")</a>
     <a class='@activeLink("/kanban") item' href="/kanban"><i class="columns icon"></i>@Messages("apps.kanban")</a>
     <a class='@activeLink("/kino") item' href="/kino"><i class="film icon"></i>@Messages("apps.kino")</a>
@@ -49,6 +52,7 @@
             <i class="caret down icon"></i>@Messages("menu.more")
             <div class="menu">
                 <a class='@activeLink("/coin") item' href="/coin"><i class="thumbs up icon"></i>@Messages("apps.coin")</a>
+                <a class='@activeLink("/issue") item' href="/issue"><i class="heartbeat icon"></i>@Messages("apps.issue")</a>
                 <a class='@activeLink("/kanban") item' href="/kanban"><i class="columns icon"></i>@Messages("apps.kanban")</a>
                 <a class='@activeLink("/kino") item' href="/kino"><i class="film icon"></i>@Messages("apps.kino")</a>
                 <!--<a class='@activeLink("/chat") item' href="/chat"><i class="chat icon"></i>@Messages("apps.chat")</a>-->
@@ -60,8 +64,8 @@
             <div class="ui top pointing dropdown main-menu right item">
                 <i class="caret down icon"></i>@u.fullName
                 <div class="menu">
-                    <a class="item" href="@routes.ApplicationController.profile"><i class="user icon"></i>@Messages("profile.title")</a>
-                    <a class="item" href="@routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
+                    <a class="item" href="@controllers.routes.ApplicationController.profile"><i class="user icon"></i>@Messages("profile.title")</a>
+                    <a class="item" href="@controllers.routes.ApplicationController.signOut"><i class="sign out icon"></i>@Messages("sign.out")</a>
                 </div>
             </div>
             }

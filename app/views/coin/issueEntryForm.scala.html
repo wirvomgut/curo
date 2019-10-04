@@ -1,0 +1,65 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.api.data.Form
+@import views.html.helper
+@import play.api.templates.PlayMagic._
+@import forms.IssueAddForm
+@import forms.common.SemanticForms._
+@import views.logic.IssueSystemViewLogic
+@(user: models.User, issueAddForm: Form[forms.IssueAddForm.Data], logic: IssueSystemViewLogic, action: play.api.mvc.Call)(implicit request: RequestHeader, messages: Messages)
+
+
+@helper.form(action = action, 'class -> "ui form" ) {
+    <div class="three fields">
+        @helper.select(
+        field = issueAddForm("area"),
+        options = logic.area,
+        'class -> "ui dropdown",
+        '_label -> Messages("issue.label.area"),
+        '_default -> Messages("issue.select")
+        )
+        @helper.select(
+            field = issueAddForm("kind"),
+            options = logic.kind,
+            'class -> "ui dropdown",
+            '_label -> Messages("issue.label.kind"),
+            '_default -> Messages("issue.select")
+        )
+    </div>
+    @helper.inputText(issueAddForm("title"), '_label -> Messages("issue.label.title"), 'placeholder -> Messages("issue.placeholder.title"))
+    @helper.textarea(issueAddForm("description"), '_label -> Messages("issue.label.desc"), 'placeholder -> Messages("issue.placeholder.desc"))
+
+    @helper.checkbox(issueAddForm("alarm"), '_label -> Messages("issue.label.alarm"), 'placeholder -> Messages("issue.placeholder.alarm"))(
+        handler = forms.common.SemanticForms.checkbox,
+        messages = messages
+    )
+
+    <button id="submit" type="submit" value="submit" class="ui icon button">
+        <i class="plus icon"></i>
+        @Messages("issue.submit")
+    </button>
+}
+
+<script>
+    $('.ui.dropdown').dropdown({fullTextSearch: true});
+
+    $('#datePicker').calendar({
+      type: 'date',
+      monthFirst: false,
+      popupOptions: {
+          position: 'bottom center',
+          lastResort: 'bottom center',
+          prefer: 'opposite',
+          hideOnScroll: false
+        },
+      formatter: {
+        date: function (date, settings) {
+          if (!date) return '';
+          var day = ("0" + date.getDate()).slice(-2);
+          var month = ("0" + (date.getMonth() + 1)).slice(-2);
+          var year = date.getFullYear();
+          return day + '.' + month + '.' + year;
+        }
+      }
+    });
+</script>

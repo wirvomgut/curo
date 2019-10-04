@@ -1,3 +1,7 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+
+@import play.api.data.Form
 @import views.html.common._
 
 @(signInForm: Form[forms.SignInForm.Data], uid: String = "")(implicit request: RequestHeader, messages: Messages)
@@ -6,12 +10,12 @@
 <div class="ui middle aligned center aligned grid login-page">
     <div class="column login-column">
         <h2 class="ui center aligned header">
-            <img src='@routes.Assets.at("images/wvg_logo_quad.png")' class="ui tiny image">
+            <img src='@controllers.routes.Assets.at("images/wvg_logo_quad.png")' class="ui tiny image">
             <div class="content">
                 @Messages("sign.in.credentials")
             </div>
         </h2>
-        @helper.form(action = routes.CredentialsAuthController.authenticate(), 'class -> "ui large form" ) {
+        @helper.form(action = controllers.routes.CredentialsAuthController.authenticate(), 'class -> "ui large form" ) {
         @helper.CSRF.formField
         <div class="ui segment">
             <div class="field">

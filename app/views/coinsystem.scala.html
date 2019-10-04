@@ -1,8 +1,12 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.api.data.Form
+@import play.twirl.api.Html
 @import forms.CoinAddForm
 @import models.coin.WorkEntry
-@import controllers.CoinsystemViewLogic
+@import views.logic.CoinsystemViewLogic
 
-@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
+@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data])(implicit request: RequestHeader, messages: Messages)
 
 @views.html.common.mainLayout(title = Messages("home.title"), head = Html("""
 <script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
@@ -11,7 +15,7 @@
     @views.html.common.mainMenu(Option(user))
 
     <div class="ui container menu-spacer">
-        @views.html.coin.coinEntryForm(user, coinAddForm, "coin.submit", routes.CoinController.add())
+        @views.html.coin.coinEntryForm(user, coinAddForm, "coin.submit", controllers.routes.CoinController.add())
 
         @if(logic.workEntries.nonEmpty) {
             <div class="ui small delete modal">
@@ -43,7 +47,7 @@
                     <div class="content">
                         <div class="right floated date">
                             <i class="calendar icon"></i>
-                            @workEntry.dateDone.toString("dd.MM.yyyy", lang.toLocale)
+                            @workEntry.prettyDateDone
                         </div>
                         <div class="header">@workEntry.areaDetail</div>
                         <div class="meta">@workEntry.area</div>

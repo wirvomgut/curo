@@ -12,9 +12,7 @@ object NoPasswordForm {
     mapping(
       "uid" -> nonEmptyText,
       "password-new" -> nonEmptyText,
-      "password-confirm" -> nonEmptyText
-    )(Data.apply)(Data.unapply)
-  )
+      "password-confirm" -> nonEmptyText)(Data.apply)(Data.unapply))
 
   /**
    * The form data.
@@ -23,7 +21,7 @@ object NoPasswordForm {
    * @param passwordConfirm The new confirmed password of the user.
    */
   case class Data(
-    uid:String,
+    uid: String,
     passwordNew: String,
     passwordConfirm: String)
 }

@@ -1,9 +1,8 @@
 package models.services
 
-import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
+import javax.inject.Inject
 import models.User
 import models.daos.UserDAO
 

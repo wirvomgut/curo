@@ -1,0 +1,92 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.api.data.Form
+@import play.twirl.api.Html
+@import forms.CoinAddForm
+@import forms.IssueAddForm
+@import views.logic.IssueSystemViewLogic
+
+@(user: models.User, logic: IssueSystemViewLogic, issueAddForm: Form[forms.IssueAddForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@views.html.common.mainLayout(title = Messages("home.title"), head = Html("""
+<script type="text/javascript" src="/assets/lib/semantic-ui-calendar/dist/calendar.min.js"></script>
+<link rel="stylesheet" href="/assets/lib/semantic-ui-calendar/dist/calendar.min.css" />
+""")) {
+    @views.html.common.mainMenu(Option(user))
+
+    <div class="ui container menu-spacer">
+        @views.html.coin.issueEntryForm(user, issueAddForm, logic, controllers.routes.IssueController.add())
+
+        @if(logic.issueEntries.nonEmpty) {
+            <div class="ui small delete modal">
+                <div class="ui icon header headline">
+                    <i class="remove icon"></i>
+                    @Messages("coin.delete.title")
+                </div>
+                <div class="content">
+                    <p>@Messages("coin.delete.message")</p>
+                </div>
+                <div class="actions">
+                    <div class="ui red cancel button">
+                        <i class="remove icon"></i>
+                        @Messages("coin.delete.no")
+                    </div>
+                    <a href="" class="coin entry delete">
+                        <div class="ui green ok button">
+                        <i class="checkmark icon"></i>
+                            @Messages("coin.delete.yes")
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="ui section divider"></div>
+            <div class="ui three stackable cards">
+                @for(issueEntry <- logic.issueEntries) {
+                <div class="card @issueEntry.color">
+                    <div class="content">
+                        <div class="right floated date">
+                            <i class="calendar icon"></i>
+                            @issueEntry.prettyDateReported
+                        </div>
+                        <div class="header">@issueEntry.title</div>
+                        <a class="ui @issueEntry.color ribbon label">@Messages(issueEntry.status)</a>
+
+                        <div class="meta">Bereich: @issueEntry.area Domaine: @issueEntry.kind</div>
+
+                        <div class="description">
+                            @issueEntry.shortDescription
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        @if(issueEntry.assignee.isDefined) {
+                            <i class="user icon"></i>
+                            Ansprechpartner: @issueEntry.assignee.get
+                        }
+                        @if(issueEntry.assignee.isEmpty) {
+                            <i class="user icon"></i>
+                            Ansprechpartner: @Messages("issue.assigned.nobody")
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+
+            @if(logic.showPagination) {
+                <div class="ui section divider"></div>
+                @if(logic.showBackButton) {
+                    <a href="/coin/page/@logic.prevPageNumber">
+                        <button class="ui left floated button">@Messages("pagination.back")</button>
+                    </a>
+                }
+                @if(logic.showNextButton) {
+                    <a href="/coin/page/@logic.nextPageNumber">
+                        <button class="ui right floated button">@Messages("pagination.next")</button>
+                    </a>
+                }
+            }
+
+        }
+    </div>
+}

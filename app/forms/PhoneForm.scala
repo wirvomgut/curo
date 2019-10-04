@@ -1,8 +1,8 @@
 package forms
 
-import play.api.data._
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data._
+import play.api.data.validation.{ Constraint, Invalid, Valid, ValidationError }
 
 /**
  * The form which handles the change of the phone number.
@@ -21,9 +21,7 @@ object PhoneForm {
 
   val form = Form(
     mapping(
-      "phone-new" -> text.verifying(phoneCheckConstraint)
-    )(Data.apply)(Data.unapply)
-  )
+      "phone-new" -> text.verifying(phoneCheckConstraint))(Data.apply)(Data.unapply))
 
   /**
    * The form data.
@@ -31,6 +29,5 @@ object PhoneForm {
    * @param phoneNew The new phone number of the user.
    */
   case class Data(
-    phoneNew: String
-  )
+    phoneNew: String)
 }

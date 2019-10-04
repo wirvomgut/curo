@@ -1,80 +1,84 @@
 package controllers
 
-import javax.inject.Inject
-
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import forms.CoinAddForm
-import models.User
+import javax.inject.Inject
 import models.coin.WorkEntry.WorkEntryId
-import models.coin.{Person, WorkEntry}
-import models.common.Pagination
+import models.coin.WorkEntry
+import models.common.{Pagination, Person}
 import org.joda.time.DateTime
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport, Lang}
+import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import utils.auth.DefaultEnv
+import views.logic.CoinsystemViewLogic
 
 import scala.concurrent.Future
 
+class CoinController @Inject() (
+  cc: ControllerComponents,
+  silhouette: Silhouette[DefaultEnv])
+  extends AbstractController(cc) with I18nSupport {
 
-class CoinController @Inject()(
-                                val messagesApi: MessagesApi,
-                                val env: Environment[User, CookieAuthenticator]
-                              ) extends Silhouette[User, CookieAuthenticator] {
+  lazy val defaultLang: Lang = Lang(java.util.Locale.getDefault)
 
   val itemsPerPage = 9
 
   /**
-    * Handles the coin system landing page action.
-    *
-    * @return The result to display.
-    */
-  def landing: Action[AnyContent] = SecuredAction.async { implicit request =>
+   * Handles the coin system landing page action.
+   *
+   * @return The result to display.
+   */
+  def landing: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form)))
   }
 
   /**
-    * Handles the coin system archive action.
-    *
-    * @return The result to display.
-    */
-  def archive(page: Int): Action[AnyContent] = SecuredAction.async { implicit request =>
+   * Handles the coin system archive action.
+   *
+   * @return The result to display.
+   */
+  def archive(page: Int): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val logic = CoinsystemViewLogic(request.identity, Pagination(itemsPerPage, page * itemsPerPage))
     Future.successful(Ok(views.html.coinsystem(request.identity, logic, CoinAddForm.form)))
   }
 
   /**
-    * Handles the coin system edit page action.
-    *
-    * @return The result to display.
-    */
-  def editPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request => Future.successful {
-    WorkEntry
-      .findById(workEntryId).map(CoinAddForm.fill)
-      .map(data => {
-        Ok(views.html.coin.editCoinEntry(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data), workEntryId))
-      }).getOrElse(BadRequest)
-  }}
+   * Handles the coin system edit page action.
+   *
+   * @return The result to display.
+   */
+  def editPage(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Future.successful {
+      WorkEntry
+        .findById(workEntryId).map(CoinAddForm.fill)
+        .map(data => {
+          Ok(views.html.coin.editCoinEntry(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data), workEntryId))
+        }).getOrElse(BadRequest)
+    }
+  }
 
   /**
-    * Handles the coin system copy page action.
-    *
-    * @return The result to display.
-    */
-  def copyPage(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request => Future.successful {
-    WorkEntry
-      .findById(workEntryId).map(_.copy(dateDone = DateTime.now)).map(CoinAddForm.fill)
-      .map(data => {
-        Ok(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data)))
-      }).getOrElse(BadRequest)
-  }}
-
+   * Handles the coin system copy page action.
+   *
+   * @return The result to display.
+   */
+  def copyPage(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Future.successful {
+      WorkEntry
+        .findById(workEntryId).map(_.copy(dateDone = DateTime.now)).map(CoinAddForm.fill)
+        .map(data => {
+          Ok(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), CoinAddForm.form.fill(data)))
+        }).getOrElse(BadRequest)
+    }
+  }
 
   /**
-    * Add a coin entry.
-    *
-    * @return The result to display.
-    */
-  def add: Action[AnyContent] = SecuredAction.async { implicit request =>
+   * Add a coin entry.
+   *
+   * @return The result to display.
+   */
+  def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     CoinAddForm.form.bindFromRequest.fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
@@ -92,20 +96,18 @@ class CoinController @Inject()(
           description = data.description,
           timeSpent = data.time,
           coins = data.coin,
-          dateDone = data.date
-        )
+          dateDone = data.date)
 
         Future.successful(Redirect(routes.CoinController.landing()))
-      }
-    )
+      })
   }
 
   /**
-    * Edit a coin entry.
-    *
-    * @return The result to display.
-    */
-  def edit(workEntryId: WorkEntryId): Action[AnyContent] = SecuredAction.async { implicit request =>
+   * Edit a coin entry.
+   *
+   * @return The result to display.
+   */
+  def edit(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     CoinAddForm.form.bindFromRequest.fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
@@ -123,21 +125,19 @@ class CoinController @Inject()(
             description = data.description,
             timeSpent = data.time,
             coins = data.coin,
-            dateDone = data.date
-          ))
+            dateDone = data.date))
         })
 
         Future.successful(Redirect(routes.CoinController.landing()))
-      }
-    )
+      })
   }
 
   /**
-    * Remove a coin entry.
-    *
-    * @return The result to display.
-    */
-  def remove(id: Long): Action[AnyContent] = SecuredAction.async { implicit request =>
+   * Remove a coin entry.
+   *
+   * @return The result to display.
+   */
+  def remove(id: Long): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     WorkEntry.remove(id)
     Future.successful(Redirect(routes.CoinController.landing()))
   }

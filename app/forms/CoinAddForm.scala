@@ -1,26 +1,26 @@
 package forms
 
-import models.coin.{Person, WorkEntry}
+import models.coin.WorkEntry
+import models.common.Person
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.JodaForms._
 import play.api.data.format.Formats
+import play.api.libs.json._
 
 import scala.concurrent.duration._
 
-import play.api.libs.json._
-
 /**
-  * The form which handles the submission of the credentials.
-  */
+ * The form which handles the submission of the credentials.
+ */
 object CoinAddForm {
 
   val kindValues: Seq[(String, String)] = Seq(
     "Teilnahme an Sitzungen",
     "Kopfarbeit (z.B. Arbeit am PC, Organisation)",
     "Praktische Arbeit (wiederkehrend)",
-    "Praktische Arbeit (einmalig)"
-  ).map(v => v -> v)
+    "Praktische Arbeit (einmalig)").map(v => v -> v)
 
   def valueName(area: String, subArea: String): String = s"${area.toLowerCase}_${subArea.toLowerCase}"
     .replaceAll("ü", "ue")
@@ -46,8 +46,7 @@ object CoinAddForm {
       "AK Kochen",
       "AK Naturschutz",
       "AK Putzen",
-      "AK Raumpaten"
-    )),
+      "AK Raumpaten")),
     TaskArea("AG Gemeinschaft", Seq(
       "AG Gemeinschaft",
       "AK Gemeinschaftsaktionen",
@@ -56,16 +55,14 @@ object CoinAddForm {
       "AK Kommunikationsformen",
       "AK NUSS-Knacker",
       "AK Vertrauensrat",
-      "AK ZusammenLeben"
-    )),
+      "AK ZusammenLeben")),
     TaskArea("AG Markt und Kommunikation", Seq(
       "AG Markt und Kommunikation",
       "AK Coworking",
       "AK interne Kommunikation",
       "AK Öffentlichkeitsarbeit",
       "AK Übernachtung",
-      "AK Veranstaltungen"
-    )),
+      "AK Veranstaltungen")),
     TaskArea("AG Raute", Seq(
       "AG Raute",
       "AK Aussenbereichsplanung",
@@ -74,41 +71,36 @@ object CoinAddForm {
       "AK Digitalisierung",
       "AK Mobilität",
       "AK Reaktivierung",
-      "Umweltbeauftragte"
-    )),
+      "Umweltbeauftragte")),
     TaskArea("Von Gutsleuten für Gutsleute", Seq(
       "Café",
       "Chor",
       "Digitales Gut",
       "Yoga",
       "kleiner Filmclub",
-      "Sonstiges"
-    )),
+      "Sonstiges")),
     TaskArea("Verwaltung der Gemeinschaft", Seq(
       "Runder Tisch",
       "Beiräte",
-      "Plenum"
-    )),
+      "Plenum")),
     TaskArea("Verwaltung der Genossenschaft", Seq(
       "Vorstand",
       "Aufsichtsrat",
       "Stabsstellen",
       "Generalversammlung",
-      "Sonstiges"
-    )),
-    TaskArea("Sonstiges", Seq(""))
-  ))
+      "Sonstiges")),
+    TaskArea("Sonstiges", Seq(""))))
 
   case class AreaAndDetail(area: String, detail: String)
   val areaValueNameToAreaDetail: Map[String, AreaAndDetail] = taskAreaValues
     .areas
-    .flatMap(a => a.subAreas.map(s => a.valueName(s) -> AreaAndDetail(a.areaName , s)))
+    .flatMap(a => a.subAreas.map(s => a.valueName(s) -> AreaAndDetail(a.areaName, s)))
     .toMap
 
   //TODO: make this nice ;)
   val areaValues: Seq[(String, String)] = taskAreaValues
     .areas
-    .flatMap(a => a.subAreas.map(s => a.valueName(s) -> (if(s.isEmpty || s == a.areaName) s"${a.areaName}" else s"${a.areaName} / " + s)))
+    .flatMap(a => a.subAreas.map(s => a.valueName(s) -> (if (s.isEmpty || s == a.areaName) s"${a.areaName}" else s"${a.areaName} / " + s)))
 
   def subAreasForArea(areaName: String): Seq[String] = taskAreaValues.areas.find(_.areaName == areaName).map(_.subAreas).getOrElse(Seq.empty)
 
@@ -130,46 +122,43 @@ object CoinAddForm {
       description = workEntry.description,
       time = workEntry.timeSpent,
       coin = workEntry.coins,
-      date = workEntry.dateDone
-    )
+      date = workEntry.dateDone)
   }
 
   /**
-    * A play framework form.
-    */
+   * A play framework form.
+   */
   val form = Form(
     mapping(
       "id" -> optional(longNumber),
       "personId" -> optional(longNumber),
       "kind" -> nonEmptyText,
       "area" -> nonEmptyText,
-      "description" -> optional(text(minLength=3, maxLength=255)),
-      "time" -> longNumber(min=0, max=720),
+      "description" -> optional(text(minLength = 3, maxLength = 255)),
+      "time" -> longNumber(min = 0, max = 720),
       "coin" -> of[Double](Formats.doubleFormat).verifying(d => coinRawValues.contains(d)),
-      "date" -> jodaDate("dd.MM.yyyy")
-    )(Data.apply)(Data.unapply)
+      "date" -> jodaDate("dd.MM.yyyy"))(Data.apply)(Data.unapply)
   )
 
   /**
-    * The form data.
-    *
-    * @param id optional work entry id
-    * @param personId optional person id
-    * @param kind Kind of task.
-    * @param area Area where the task was executed.
-    * @param description Description of the task.
-    * @param time Time spent executing this task.
-    * @param coin Coin value issued for this task.
-    * @param date Date when the task was done.
-    */
+   * The form data.
+   *
+   * @param id optional work entry id
+   * @param personId optional person id
+   * @param kind Kind of task.
+   * @param area Area where the task was executed.
+   * @param description Description of the task.
+   * @param time Time spent executing this task.
+   * @param coin Coin value issued for this task.
+   * @param date Date when the task was done.
+   */
   case class Data(
-                   id: Option[WorkEntry.WorkEntryId] = None,
-                   personId: Option[Person.PersonId] = None,
-                   kind: String,
-                   area: String,
-                   description: Option[String],
-                   time: Long,
-                   coin: Double,
-                   date: DateTime
-                 )
+    id: Option[WorkEntry.WorkEntryId] = None,
+    personId: Option[Person.PersonId] = None,
+    kind: String,
+    area: String,
+    description: Option[String],
+    time: Long,
+    coin: Double,
+    date: DateTime)
 }

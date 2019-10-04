@@ -1,8 +1,12 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.api.data.Form
 @import forms.CoinAddForm
 @import models.coin.WorkEntry
-@import controllers.CoinsystemViewLogic
+@import views.logic.CoinsystemViewLogic
+@import play.twirl.api.Html
 
-@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data], workEntryId: Long)(implicit request: RequestHeader, messages: Messages, lang: play.api.i18n.Lang)
+@(user: models.User, logic: CoinsystemViewLogic, coinAddForm: Form[forms.CoinAddForm.Data], workEntryId: Long)(implicit request: RequestHeader, messages: Messages)
 
 @formButtons() = {
     <a href="/coin"><button class="ui red cancel button" id="cancel" name="cancel"  >
@@ -17,6 +21,6 @@
 @views.html.common.mainMenu(Option(user))
 
 <div class="ui container menu-spacer">
-    @views.html.coin.coinEntryForm(user, coinAddForm, "coin.edit.submit", routes.CoinController.edit(workEntryId))
+    @views.html.coin.coinEntryForm(user, coinAddForm, "coin.edit.submit", controllers.routes.CoinController.edit(workEntryId))
 </div>
 }

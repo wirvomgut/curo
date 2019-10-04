@@ -1,22 +1,18 @@
 package models.daos
 
-import java.sql.ResultSet
-import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import play.api.Play.current
-import play.api.db.DB
-import play.api.libs.concurrent.Execution.Implicits._
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
+import javax.inject.Inject
+import play.api.db.Database
 import services.LdapClient
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends DelegableAuthInfoDAO[PasswordInfo] {
+class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient, db: Database)(implicit ec: ExecutionContext) extends DelegableAuthInfoDAO[PasswordInfo] {
 
   /**
    * Finds the auth info which is linked with the specified login info.
@@ -36,7 +32,7 @@ class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends Delega
    * @return The added auth info.
    */
   def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    DB.withConnection(conn => {
+    db.withConnection(conn => {
       conn.createStatement().execute(
         s"""
         INSERT INTO authinfo (
@@ -59,7 +55,7 @@ class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends Delega
    * @return The updated auth info.
    */
   def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    DB.withConnection(conn => {
+    db.withConnection(conn => {
       conn.createStatement().execute(
         s"""
         UPDATE authinfo
@@ -95,9 +91,6 @@ class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient)  extends Delega
    * @return A future to wait for the process to be completed.
    */
   def remove(loginInfo: LoginInfo): Future[Unit] = {
-    var passwordInfo: Option[PasswordInfo] = None
-
-
     Future.successful(())
   }
 }

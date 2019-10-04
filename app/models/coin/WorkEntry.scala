@@ -1,18 +1,23 @@
 package models.coin
 
-import models.coin.Person.PersonId
+import java.util.Locale
+
 import models.coin.WorkEntry.WorkEntryId
+import models.common.Person.PersonId
 import org.joda.time.DateTime
 import play.api.libs.json._
 import scalikejdbc._
+import scalikejdbc.jodatime.JodaParameterBinderFactory._
+import scalikejdbc.jodatime.JodaTypeBinder._
 
 import scala.concurrent.duration._
-
 
 case class WorkEntry(id: WorkEntryId, personId: PersonId, kind: String, area: String, areaDetail: String, description: Option[String], timeSpent: Long, coins: Double, dateDone: DateTime, dateCreated: DateTime = DateTime.now) {
   implicit val jsonWrites: Writes[WorkEntry] = WorkEntry.workEntryWrites
 
   val prettyTimeSpent: String = s"0${timeSpent.minutes.toHours}:".takeRight(3) + s"0${timeSpent.minutes.minus(timeSpent.minutes.toHours.hours).toMinutes}".takeRight(2)
+
+  val prettyDateDone: String = dateDone.toString("dd.MM.yyyy", Locale.GERMANY)
 
   def toJson: String = {
     Json.toJson(this).toString
@@ -37,8 +42,7 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
         wc.description -> description,
         wc.timeSpent -> timeSpent,
         wc.coins -> coins,
-        wc.dateDone -> dateDone
-      )
+        wc.dateDone -> dateDone)
     }.updateAndReturnGeneratedKey().apply()
   }
 
@@ -51,8 +55,7 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
         wc.description -> workEntry.description,
         wc.timeSpent -> workEntry.timeSpent,
         wc.coins -> workEntry.coins,
-        wc.dateDone -> workEntry.dateDone
-      ).where.eq(wc.id, workEntry.id)
+        wc.dateDone -> workEntry.dateDone).where.eq(wc.id, workEntry.id)
     }.update.apply()
   }
 
@@ -80,22 +83,19 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
     areaDetail = rs.string(r.areaDetail),
     description = rs.stringOpt(r.description),
     timeSpent = rs.long(r.timeSpent), coins = rs.double(r.coins),
-    dateDone = rs.jodaDateTime(r.dateDone),
-    dateCreated = rs.jodaDateTime(r.dateCreated)
-  )
+    dateDone = rs.get(r.dateDone),
+    dateCreated = rs.get(r.dateCreated))
 
-  implicit val workEntryWrites: Writes[WorkEntry] = new Writes[WorkEntry] {
-    def writes(workEntry: WorkEntry): JsObject = Json.obj(
-      "id" -> workEntry.id,
-      "personId" -> workEntry.personId,
-      "kind" -> workEntry.kind,
-      "area" -> workEntry.area,
-      "areaDetail" -> workEntry.areaDetail,
-      "description" -> workEntry.description,
-      "timeSpent" -> workEntry.timeSpent,
-      "coins" -> workEntry.coins,
-      "dateDone" -> workEntry.dateDone,
-      "dateCreated" -> workEntry.dateCreated
-    )
-  }
+  import play.api.libs.json.JodaWrites._
+  implicit val workEntryWrites: Writes[WorkEntry] = (workEntry: WorkEntry) => Json.obj(
+    "id" -> workEntry.id,
+    "personId" -> workEntry.personId,
+    "kind" -> workEntry.kind,
+    "area" -> workEntry.area,
+    "areaDetail" -> workEntry.areaDetail,
+    "description" -> workEntry.description,
+    "timeSpent" -> workEntry.timeSpent,
+    "coins" -> workEntry.coins,
+    "dateDone" -> workEntry.dateDone,
+    "dateCreated" -> workEntry.dateCreated)
 }

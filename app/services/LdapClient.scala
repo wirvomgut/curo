@@ -1,10 +1,10 @@
 package services
 
 import java.nio.charset.StandardCharsets
-import javax.inject._
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
+import javax.inject._
 import models.User
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
@@ -19,39 +19,38 @@ import scala.concurrent.Future
 import scala.util.Try
 
 /**
-  * @author julianliebl 
-  * @since 21.10.16
-  */
+ * @author julianliebl
+ * @since 21.10.16
+ */
 @Singleton
-class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: ApplicationLifecycle){
+class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: ApplicationLifecycle) {
 
-  val host:String = conf.getString("ldap.host").get
-  val port:Int = conf.getInt("ldap.port").get
-  val bindUserName = conf.getString("ldap.bind.user.name").get
-  val bindUserPass = conf.getString("ldap.bind.user.pass").get
+  val host: String = conf.get[String]("ldap.host")
+  val port: Int = conf.get[Int]("ldap.port")
+  val bindUserName: String = conf.get[String]("ldap.bind.user.name")
+  val bindUserPass: String = conf.get[String]("ldap.bind.user.pass")
 
-  val groupUsers = conf.getString("ldap.group.users").get
+  val groupUsers: String = conf.get[String]("ldap.group.users")
 
-
-  def getUser(uid:String):Option[User] = {
+  def getUser(uid: String): Option[User] = {
     connection
-      .search( "uid=" + uid + "," + groupUsers , "(objectclass=person)", SearchScope.OBJECT)
+      .search("uid=" + uid + "," + groupUsers, "(objectclass=person)", SearchScope.OBJECT)
       .asScala
       .toSeq
       .headOption
       .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
   }
 
-  def getUsers():Seq[User] = {
+  def getUsers(): Seq[User] = {
     connection
-      .search(groupUsers , "(objectclass=person)", SearchScope.ONELEVEL)
+      .search(groupUsers, "(objectclass=person)", SearchScope.ONELEVEL)
       .asScala
       .toSeq
       .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
       .sortBy(_.loginInfo.providerKey)
   }
 
-  private def parseUser(attributes: Seq[Attribute]): Option[User] ={
+  private def parseUser(attributes: Seq[Attribute]): Option[User] = {
     Try(User(
       loginInfo = LoginInfo(providerID = "LDAP", providerKey = attributes.find(_.getUpId == "uid").map(_.getString).get),
       firstName = attributes.find(_.getUpId == "givenName").map(_.getString),
@@ -59,21 +58,20 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
       fullName = attributes.find(_.getUpId == "cn").map(_.getString),
       email = attributes.find(_.getUpId == "mail").map(_.getString),
       phone = attributes.find(_.getUpId == "homePhone").map(_.getString),
-      passwordHash = attributes.find(_.getUpId == "userPassword").map(a => new String(a.getBytes, StandardCharsets.UTF_8))
-    )).toOption
+      passwordHash = attributes.find(_.getUpId == "userPassword").map(a => new String(a.getBytes, StandardCharsets.UTF_8)))).toOption
   }
 
-  def getPasswordInfo(uid:String):Option[PasswordInfo] = {
-    val cursor:EntryCursor = connection
-      .search( "uid=" + uid + "," + groupUsers , "(objectclass=person)", SearchScope.OBJECT)
+  def getPasswordInfo(uid: String): Option[PasswordInfo] = {
+    val cursor: EntryCursor = connection
+      .search("uid=" + uid + "," + groupUsers, "(objectclass=person)", SearchScope.OBJECT)
 
-    if(!cursor.next()){
+    if (!cursor.next()) {
       return None
     }
 
     val pass = cursor.get().asScala.find(a => a.getUpId.equals("userPassword")).map(a => a.getBytes)
 
-    if(pass.isEmpty){
+    if (pass.isEmpty) {
       return None
     }
 
@@ -82,16 +80,14 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     Option(
       PasswordInfo(
         hasher = cred.getAlgorithm.getName,
-        password = new String(cred.getPassword, StandardCharsets.UTF_8)
-      )
-    )
+        password = new String(cred.getPassword, StandardCharsets.UTF_8)))
   }
 
-  def authUser(uid:String, password:String):Boolean = {
-    val cursor:EntryCursor = connection
-      .search( "uid=" + uid + "," + groupUsers , "(objectclass=person)", SearchScope.OBJECT)
+  def authUser(uid: String, password: String): Boolean = {
+    val cursor: EntryCursor = connection
+      .search("uid=" + uid + "," + groupUsers, "(objectclass=person)", SearchScope.OBJECT)
 
-    if(!cursor.next()){
+    if (!cursor.next()) {
       return false
     }
 
@@ -100,53 +96,52 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     PasswordUtil.compareCredentials(password.getBytes(StandardCharsets.UTF_8), contents.get("userPassword").getBytes)
   }
 
-  def modifyPassword(uid:String, pass:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit = {
+  def modifyPassword(uid: String, pass: String, hash: LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit = {
     val bytePassword = PasswordUtil.createStoragePassword(pass, hash)
     val mod = new DefaultModification(
       ModificationOperation.REPLACE_ATTRIBUTE,
-      "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
-    )
+      "userpassword", new String(bytePassword, StandardCharsets.UTF_8))
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def hasPassword(uid:String): Boolean = {
+  def hasPassword(uid: String): Boolean = {
     val user = getUser(uid)
     user.isDefined && user.get.passwordHash.isDefined
   }
 
-  def addMail(uid:String, mail:String): Unit ={
+  def addMail(uid: String, mail: String): Unit = {
     addAttribute(uid, "mail", mail)
   }
 
-  def modifyMail(uid:String, mail:String): Unit ={
+  def modifyMail(uid: String, mail: String): Unit = {
     modifyAttribute(uid, "mail", mail)
   }
 
-  def addPhone(uid:String, phone:String): Unit ={
+  def addPhone(uid: String, phone: String): Unit = {
     addAttribute(uid, "homePhone", phone)
   }
 
-  def modifyPhone(uid:String, phone:String): Unit ={
+  def modifyPhone(uid: String, phone: String): Unit = {
     modifyAttribute(uid, "homePhone", phone)
   }
 
-  def modifyAttribute(uid:String, key: String, value:String): Unit = {
+  def modifyAttribute(uid: String, key: String, value: String): Unit = {
     val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, key, value)
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def addAttribute(uid:String, key:String, value:String): Unit ={
-    val mod = new DefaultModification( ModificationOperation.ADD_ATTRIBUTE, key, value )
+  def addAttribute(uid: String, key: String, value: String): Unit = {
+    val mod = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, key, value)
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def addUser(givenName:String, lastname:String, password:String, hash:LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit ={
+  def addUser(givenName: String, lastname: String, password: String, hash: LdapSecurityConstants = LdapSecurityConstants.HASH_METHOD_MD5): Unit = {
     val uid = givenName.toLowerCase + lastname.toLowerCase
     val bytePassword = PasswordUtil.createStoragePassword(password, hash)
 
     connection.add(
       new DefaultEntry(
-        "uid=" + uid + "," + groupUsers,    // The Dn
+        "uid=" + uid + "," + groupUsers, // The Dn
         "objectclass: top",
         "objectclass: person",
         "objectclass: inetOrgPerson",
@@ -155,21 +150,19 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
         "sn", lastname,
         "givenname", givenName,
         "uid", uid,
-        "userpassword", new String(bytePassword, StandardCharsets.UTF_8)
-      ) )
+        "userpassword", new String(bytePassword, StandardCharsets.UTF_8)))
   }
 
-  def addGroup(dn:String, groupName:String) = {
+  def addGroup(dn: String, groupName: String): Unit = {
     connection.add(
       new DefaultEntry(
-        "ou=" + groupName + "," + dn,    // The Dn
+        "ou=" + groupName + "," + dn, // The Dn
         "objectclass: organizationalUnit",
         "objectclass: top",
-        "ou: " + groupName
-      ) )
+        "ou: " + groupName))
   }
 
-  def connection = {
+  def connection: LdapNetworkConnection = {
     val ldap = new LdapNetworkConnection(host, port)
 
     ldap.bind(bindUserName, bindUserPass)
@@ -179,7 +172,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
 
   lifecycle.addStopHook { () =>
     Future.successful(() => {
-      if(connection.isConnected){
+      if (connection.isConnected) {
         connection.unBind()
       }
       connection.close()
