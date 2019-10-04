@@ -10,7 +10,7 @@
 
 
 @helper.form(action = action, 'class -> "ui form" ) {
-    <div class="two fields">
+    <div class="three fields">
         @helper.select(
         field = issueAddForm("area"),
         options = logic.area,
@@ -28,6 +28,11 @@
     </div>
     @helper.inputText(issueAddForm("title"), '_label -> Messages("issue.label.title"), 'placeholder -> Messages("issue.placeholder.title"))
     @helper.textarea(issueAddForm("description"), '_label -> Messages("issue.label.desc"), 'placeholder -> Messages("issue.placeholder.desc"))
+
+    @helper.checkbox(issueAddForm("alarm"), '_label -> Messages("issue.label.alarm"), 'placeholder -> Messages("issue.placeholder.alarm"))(
+        handler = forms.common.SemanticForms.checkbox,
+        messages = messages
+    )
 
     <button id="submit" type="submit" value="submit" class="ui icon button">
         <i class="plus icon"></i>

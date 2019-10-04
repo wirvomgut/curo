@@ -1,0 +1,9 @@
+@(elements: views.html.helper.FieldElements)
+
+<div class="field @if(elements.hasErrors) {error}">
+    <div class="ui checkbox">
+        @elements.input
+        <label for="@elements.id">@elements.label</label>
+    </div>
+    <span class="errors">@elements.errors.mkString(", ")</span>
+</div>

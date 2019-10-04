@@ -130,6 +130,7 @@ issue.label.area = Ort
 issue.label.kind = Aufgabenbereich
 issue.label.title = Titel
 issue.label.desc = Beschreibung
+issue.label.alarm = Eilt / Notfall
 issue.placeholder.title = Glühbirne defekt
 issue.placeholder.desc = Glühbirne im ersten Stock direkt am Treppenaufgang flackert funktioniert aber manchmal.
 

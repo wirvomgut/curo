@@ -22,10 +22,7 @@ case class IssueSystemViewLogic(
   nextPageNumber: Int,
   area: Seq[(String, String)],
   kind: Seq[(String, String)]
-) {
-
-}
-
+)
 
 object IssueSystemViewLogic {
   def create(user: User, kanboardService: KanboardService, pagination: Pagination = Pagination())(implicit ec: ExecutionContext): Future[IssueSystemViewLogic] = {
@@ -35,7 +32,7 @@ object IssueSystemViewLogic {
     for {
       tasks <- kanboardService.tasksReportedBy(person.uid)
     } yield {
-      val issueEntries: Seq[IssueEntry] = tasks.result.map(IssueEntry.fromKanboardTask).sortBy(_.dateReported)(Ordering[Instant].reverse)
+      val issueEntries: Seq[IssueEntry] = tasks.map(IssueEntry.fromKanboardTask).sortBy(_.dateReported)(Ordering[Instant].reverse)
       val issueEntryCount: Long = issueEntries.size.toLong
 
       IssueSystemViewLogic(
@@ -53,7 +50,7 @@ object IssueSystemViewLogic {
         nextPageNumber = pagination.currentPage + 1,
 
         area = kanboardService.categories.map(v => v.id -> v.name),
-        kind = kanboardService.swimlanes.map(v => v.id -> v.name),
+        kind = kanboardService.swimlanes.map(v => v.id -> v.name)
       )
     }
   }

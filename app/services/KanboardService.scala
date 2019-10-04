@@ -15,7 +15,7 @@ import scala.util.{Failure, Success, Try}
 
 
 @Singleton
-class KanboardService @Inject()(configuration: Configuration, actorSystem: ActorSystem) {
+class KanboardService @Inject()(configuration: Configuration, actorSystem: ActorSystem, pushoverService: PushoverService) {
   import KanboardRequests._
   import KanboardResponse.Implicits._
 
@@ -29,6 +29,7 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
   val url: String = configuration.get[String]("app.kanboard.url")
   val user: String = configuration.get[String]("kanboard.user")
   val pass: String = configuration.get[String]("kanboard.pass")
+  val projectId: Int = configuration.get[Int]("kanboard.project.id")
 
   val credentials: String = Credentials.basic(user, pass)
 
@@ -50,7 +51,9 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
   private val _swimlanes = Atomic(Seq.empty[KanboardSwimlane])
   def swimlanes: Seq[KanboardSwimlane] = _swimlanes.get
 
-  def createTask(title: String, desc: String, area: String, kind: String, reporter: String): Future[KanboardCreateTaskResponse] = {
+
+
+  def createTask(title: String, desc: String, area: String, kind: String, reporter: String, alarm: Boolean): Future[KanboardCreateTaskResponse] = {
     def categoryId: Int = area.toInt
     def swimlaneId: Int = kind.toInt
 
@@ -59,10 +62,10 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
         request(KanboardCreateTaskRequest(KanboardCreateTaskParams(
           title = title,
           description = desc,
-          project_id = 25,
+          project_id = projectId,
           category_id = categoryId,
           swimlane_id = swimlaneId,
-          tags = Array(reporter)
+          tags = if(alarm) Array(reporter, "alarm") else Array(reporter)
         )))
       ).execute()
     }.map {
@@ -70,16 +73,16 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
     }
   }
 
-  def tasksReportedBy(reporter: String): Future[KanboardTasksResponse] = {
+  def tasksReportedBy(reporter: String): Future[Seq[KanboardTask]] = {
     Future {
       client.newCall(
         request(KanboardSearchTasksRequest(KanboardSearchTasksParams(
-          project_id = 25,
+          project_id = projectId,
           query = "tag:" + reporter
         )))
       ).execute()
     }.map {
-      r => Json.parse(r.body.string()).as[KanboardTasksResponse]
+      r => Try(Json.parse(r.body.string()).as[KanboardTasksResponse].result).getOrElse(Seq.empty)
     }
   }
 
@@ -92,7 +95,7 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
   private def refreshCategories(): Unit = {
     Future {
       client.newCall(
-        request(KanboardGetAllCategoriesRequest(KanboardProjectIdParams(25)))
+        request(KanboardGetAllCategoriesRequest(KanboardProjectIdParams(projectId)))
       ).execute()
     }.onComplete {
       case Success(r) =>
@@ -110,7 +113,7 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
   private def refreshSwimlanes(): Unit = {
     Future {
       client.newCall(
-        request(KanboardGetAllSwimlanesRequest(KanboardProjectIdParams(25)))
+        request(KanboardGetAllSwimlanesRequest(KanboardProjectIdParams(projectId)))
       ).execute()
     }.onComplete {
       case Success(r) =>
@@ -190,39 +193,39 @@ object KanboardResponse {
   case class KanboardTasksResponse(jsonrpc: String, id: Long, result: Seq[KanboardTask])
 
   case class KanboardTask(
-    nb_comments: String,
-    nb_files: String,
-    nb_subtasks: String,
-    nb_completed_subtasks: String,
-    nb_links: String,
-    nb_external_links: String,
+    nb_comments: Option[String],
+    nb_files: Option[String],
+    nb_subtasks: Option[String],
+    nb_completed_subtasks: Option[String],
+    nb_links: Option[String],
+    nb_external_links: Option[String],
     is_milestone: Option[String],
-    id: String,
+    id: Option[String],
     reference: Option[String],
-    title: String,
+    title: Option[String],
     description: Option[String],
-    date_creation: String,
+    date_creation: Option[String],
     date_modification: String,
     date_completed: Option[String],
     date_started: Option[String],
     date_due: Option[String],
-    color_id: String,
-    project_id: String,
-    column_id: String,
-    swimlane_id: String,
+    color_id: Option[String],
+    project_id: Option[String],
+    column_id: Option[String],
+    swimlane_id: Option[String],
     owner_id: Option[String],
     creator_id: Option[String],
-    position: String,
+    position: Option[String],
     is_active: Option[String],
     score: Option[String],
     category_id: Option[String],
     priority: Option[String],
     date_moved: Option[String],
-    recurrence_status: String,
-    recurrence_trigger: String,
-    recurrence_factor: String,
-    recurrence_timeframe: String,
-    recurrence_basedate: String,
+    recurrence_status: Option[String],
+    recurrence_trigger: Option[String],
+    recurrence_factor: Option[String],
+    recurrence_timeframe: Option[String],
+    recurrence_basedate: Option[String],
     recurrence_parent: Option[String],
     recurrence_child: Option[String],
     time_estimated: Option[String],

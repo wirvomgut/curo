@@ -9,15 +9,16 @@ import models.common.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import services.KanboardService
+import services.{KanboardService, PushoverPriority, PushoverService}
 import utils.auth.DefaultEnv
 import views.logic.IssueSystemViewLogic
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 class IssueController @Inject()(
     kanboardService: KanboardService,
+    pushoverService: PushoverService,
     cc: ControllerComponents,
     silhouette: Silhouette[DefaultEnv],
     actorSystem: ActorSystem
@@ -55,10 +56,33 @@ class IssueController @Inject()(
       },
       data => {
         val person: Person = Person.findOrCreateByUid(request.identity.loginInfo.providerKey)
+        logger.info("Creating new issue...")
 
-        logger.warn(data.toString)
+        val createTaskResponse = kanboardService
+          .createTask(data.title, data.description, data.area, data.kind, person.uid, data.alarm)
 
-        kanboardService.createTask(data.title, data.description, data.area, data.kind, person.uid)
+        createTaskResponse.onComplete {
+          case Success(x) =>
+            logger.info("New issue successfully created.")
+            if(data.alarm) {
+              logger.info("Issue has high priority! Sending notification!")
+              pushoverService.sendMessage(
+                title = data.title,
+                message = data.description,
+                priority = PushoverPriority.LOUD_CONFIRM_NOTIFICATION,
+                url = "https://" + kanboardService.url + "/project/" + kanboardService.projectId + "/task/" + x.result
+              ).onComplete {
+                case Success(x) =>
+                  if(x.status == 200) logger.info("Notification for issue was successfully send.")
+                  else logger.warn("Notification send but got wrong status code: " + x.status + " text " + x.statusText)
+                case Failure(e) => logger.error("Error while sending issue notification.", e)
+              }
+            }
+          case Failure(e) =>
+            logger.error("Error while creating Kanboard task.", e)
+        }
+
+        createTaskResponse
           .map(_ => Redirect(routes.IssueController.landing()))
       })
   }

@@ -7,5 +7,6 @@ import views.html
  */
 object SemanticForms {
   import views.html.helper.FieldConstructor
-  implicit val input = FieldConstructor(html.form.forminput.f)
+  implicit val input: FieldConstructor = FieldConstructor(html.form.forminput.f)
+  val checkbox = FieldConstructor(html.form.formcheckbox.f)
 }

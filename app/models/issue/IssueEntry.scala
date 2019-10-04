@@ -13,7 +13,8 @@ case class IssueEntry(
                        description: Option[String],
                        assignee: Option[String],
                        area: Option[String],
-                       kind: Option[String]
+                       kind: Option[String],
+                       alarm: Option[Boolean] = Some(false)
                      ) {
 
   val prettyDateReported: String = dateReported.atZone(ZoneId.of("GMT+1")).toLocalDate.format(IssueEntry.dateFormatter)
@@ -48,10 +49,10 @@ object IssueEntry {
   private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
   def fromKanboardTask(kanboardTask: KanboardTask) = IssueEntry(
-    dateReported = Instant.ofEpochSecond(kanboardTask.date_creation.toLong),
-    dateModified = Instant.ofEpochSecond(kanboardTask.date_creation.toLong),
+    dateReported = Instant.ofEpochSecond(kanboardTask.date_creation.get.toLong),
+    dateModified = Instant.ofEpochSecond(kanboardTask.date_creation.get.toLong),
     dateCompleted = kanboardTask.date_completed.map(_.toLong).map(Instant.ofEpochSecond),
-    title = kanboardTask.title,
+    title = kanboardTask.title.get,
     description = kanboardTask.description,
     assignee = kanboardTask.assignee_name,
     area = kanboardTask.category_name,

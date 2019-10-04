@@ -13,7 +13,8 @@ object IssueAddForm {
       "area" -> nonEmptyText,
       "kind" -> nonEmptyText,
       "title" -> text(minLength = 3, maxLength = 144),
-      "description" -> text(minLength = 3, maxLength = 10000)
+      "description" -> text(minLength = 3, maxLength = 10000),
+      "alarm" -> boolean
     )(Data.apply)(Data.unapply)
   )
 
@@ -29,6 +30,7 @@ object IssueAddForm {
     area: String,
     kind: String,
     title: String,
-    description: String
+    description: String,
+    alarm: Boolean
   )
 }
