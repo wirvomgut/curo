@@ -5,7 +5,7 @@ lazy val h2Version = "1.4.+"
 
 name := "Curo"
 
-version := "0.2.0"
+version := "0.1.0"
 
 scalaVersion := "2.12.5"
 
