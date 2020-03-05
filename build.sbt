@@ -7,7 +7,7 @@ name := "Curo"
 
 version := "0.1.0"
 
-scalaVersion := "2.12.5"
+scalaVersion := "2.12.8"
 
 maintainer := "Julian Pieles"
 
@@ -28,10 +28,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json-joda" % "2.6.13",
   "ai.x" %% "play-json-extensions" % "0.30.1",
   "mysql" % "mysql-connector-java" % "5.1.36",
-  "org.scalikejdbc" %% "scalikejdbc"                    % "3.2.2",
-  "org.scalikejdbc" %% "scalikejdbc-joda-time"          % "3.2.2",
-  "org.scalikejdbc" %% "scalikejdbc-config"             % "3.2.2",
-  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.6.0-scalikejdbc-3.2",
+  "org.scalikejdbc" %% "scalikejdbc"                    % "3.4.0",
+  "org.scalikejdbc" %% "scalikejdbc-joda-time"          % "3.4.0",
+  "org.scalikejdbc" %% "scalikejdbc-config"             % "3.4.0",
+  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.7.0-scalikejdbc-3.4",
   "org.apache.directory.api" % "api-all" % "1.0.0-RC1",
   "com.mohiva" %% "play-silhouette" % "5.0.5",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.5",
@@ -57,7 +57,7 @@ libraryDependencies ++= Seq(
 // WEBJARS
 //********************************************************
 libraryDependencies ++= Seq(
-  "org.webjars" %% "webjars-play" % "2.6.3",
+  "org.webjars" %% "webjars-play" % "2.7.3",
   "org.webjars.bower" % "jquery" % "3.3.1",
   "org.webjars.bower" % "semantic" % "2.2.14",
   "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8"
