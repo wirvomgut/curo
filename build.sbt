@@ -22,27 +22,28 @@ javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
 //********************************************************
 // Java - Scala
 //********************************************************
+val silhouetteV = "5.0.7"
 libraryDependencies ++= Seq(
-  "io.monix" %% "monix-execution" % "3.0.0-RC2",
-  "com.typesafe.play" %% "play-json" % "2.6.13",
-  "com.typesafe.play" %% "play-json-joda" % "2.6.13",
-  "ai.x" %% "play-json-extensions" % "0.30.1",
+  "io.monix" %% "monix-execution" % "3.0.0",
+  "com.typesafe.play" %% "play-json" % "2.8.0",
+  "com.typesafe.play" %% "play-json-joda" % "2.8.0",
+  "ai.x" %% "play-json-extensions" % "0.42.0",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % "3.4.0",
   "org.scalikejdbc" %% "scalikejdbc-joda-time"          % "3.4.0",
   "org.scalikejdbc" %% "scalikejdbc-config"             % "3.4.0",
-  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.7.0-scalikejdbc-3.4",
+  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.8.0-scalikejdbc-3.4",
   "org.apache.directory.api" % "api-all" % "1.0.0-RC1",
-  "com.mohiva" %% "play-silhouette" % "5.0.5",
-  "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.5",
-  "com.mohiva" %% "play-silhouette-persistence" % "5.0.5",
-  "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.5",
-  "net.codingwell" %% "scala-guice" % "4.2.1",
-  "com.iheart" %% "ficus" % "1.4.3",
+  "com.mohiva" %% "play-silhouette" % silhouetteV,
+  "com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteV,
+  "com.mohiva" %% "play-silhouette-persistence" % silhouetteV,
+  "com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteV,
+  "net.codingwell" %% "scala-guice" % "4.2.6",
+  "com.iheart" %% "ficus" % "1.4.7",
   "com.squareup.okhttp3" % "okhttp" % "3.14.0",
-  "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-  "org.scalikejdbc" %% "scalikejdbc-test"   % "2.5.0"   % "test",
+  "com.mohiva" %% "play-silhouette-testkit" % silhouetteV % "test",
+  "org.scalatest" %% "scalatest" % "3.1.1" % "test",
+  "org.scalikejdbc" %% "scalikejdbc-test"   % "3.4.0"   % "test",
   "ch.vorburger.mariaDB4j" % "mariaDB4j" % "2.2.2" % "test",
   specs2 % Test,
   ehcache,
@@ -57,7 +58,7 @@ libraryDependencies ++= Seq(
 // WEBJARS
 //********************************************************
 libraryDependencies ++= Seq(
-  "org.webjars" %% "webjars-play" % "2.7.3",
+  "org.webjars" %% "webjars-play" % "2.8.0",
   "org.webjars.bower" % "jquery" % "3.3.1",
   "org.webjars.bower" % "semantic" % "2.2.14",
   "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8"

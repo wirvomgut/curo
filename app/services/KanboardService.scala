@@ -1,6 +1,5 @@
 package services
 
-import ai.x.play.json.Jsonx
 import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import monix.execution.Scheduler.{global => scheduler}
@@ -175,6 +174,9 @@ object KanboardRequests {
 
 object KanboardResponse {
   object Implicits {
+    import ai.x.play.json.Jsonx
+    import ai.x.play.json.Encoders._
+
     implicit val kanboardCategoryFormat:Format[KanboardCategory] = Json.format[KanboardCategory]
     implicit val kanboardSwimlaneFormat:Format[KanboardSwimlane] = Json.format[KanboardSwimlane]
     implicit val kanboardTaskFormat:Format[KanboardTask] = Jsonx.formatCaseClass[KanboardTask]
