@@ -1,11 +1,13 @@
 FROM hseeberger/scala-sbt:11.0.6_1.3.8_2.13.1 AS build
 
 RUN apt-get update && apt-get install -y \
-    git \
     bash \
  && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --single-branch --branch develop https://github.com/wirvomgut/curo.git /curo \
+RUN curl -L https://github.com/wirvomgut/curo/archive/0.1.0.tar.gz -o curo.tar.gz -s \
+    && tar -xvzf curo.tar.gz -C / \
+    && mv /curo* /curo \
+    && rm curo.tar.gz \
     && cd /curo \
     && sbt clean stage
 
