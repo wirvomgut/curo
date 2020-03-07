@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y \
     bash \
  && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://github.com/wirvomgut/curo/archive/0.1.0.tar.gz -o curo.tar.gz -s \
+RUN curl -L https://github.com/wirvomgut/curo/archive/0.1.1.tar.gz -o curo.tar.gz -s \
     && tar -xvzf curo.tar.gz -C / \
     && mv /curo* /curo \
     && rm curo.tar.gz \
