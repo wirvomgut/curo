@@ -1,10 +1,8 @@
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-lazy val h2Version = "1.4.+"
-
 name := "Curo"
 
-version := "0.1.0"
+version := "0.1.1"
 
 scalaVersion := "2.13.1"
 
