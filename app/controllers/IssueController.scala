@@ -6,14 +6,14 @@ import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import forms.IssueAddForm
 import javax.inject.Inject
 import models.common.Person
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import services.{KanboardService, PushoverPriority, PushoverService}
 import utils.auth.DefaultEnv
 import views.logic.IssueSystemViewLogic
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 class IssueController @Inject()(
@@ -23,11 +23,9 @@ class IssueController @Inject()(
     silhouette: Silhouette[DefaultEnv],
     actorSystem: ActorSystem
   )
-  extends AbstractController(cc) with I18nSupport {
+  extends AbstractController(cc) with I18nSupport with Logging {
 
   private implicit val ec: ExecutionContext = actorSystem.dispatcher
-
-  private val logger = Logger(getClass)
 
   val itemsPerPage = 9
 

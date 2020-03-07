@@ -7,12 +7,15 @@ import javax.inject.Inject
 import play.api.db.Database
 import services.LdapClient
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
 /**
  * The DAO to store the password information.
  */
 class PasswordInfoDAOLdapImpl @Inject() (ldapClient: LdapClient, db: Database)(implicit ec: ExecutionContext) extends DelegableAuthInfoDAO[PasswordInfo] {
+
+  override val classTag: ClassTag[PasswordInfo] = ClassTag(classOf[PasswordInfo])
 
   /**
    * Finds the auth info which is linked with the specified login info.
