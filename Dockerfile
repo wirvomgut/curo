@@ -1,17 +1,22 @@
-FROM openjdk:8u92-jdk-alpine
+FROM hseeberger/scala-sbt:11.0.6_1.3.8_2.13.1 AS build
 
-RUN apk add --update bash git \
-    && git clone https://github.com/wirvomgut/curo.git /curo-dev \
+RUN apt-get update && apt-get install -y \
+    git \
+    bash \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/wirvomgut/curo.git /curo-dev \
     && cd /curo-dev \ 
-    && ./sbt clean stage \
-    && cd / \
-    && mv /curo-dev/target/universal/stage /curo \
-    && mv /curo-dev/docker/entry.sh /entry.sh \
-    && rm -R /curo-dev \
-    && mkdir /conf \
-    && apk del git \
-    && rm -rf /var/cache/apk/*
+    && sbt clean stage
 
+FROM adoptopenjdk/openjdk11:alpine
+
+COPY --from=build /curo-dev/target/universal/stage /curo
+COPY --from=build /curo-dev/docker/entry.sh /entry.sh
+
+RUN apk add --update bash \
+    && rm -rf /var/cache/apk/* \
+    && mkdir /conf
 
 EXPOSE 9000
 
