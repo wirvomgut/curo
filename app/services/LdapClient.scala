@@ -2,8 +2,8 @@ package services
 
 import java.nio.charset.StandardCharsets
 
-import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.api.util.PasswordInfo
+import play.silhouette.api.LoginInfo
+import play.silhouette.api.util.PasswordInfo
 import javax.inject._
 import models.User
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants

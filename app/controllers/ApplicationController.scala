@@ -1,12 +1,13 @@
 package controllers
 
-import com.mohiva.play.silhouette.api.actions.SecuredRequest
-import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
+import play.silhouette.api.actions.SecuredRequest
+import play.silhouette.api.{LogoutEvent, Silhouette}
 import forms._
+
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.i18n.I18nSupport
-import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents }
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
 import services.LdapClient
 import utils.auth.DefaultEnv
 
@@ -54,7 +55,7 @@ class ApplicationController @Inject() (
    */
   def nopassword(uid: String) = silhouette.UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index))
       case None => Future.successful(Ok(views.html.nopassword(NoPasswordForm.form, uid)))
     }
   }
@@ -166,7 +167,7 @@ class ApplicationController @Inject() (
    */
   def signIn = silhouette.UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(_) => Future.successful(Redirect(routes.ApplicationController.index))
       case None => Future.successful(Ok(views.html.signIn(SignInForm.form, request.headers.get("uid").getOrElse(""))))
     }
   }
@@ -177,7 +178,7 @@ class ApplicationController @Inject() (
    * @return The result to display.
    */
   def signOut = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    val result = Redirect(routes.ApplicationController.index())
+    val result = Redirect(routes.ApplicationController.index)
     silhouette.env.eventBus.publish(LogoutEvent(request.identity, request))
 
     silhouette.env.authenticatorService.discard(request.authenticator, result)

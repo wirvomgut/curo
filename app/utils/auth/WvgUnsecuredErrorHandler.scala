@@ -1,6 +1,6 @@
 package utils.auth
 
-import com.mohiva.play.silhouette.api.actions.UnsecuredErrorHandler
+import play.silhouette.api.actions.UnsecuredErrorHandler
 import controllers.routes
 import play.api.mvc.{ RequestHeader, Result }
 import play.api.mvc.Results._
@@ -21,6 +21,6 @@ class WvgUnsecuredErrorHandler extends UnsecuredErrorHandler {
    * @return The result to send to the client.
    */
   override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {
-    Future.successful(Redirect(routes.ApplicationController.signIn()))
+    Future.successful(Redirect(routes.ApplicationController.signIn))
   }
 }

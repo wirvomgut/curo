@@ -1,9 +1,9 @@
 package controllers
 
-import com.mohiva.play.silhouette.api._
-import com.mohiva.play.silhouette.api.exceptions.ProviderException
-import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.impl.providers._
+import play.silhouette.api._
+import play.silhouette.api.exceptions.ProviderException
+import play.silhouette.api.repositories.AuthInfoRepository
+import play.silhouette.impl.providers._
 import javax.inject.Inject
 import models.services.UserService
 import play.api.i18n.{ I18nSupport, Messages }
@@ -49,7 +49,7 @@ class SocialAuthController @Inject() (
             authInfo <- authInfoRepository.save(profile.loginInfo, authInfo)
             authenticator <- silhouette.env.authenticatorService.create(profile.loginInfo)
             value <- silhouette.env.authenticatorService.init(authenticator)
-            result <- silhouette.env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index()))
+            result <- silhouette.env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index))
           } yield {
             silhouette.env.eventBus.publish(LoginEvent(user, request))
             result
@@ -59,7 +59,7 @@ class SocialAuthController @Inject() (
     }).recover {
       case e: ProviderException =>
         logger.error("Unexpected provider error", e)
-        Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("could.not.authenticate"))
+        Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("could.not.authenticate"))
     }
   }
 }

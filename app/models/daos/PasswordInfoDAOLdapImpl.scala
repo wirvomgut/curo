@@ -1,8 +1,8 @@
 package models.daos
 
-import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
+import play.silhouette.api.LoginInfo
+import play.silhouette.api.util.PasswordInfo
+import play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import javax.inject.Inject
 import play.api.db.Database
 import services.LdapClient

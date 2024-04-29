@@ -1,8 +1,8 @@
 package controllers
 
 import akka.actor.ActorSystem
-import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import play.silhouette.api.Silhouette
+import play.silhouette.api.actions.SecuredRequest
 import forms.IssueAddForm
 import javax.inject.Inject
 import models.common.Person
@@ -81,7 +81,7 @@ class IssueController @Inject()(
         }
 
         createTaskResponse
-          .map(_ => Redirect(routes.IssueController.landing()))
+          .map(_ => Redirect(routes.IssueController.landing))
       })
   }
 }

@@ -1,6 +1,6 @@
 package models.daos
 
-import com.mohiva.play.silhouette.api.LoginInfo
+import play.silhouette.api.LoginInfo
 import javax.inject.Inject
 import models.User
 import services.LdapClient

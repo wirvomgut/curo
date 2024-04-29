@@ -1,8 +1,8 @@
 
 package utils.auth
 
-import com.mohiva.play.silhouette.api.Env
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import play.silhouette.api.Env
+import play.silhouette.impl.authenticators.CookieAuthenticator
 import models.User
 
 /**
