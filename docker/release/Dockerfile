@@ -1,6 +1,6 @@
 FROM sbtscala/scala-sbt:eclipse-temurin-jammy-11.0.22_7_1.9.9_2.13.13 AS build
 
-RUN curl -L https://github.com/wirvomgut/curo/archive/0.1.1.tar.gz -o curo.tar.gz -s \
+RUN curl -L https://github.com/wirvomgut/curo/archive/0.1.2.tar.gz -o curo.tar.gz -s \
     && tar -xvzf curo.tar.gz -C / \
     && mv /curo* /curo \
     && rm curo.tar.gz \
