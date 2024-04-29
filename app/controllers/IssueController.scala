@@ -1,8 +1,8 @@
 package controllers
 
-import akka.actor.ActorSystem
-import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import org.apache.pekko.actor.ActorSystem
+import play.silhouette.api.Silhouette
+import play.silhouette.api.actions.SecuredRequest
 import forms.IssueAddForm
 import javax.inject.Inject
 import models.common.Person
@@ -46,7 +46,7 @@ class IssueController @Inject()(
     * @return The result to display.
     */
   def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    IssueAddForm.form.bindFromRequest.fold(
+    IssueAddForm.form.bindFromRequest().fold(
       form => {
         for {
           viewLogic <- IssueSystemViewLogic.create(request.identity, kanboardService)
@@ -81,7 +81,7 @@ class IssueController @Inject()(
         }
 
         createTaskResponse
-          .map(_ => Redirect(routes.IssueController.landing()))
+          .map(_ => Redirect(routes.IssueController.landing))
       })
   }
 }

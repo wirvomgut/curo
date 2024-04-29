@@ -1,6 +1,6 @@
 package services
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import monix.execution.Scheduler.{global => scheduler}
 import monix.execution.atomic.Atomic
@@ -45,10 +45,10 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
     .build()
 
   private val _categories = Atomic(Seq.empty[KanboardCategory])
-  def categories: Seq[KanboardCategory] = _categories.get
+  def categories: Seq[KanboardCategory] = _categories.get()
 
   private val _swimlanes = Atomic(Seq.empty[KanboardSwimlane])
-  def swimlanes: Seq[KanboardSwimlane] = _swimlanes.get
+  def swimlanes: Seq[KanboardSwimlane] = _swimlanes.get()
 
 
 

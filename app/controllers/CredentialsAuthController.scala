@@ -1,12 +1,12 @@
 package controllers
 
-import com.mohiva.play.silhouette.api.Authenticator.Implicits._
-import com.mohiva.play.silhouette.api._
-import com.mohiva.play.silhouette.api.exceptions.ProviderException
-import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.util.{ Clock, Credentials }
-import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
-import com.mohiva.play.silhouette.impl.providers._
+import play.silhouette.api.Authenticator.Implicits._
+import play.silhouette.api._
+import play.silhouette.api.exceptions.ProviderException
+import play.silhouette.api.repositories.AuthInfoRepository
+import play.silhouette.api.util.{ Clock, Credentials }
+import play.silhouette.impl.exceptions.IdentityNotFoundException
+import play.silhouette.impl.providers._
 import forms.SignInForm
 import javax.inject.Inject
 import models.services.UserService
@@ -38,14 +38,14 @@ class CredentialsAuthController @Inject() (
    * @return The result to display.
    */
   def authenticate = Action.async { implicit request =>
-    SignInForm.form.bindFromRequest.fold(
+    SignInForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.signIn(form, form.value.map(_.username).getOrElse(""))))
       },
       data => {
         val credentials = Credentials(data.username, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-          val result = Redirect(routes.ApplicationController.index())
+          val result = Redirect(routes.ApplicationController.index)
           userService.retrieve(loginInfo).flatMap {
             case Some(user) =>
               val c = configuration.underlying

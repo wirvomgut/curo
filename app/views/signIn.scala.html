@@ -15,7 +15,7 @@
                 @Messages("sign.in.credentials")
             </div>
         </h2>
-        @helper.form(action = controllers.routes.CredentialsAuthController.authenticate(), 'class -> "ui large form" ) {
+        @helper.form(action = controllers.routes.CredentialsAuthController.authenticate, 'class -> "ui large form" ) {
         @helper.CSRF.formField
         <div class="ui segment">
             <div class="field">

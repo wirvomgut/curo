@@ -15,7 +15,7 @@
             </div>
             <div class="ten wide column">
                 <h2 class="ui header">@Messages("phone.title")</h2>
-                @helper.form(action = controllers.routes.LdapController.phone(), 'class -> "ui form" ) {
+                @helper.form(action = controllers.routes.LdapController.phone, 'class -> "ui form" ) {
                 @helper.CSRF.formField
                 <form class="ui form">
                     <div class="field">

@@ -2,7 +2,7 @@ package controllers
 
 import java.nio.charset.StandardCharsets
 
-import com.mohiva.play.silhouette.api.util.{ PasswordHasher, PasswordInfo }
+import play.silhouette.api.util.{ PasswordHasher, PasswordInfo }
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.password.PasswordUtil
 

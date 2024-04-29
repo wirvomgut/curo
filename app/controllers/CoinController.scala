@@ -1,7 +1,7 @@
 package controllers
 
-import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import play.silhouette.api.Silhouette
+import play.silhouette.api.actions.SecuredRequest
 import forms.CoinAddForm
 import javax.inject.Inject
 import models.coin.WorkEntry.WorkEntryId
@@ -79,7 +79,7 @@ class CoinController @Inject() (
    * @return The result to display.
    */
   def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    CoinAddForm.form.bindFromRequest.fold(
+    CoinAddForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
       },
@@ -98,7 +98,7 @@ class CoinController @Inject() (
           coins = data.coin,
           dateDone = data.date)
 
-        Future.successful(Redirect(routes.CoinController.landing()))
+        Future.successful(Redirect(routes.CoinController.landing))
       })
   }
 
@@ -108,7 +108,7 @@ class CoinController @Inject() (
    * @return The result to display.
    */
   def edit(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    CoinAddForm.form.bindFromRequest.fold(
+    CoinAddForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
       },
@@ -128,7 +128,7 @@ class CoinController @Inject() (
             dateDone = data.date))
         })
 
-        Future.successful(Redirect(routes.CoinController.landing()))
+        Future.successful(Redirect(routes.CoinController.landing))
       })
   }
 
@@ -139,6 +139,6 @@ class CoinController @Inject() (
    */
   def remove(id: Long): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     WorkEntry.remove(id)
-    Future.successful(Redirect(routes.CoinController.landing()))
+    Future.successful(Redirect(routes.CoinController.landing))
   }
 }

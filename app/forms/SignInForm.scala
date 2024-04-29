@@ -11,7 +11,7 @@ object SignInForm {
   /**
    * A play framework form.
    */
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "username" -> nonEmptyText,
       "password" -> nonEmptyText,
@@ -28,4 +28,8 @@ object SignInForm {
     username: String,
     password: String,
     rememberMe: Boolean)
+
+  object Data {
+    def unapply(d: Data): Option[(String, String, Boolean)] = Some((d.username, d.password, d.rememberMe))
+  }
 }

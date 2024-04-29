@@ -20,7 +20,7 @@ object Person extends SQLSyntaxSupport[Person] {
   def create(uid: String)(implicit s: DBSession = AutoSession): PersonId = {
     withSQL {
       insert.into(Person).namedValues(pc.uid -> uid)
-    }.updateAndReturnGeneratedKey().apply()
+    }.updateAndReturnGeneratedKey.apply()
   }
 
   def findById(id: PersonId)(implicit s: DBSession = AutoSession): Option[Person] = {

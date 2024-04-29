@@ -15,7 +15,7 @@
     @views.html.common.mainMenu(Option(user))
 
     <div class="ui container menu-spacer">
-        @views.html.coin.issueEntryForm(user, issueAddForm, logic, controllers.routes.IssueController.add())
+        @views.html.coin.issueEntryForm(user, issueAddForm, logic, controllers.routes.IssueController.add)
 
         @if(logic.issueEntries.nonEmpty) {
             <div class="ui small delete modal">
