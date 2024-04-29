@@ -45,10 +45,10 @@ class KanboardService @Inject()(configuration: Configuration, actorSystem: Actor
     .build()
 
   private val _categories = Atomic(Seq.empty[KanboardCategory])
-  def categories: Seq[KanboardCategory] = _categories.get
+  def categories: Seq[KanboardCategory] = _categories.get()
 
   private val _swimlanes = Atomic(Seq.empty[KanboardSwimlane])
-  def swimlanes: Seq[KanboardSwimlane] = _swimlanes.get
+  def swimlanes: Seq[KanboardSwimlane] = _swimlanes.get()
 
 
 

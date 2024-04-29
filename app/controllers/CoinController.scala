@@ -79,7 +79,7 @@ class CoinController @Inject() (
    * @return The result to display.
    */
   def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    CoinAddForm.form.bindFromRequest.fold(
+    CoinAddForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
       },
@@ -108,7 +108,7 @@ class CoinController @Inject() (
    * @return The result to display.
    */
   def edit(workEntryId: WorkEntryId): Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    CoinAddForm.form.bindFromRequest.fold(
+    CoinAddForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.coinsystem(request.identity, CoinsystemViewLogic(request.identity), form)))
       },

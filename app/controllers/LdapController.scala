@@ -38,7 +38,7 @@ class LdapController @Inject() (
    * @return The result to display.
    */
   def password = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    PasswordForm.form.bindFromRequest.fold(
+    PasswordForm.form.bindFromRequest().fold(
       form => Future.successful(BadRequest(views.html.password(request.identity, form))),
       data => {
         val passwordOld = data.passwordOld
@@ -86,7 +86,7 @@ class LdapController @Inject() (
    * @return The result to display.
    */
   def nopassword = Action.async { implicit request =>
-    NoPasswordForm.form.bindFromRequest.fold(
+    NoPasswordForm.form.bindFromRequest().fold(
       form => {
         Future.successful(BadRequest(views.html.nopassword(form, form.data.getOrElse("uid", ""))))
       },
@@ -118,7 +118,7 @@ class LdapController @Inject() (
    * @return The result to display.
    */
   def email = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    EmailForm.form.bindFromRequest.fold(
+    EmailForm.form.bindFromRequest().fold(
       form => Future.successful(
         BadRequest(views.html.email(request.identity, form))),
       data => {
@@ -135,7 +135,7 @@ class LdapController @Inject() (
    * @return The result to display.
    */
   def phone = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    PhoneForm.form.bindFromRequest.fold(
+    PhoneForm.form.bindFromRequest().fold(
       form => Future.successful(
         BadRequest(views.html.phone(request.identity, form))),
       data => {

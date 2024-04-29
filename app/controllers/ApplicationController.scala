@@ -84,7 +84,7 @@ class ApplicationController @Inject() (
    * @return The result to display.
    */
   def directory = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Future.successful(Ok(views.html.directory(request.identity, ldapClient.getUsers())))
+    Future.successful(Ok(views.html.directory(request.identity, ldapClient.getUsers)))
   }
 
   val protocol: String = configuration.get[String]("curo.protocol")

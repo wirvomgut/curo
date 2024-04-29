@@ -1,10 +1,5 @@
 package services
 
-import java.nio.charset.StandardCharsets
-
-import play.silhouette.api.LoginInfo
-import play.silhouette.api.util.PasswordInfo
-import javax.inject._
 import models.User
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants
 import org.apache.directory.api.ldap.model.cursor.EntryCursor
@@ -13,9 +8,13 @@ import org.apache.directory.api.ldap.model.message.SearchScope
 import org.apache.directory.api.ldap.model.password.PasswordUtil
 import org.apache.directory.ldap.client.api.LdapNetworkConnection
 import play.api.inject.ApplicationLifecycle
+import play.silhouette.api.LoginInfo
+import play.silhouette.api.util.PasswordInfo
 
-import scala.collection.JavaConverters._
+import java.nio.charset.StandardCharsets
+import javax.inject._
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 
 /**
@@ -25,12 +24,12 @@ import scala.util.Try
 @Singleton
 class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: ApplicationLifecycle) {
 
-  val host: String = conf.get[String]("ldap.host")
-  val port: Int = conf.get[Int]("ldap.port")
-  val bindUserName: String = conf.get[String]("ldap.bind.user.name")
-  val bindUserPass: String = conf.get[String]("ldap.bind.user.pass")
+  private val host: String = conf.get[String]("ldap.host")
+  private val port: Int = conf.get[Int]("ldap.port")
+  private val bindUserName: String = conf.get[String]("ldap.bind.user.name")
+  private val bindUserPass: String = conf.get[String]("ldap.bind.user.pass")
 
-  val groupUsers: String = conf.get[String]("ldap.group.users")
+  private val groupUsers: String = conf.get[String]("ldap.group.users")
 
   def getUser(uid: String): Option[User] = {
     connection
@@ -41,7 +40,7 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
       .flatMap(e => parseUser(e.getAttributes.asScala.toSeq))
   }
 
-  def getUsers(): Seq[User] = {
+  def getUsers: Seq[User] = {
     connection
       .search(groupUsers, "(objectclass=person)", SearchScope.ONELEVEL)
       .asScala
@@ -125,12 +124,12 @@ class LdapClient @Inject() (conf: play.api.Configuration, lifecycle: Application
     modifyAttribute(uid, "homePhone", phone)
   }
 
-  def modifyAttribute(uid: String, key: String, value: String): Unit = {
+  private def modifyAttribute(uid: String, key: String, value: String): Unit = {
     val mod = new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, key, value)
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }
 
-  def addAttribute(uid: String, key: String, value: String): Unit = {
+  private def addAttribute(uid: String, key: String, value: String): Unit = {
     val mod = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE, key, value)
     connection.modify("uid=" + uid + "," + groupUsers, mod)
   }

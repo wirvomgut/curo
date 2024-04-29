@@ -46,7 +46,7 @@ class IssueController @Inject()(
     * @return The result to display.
     */
   def add: Action[AnyContent] = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    IssueAddForm.form.bindFromRequest.fold(
+    IssueAddForm.form.bindFromRequest().fold(
       form => {
         for {
           viewLogic <- IssueSystemViewLogic.create(request.identity, kanboardService)

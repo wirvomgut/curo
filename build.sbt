@@ -75,5 +75,6 @@ TwirlKeys.templateImports := Seq()
 scalacOptions ++= Seq(
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-feature", // Emit warning and location for usages of features that should be imported explicitly.
+  //"-quickfix:any",
 )
 

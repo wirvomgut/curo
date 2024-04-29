@@ -42,7 +42,7 @@ class LdapClientISpec extends PlaySpecification {
       connection.exists("uid=given2last2,ou=users,dc=example,dc=org") must be equalTo true
     }
     "search for users" in {
-      val users: Seq[User] = client.getUsers().sortBy(_.loginInfo.providerKey)
+      val users: Seq[User] = client.getUsers.sortBy(_.loginInfo.providerKey)
 
       users.head.loginInfo.providerKey must be equalTo "given1last1"
       users.last.loginInfo.providerKey must be equalTo "given2last2"
