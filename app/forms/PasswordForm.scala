@@ -8,7 +8,7 @@ import play.api.data.Forms._
  */
 object PasswordForm {
 
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "password-old" -> nonEmptyText,
       "password-new" -> nonEmptyText,
@@ -25,4 +25,8 @@ object PasswordForm {
     passwordOld: String,
     passwordNew: String,
     passwordConfirm: String)
+  
+  object Data {
+    def unapply(d: Data): Option[(String, String, String)] = Some((d.passwordOld, d.passwordNew, d.passwordConfirm))
+  }
 }

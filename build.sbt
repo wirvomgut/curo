@@ -27,10 +27,10 @@ dependencyOverrides ++= Seq(
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 )
 libraryDependencies ++= Seq(
-  "io.monix" %% "monix-execution" % "3.0.0",
+  "io.monix" %% "monix-execution" % "3.4.1",
   "org.playframework" %% "play-json" % playV,
   "org.playframework" %% "play-json-joda" % playV,
-  "ai.x" %% "play-json-extensions" % "0.42.0",
+  ("ai.x" %% "play-json-extensions" % "0.42.0").cross(CrossVersion.for3Use2_13),
   "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % scalikejdbcV,
   "org.scalikejdbc" %% "scalikejdbc-joda-time"          % scalikejdbcV,
@@ -42,10 +42,10 @@ libraryDependencies ++= Seq(
   "org.playframework.silhouette" %% "play-silhouette-persistence" % silhouetteV,
   "org.playframework.silhouette" %% "play-silhouette-crypto-jca" % silhouetteV,
   "net.codingwell" %% "scala-guice" % "4.2.6",
-  "com.iheart" %% "ficus" % "1.4.7",
+  ("com.iheart" %% "ficus" % "1.4.7").cross(CrossVersion.for3Use2_13),
   "com.squareup.okhttp3" % "okhttp" % "3.14.0",
   "org.playframework.silhouette" %% "play-silhouette-testkit" % silhouetteV % "test",
-  "org.scalatest" %% "scalatest" % "3.1.1" % "test",
+  "org.scalatest" %% "scalatest" % "3.2.18" % "test",
   "org.scalikejdbc" %% "scalikejdbc-test"   % scalikejdbcV   % "test",
   "ch.vorburger.mariaDB4j" % "mariaDB4j" % "2.2.2" % "test",
   specs2 % Test,
@@ -72,9 +72,12 @@ routesImport += "utils.route.Binders._"
 // https://github.com/playframework/twirl/issues/105
 TwirlKeys.templateImports := Seq()
 
+
+// Continue with Scala 3 Migration here: https://docs.scala-lang.org/scala3/guides/migration/tooling-tour.html
 scalacOptions ++= Seq(
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-feature", // Emit warning and location for usages of features that should be imported explicitly.
-  //"-quickfix:any",
+  //"-source:3.0-migration",
+  //"-rewrite"
 )
 

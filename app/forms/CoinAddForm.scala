@@ -1,7 +1,9 @@
 package forms
 
 import models.coin.WorkEntry
+import models.coin.WorkEntry.WorkEntryId
 import models.common.Person
+import models.common.Person.PersonId
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
@@ -128,7 +130,7 @@ object CoinAddForm {
   /**
    * A play framework form.
    */
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "id" -> optional(longNumber),
       "personId" -> optional(longNumber),
@@ -161,4 +163,17 @@ object CoinAddForm {
     time: Long,
     coin: Double,
     date: DateTime)
+
+  object Data {
+    def unapply(d: Data): Option[(Option[WorkEntryId], Option[PersonId], String, String, Option[String], PersonId, Double, DateTime)] = Some((
+      d.id,
+      d.personId,
+      d.kind,
+      d.area,
+      d.description,
+      d.time,
+      d.coin,
+      d.date
+    ))
+  }
 }

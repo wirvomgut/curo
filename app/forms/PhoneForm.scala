@@ -9,7 +9,7 @@ import play.api.data.validation.{ Constraint, Invalid, Valid, ValidationError }
  */
 object PhoneForm {
 
-  val phoneCheckConstraint: Constraint[String] = Constraint("constraints.phonecheck")({
+  private val phoneCheckConstraint: Constraint[String] = Constraint("constraints.phonecheck")({
     plainText =>
       val isPhoneNumber = plainText.matches("""^(?:([+][0-9]{1,2})+[ .-]*)?([(]{1}[0-9]{1,6}[)])?([0-9 .-/]{3,20})((x|ext|extension)[ ]?[0-9]{1,4})?$""")
       if (isPhoneNumber) {
@@ -19,7 +19,7 @@ object PhoneForm {
       }
   })
 
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "phone-new" -> text.verifying(phoneCheckConstraint))(Data.apply)(Data.unapply))
 
@@ -30,4 +30,8 @@ object PhoneForm {
    */
   case class Data(
     phoneNew: String)
+  
+  object Data {
+    def unapply(d: Data): Option[String] = Some(d.phoneNew) 
+  }
 }

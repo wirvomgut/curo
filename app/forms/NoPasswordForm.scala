@@ -8,7 +8,7 @@ import play.api.data.Forms._
  */
 object NoPasswordForm {
 
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "uid" -> nonEmptyText,
       "password-new" -> nonEmptyText,
@@ -24,4 +24,8 @@ object NoPasswordForm {
     uid: String,
     passwordNew: String,
     passwordConfirm: String)
+
+  object Data {
+    def unapply(d: Data): Option[(String, String, String)] = Some((d.uid, d.passwordNew, d.passwordConfirm))
+  }
 }

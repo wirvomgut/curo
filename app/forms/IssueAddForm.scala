@@ -8,7 +8,7 @@ object IssueAddForm {
   /**
    * A play framework form.
    */
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "area" -> nonEmptyText,
       "kind" -> nonEmptyText,
@@ -33,4 +33,14 @@ object IssueAddForm {
     description: String,
     alarm: Boolean
   )
+  object Data {
+    def unapply(d: Data): Option[(String, String, String, String, Boolean)] = Some((
+      d.area,
+      d.kind,
+      d.title,
+      d.description,
+      d.alarm
+    ))
+
+  }
 }

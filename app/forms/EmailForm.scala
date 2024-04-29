@@ -8,7 +8,7 @@ import play.api.data.Forms._
  */
 object EmailForm {
 
-  val form = Form(
+  val form: Form[Data] = Form(
     mapping(
       "email-new" -> email)(Data.apply)(Data.unapply))
 
@@ -19,4 +19,8 @@ object EmailForm {
    */
   case class Data(
     emailNew: String)
+
+  object Data {
+    def unapply(d: Data): Option[String] = Some((d.emailNew))
+  }
 }
