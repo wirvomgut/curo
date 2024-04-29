@@ -1,6 +1,6 @@
 package controllers
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import play.silhouette.api.Silhouette
 import play.silhouette.api.actions.SecuredRequest
 import forms.IssueAddForm

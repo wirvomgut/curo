@@ -2,7 +2,7 @@ package models.issue
 
 import java.time.{Instant, ZoneId, ZoneOffset}
 
-import akka.http.scaladsl.model.headers.LinkParams.title
+import org.apache.pekko.http.scaladsl.model.headers.LinkParams.title
 import services.KanboardResponse.KanboardTask
 
 case class IssueEntry(

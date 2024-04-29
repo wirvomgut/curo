@@ -4,7 +4,7 @@ name := "Curo"
 
 version := "0.1.1"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.13"
 
 maintainer := "Julian Pieles"
 
@@ -19,19 +19,23 @@ javaOptions in Test += "-Dconfig.file=conf/application.test.conf"
 //********************************************************
 // Java - Scala
 //********************************************************
-val playV = "2.9.0"
-val silhouetteV = "9.0.0"
-val scalikejdbcV = "3.4.0"
+val playV = "3.0.2"
+val silhouetteV = "10.0.0"
+val scalikejdbcV = "4.2.0"
+
+dependencyOverrides ++= Seq(
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+)
 libraryDependencies ++= Seq(
   "io.monix" %% "monix-execution" % "3.0.0",
-  "com.typesafe.play" %% "play-json" % playV,
-  "com.typesafe.play" %% "play-json-joda" % playV,
+  "org.playframework" %% "play-json" % playV,
+  "org.playframework" %% "play-json-joda" % playV,
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "org.scalikejdbc" %% "scalikejdbc"                    % scalikejdbcV,
   "org.scalikejdbc" %% "scalikejdbc-joda-time"          % scalikejdbcV,
   "org.scalikejdbc" %% "scalikejdbc-config"             % scalikejdbcV,
-  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.8.0-scalikejdbc-3.4",
+  "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "3.0.0-scalikejdbc-4.2",
   "org.apache.directory.api" % "api-all" % "1.0.0-RC1",
   "org.playframework.silhouette" %% "play-silhouette" % silhouetteV,
   "org.playframework.silhouette" %% "play-silhouette-password-bcrypt" % silhouetteV,
@@ -57,7 +61,7 @@ libraryDependencies ++= Seq(
 // WEBJARS
 //********************************************************
 libraryDependencies ++= Seq(
-  "org.webjars" %% "webjars-play" % "2.9.0",
+  "org.webjars" %% "webjars-play" % "3.0.1",
   "org.webjars.bower" % "jquery" % "3.3.1",
   "org.webjars.bower" % "semantic" % "2.2.14",
   "org.webjars.bower" % "semantic-ui-calendar" % "0.0.8"

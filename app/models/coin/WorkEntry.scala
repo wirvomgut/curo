@@ -43,7 +43,7 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
         wc.timeSpent -> timeSpent,
         wc.coins -> coins,
         wc.dateDone -> dateDone)
-    }.updateAndReturnGeneratedKey().apply()
+    }.updateAndReturnGeneratedKey.apply()
   }
 
   def edit(workEntry: WorkEntry)(implicit s: DBSession = AutoSession): Int = {
@@ -68,7 +68,7 @@ object WorkEntry extends SQLSyntaxSupport[WorkEntry] {
   def remove(id: WorkEntryId)(implicit s: DBSession = AutoSession): Int = {
     withSQL {
       delete.from(WorkEntry).where.eq(wc.id, id)
-    }.update().apply()
+    }.update.apply()
   }
 
   def apply(w: SyntaxProvider[WorkEntry])(rs: WrappedResultSet): WorkEntry = {

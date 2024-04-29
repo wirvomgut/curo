@@ -1,6 +1,6 @@
 package services
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import monix.execution.Scheduler.{global => scheduler}
 import monix.execution.atomic.Atomic
